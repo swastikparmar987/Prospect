@@ -339,3 +339,4 @@ export function ThreeCanvas({ scrollProgress = 0 }: ThreeCanvasProps) {
     />
   );
 }
+

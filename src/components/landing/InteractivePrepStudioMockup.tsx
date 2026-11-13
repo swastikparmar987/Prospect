@@ -3,14 +3,10 @@
 
 import React, { useState } from "react";
 import {
-  CheckCircle2,
-  Circle,
   Clock,
   Sparkles,
   Target,
   Flame,
-  ArrowRight,
-  TrendingUp,
   FileCheck,
   Check,
 } from "lucide-react";
@@ -203,3 +199,4 @@ export function InteractivePrepStudioMockup() {
     </div>
   );
 }
+

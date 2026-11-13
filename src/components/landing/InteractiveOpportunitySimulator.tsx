@@ -5,14 +5,8 @@ import React, { useState } from "react";
 import {
   ShieldAlert,
   CheckCircle2,
-  Clock,
   Sparkles,
   ArrowRight,
-  Layers,
-  GraduationCap,
-  Building,
-  ExternalLink,
-  Flame,
 } from "lucide-react";
 
 interface PresetRole {
@@ -395,3 +389,4 @@ export function InteractiveOpportunitySimulator() {
     </div>
   );
 }
+

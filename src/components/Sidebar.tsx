@@ -4,6 +4,7 @@
 import React from "react";
 import Link from "next/link";
 import {
+  ArrowUpRight,
   BookOpen,
   BriefcaseBusiness,
   CalendarClock,
@@ -130,7 +131,7 @@ export function Sidebar({
     <div className="flex h-full flex-col justify-between bg-[#FDF9F3] border-r-2 border-[#080808] select-none">
       {/* Brand Header & Navigation */}
       <div className="px-4 pt-5 pb-3 flex-1 overflow-y-auto">
-        <div className="flex items-center justify-between px-1.5 mb-6">
+        <div className="flex items-center justify-between px-1.5 mb-3">
           <button
             type="button"
             onClick={() => handleNavClick("home", "home")}
@@ -155,6 +156,18 @@ export function Sidebar({
             </button>
           )}
         </div>
+
+        {/* Link to 3D Landing Page Showcase */}
+        <Link
+          href="/landing"
+          className="flex items-center justify-between rounded-xl border-2 border-[#080808] bg-white px-3 py-1.5 font-heading text-xs font-extrabold text-[#080808] hover:bg-[#E0FB66] transition-all shadow-[2px_2px_0px_#080808] mb-4 group"
+        >
+          <span className="flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-[#080808]" />
+            <span>Product Showcase</span>
+          </span>
+          <ArrowUpRight className="h-3.5 w-3.5 text-[#777777] group-hover:text-[#080808] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+        </Link>
 
         {/* Primary Menu List */}
         <nav className="space-y-1" aria-label="Main Navigation">
