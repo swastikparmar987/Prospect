@@ -1,21 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #FDF9F3;
+    --surface: #FFFFFF;
+    --foreground: #080808;
+    --primary: #E0FB66;
+    --accent-yellow: #FEF189;
+    --text-muted: #777777;
+    --border-subtle: #D8D5CE;
+    --border-width: 2px;
+    --border-strong: 3px;
+    --border-radius: 16px;
+    --shadow-hard: 5px 5px 0px #080808;
+    --shadow-card: 4px 4px 0px #080808;
+    --font-heading: "Plus Jakarta Sans", sans-serif;
+    --font-body: "Inter", sans-serif;
   }
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-heading,
+.font-serif {
+  font-family: var(--font-heading);
+  letter-spacing: -0.025em;
+}
+
+@layer components {
+  /* Core Neo-Brutalist Editorial Surface Classes */
+  .neo-card {
+    background-color: var(--surface);
+    border: 2px solid var(--foreground);
+    border-radius: 16px;
+    box-shadow: 4px 4px 0px #080808;
+  }
+
+  .neo-card-lg {
+    background-color: var(--surface);
+    border: 2px solid var(--foreground);
+    border-radius: 20px;
+    box-shadow: 5px 5px 0px #080808;
+  }
+
+  .neo-card-interactive {
+    background-color: var(--surface);
+    border: 2px solid var(--foreground);
+    border-radius: 16px;
+    box-shadow: 4px 4px 0px #080808;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .neo-card-interactive:hover {
+    transform: translate(-1px, -2px);
+    box-shadow: 5px 6px 0px #080808;
+  }
+
+  .neo-card-interactive:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #080808;
+  }
+
+  .neo-btn-primary {
+    background-color: #080808;
+    color: #FFFFFF;
+    border: 2px solid #080808;
+    border-radius: 9999px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    box-shadow: 3px 3px 0px rgba(8, 8, 8, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .neo-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 4px 4px 0px #E0FB66;
+  }
+
+  .neo-btn-outline {
+    background-color: #FFFFFF;
+    color: #080808;
+    border: 2px solid #080808;
+    border-radius: 9999px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    box-shadow: 3px 3px 0px #080808;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+
+  .neo-btn-outline:hover {
+    background-color: #FDF9F3;
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px #080808;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D5CE;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #777777;
 }

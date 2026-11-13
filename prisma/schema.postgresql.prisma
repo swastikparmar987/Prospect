@@ -1,0 +1,269 @@
+// Prisma schema for Prospect: PostgreSQL Production & Staging Datasource
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client-postgresql"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserProfile {
+  id                    String   @id @default(cuid())
+  userId                String   @default("default")
+  fullName              String   @default("")
+  email                 String   @default("")
+  headline              String   @default("")
+  university            String   @default("")
+  degree                String   @default("")
+  major                 String   @default("")
+  graduationYear        Int?
+  graduationMonth       String?
+  gpa                   Float?
+  location              String   @default("")
+  targetRoles           String   @default("[]") // JSON string array
+  preferredWorkModes    String   @default("[]") // JSON string array (e.g. Remote, Hybrid, On-site)
+  preferredLocations    String   @default("[]") // JSON string array
+  skills                String   @default("[]") // JSON string array
+  experiences           String   @default("[]") // JSON array of { title, company, duration, bullets, verified }
+  projects              String   @default("[]") // JSON array of { name, description, techStack, link }
+  portfolioLinks        String   @default("[]") // JSON array of { label, url }
+  availability          String   @default("Immediate / Summer 2025")
+  stipendPreference     String   @default("Flexible")
+  constraints           String   @default("") // E.g. visa sponsorship required, hours cap
+  resumeText            String?
+  resumeFilename        String?
+  resumeExtractedAt     DateTime?
+  factProvenance        String   @default("{}") // JSON object tracking provenance of fields
+  capabilitiesJson      String   @default("{}") // Structured capability map & categorized skills
+  roleFamiliesJson      String   @default("[]") // Generated role families (Direct, Adjacent, Project-derived, Emerging)
+  workAuthStatus        String   @default("")   // Voluntarily supplied work authorization constraint
+  experienceLevel       String   @default("Internship / Early-Career")
+  careerDirections      String   @default("[]") // JSON array of target career directions
+  adjacentRoles         String   @default("[]") // JSON array of preferred adjacent roles
+  excludedRoleFamilies  String   @default("[]") // JSON array of excluded role family keys/titles
+  hiddenEmployers       String   @default("[]") // JSON array of hidden employer names
+  locationPreferenceJson String  @default("{}") // JSON object storing city/region/country preferences & permission state
+  embeddingJson         String   @default("[]") // Persistent semantic embedding vector for candidate profile
+  embeddingModel        String   @default("")   // Model/engine identifier for candidate embedding
+  aiInsightsJson        String   @default("{}") // Structured AI resume intelligence (responsibilities, achievements, career directions)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Opportunity {
+  id                    String   @id @default(cuid())
+  title                 String
+  organization          String
+  category              String   // Internship, Fellowship, Research, Hackathon, Entry-level
+  employmentType        String   @default("Internship") // Internship, Full-time, Part-time, Fellowship, Research, Contract
+  roleFamily            String   @default("General Software & Tech")
+  seniority             String   @default("Intern / Entry-level")
+  description           String
+  location              String
+  latitude              Float?   // Known city/location latitude for true distance calculation
+  longitude             Float?   // Known city/location longitude for true distance calculation
+  workMode              String   // Remote, Hybrid, On-site
+  compensation          String   // e.g. "$40-50/hr", "Unpaid", "Competitive Stipend", "Unknown"
+  eligibilityRequirements String @default("[]") // JSON array of strings
+  requiredSkills        String   @default("[]") // JSON array of strings
+  preferredSkills       String   @default("[]") // JSON array of strings
+  publishedAt           DateTime?
+  deadline              DateTime?
+  deadlineRaw           String?  // Raw text e.g. "Rolling until filled" or "Nov 15, 2025"
+  applyUrl              String
+  canonicalUrl          String   @default("")
+  providerId            String?
+  sourceName            String   // e.g. "Direct Employer Site", "Handshake Public", "Official NSF"
+  sourceUrl             String
+  sourceSnippet         String   @default("")
+  sourceConfidence      Float    @default(0.8) // 0 to 1
+  verificationStatus    String   @default("PARTIALLY_CHECKED") // VERIFIED_SOURCE, PARTIALLY_CHECKED, STALE, UNVERIFIABLE, DEMO_DATA
+  sourceEvidence        String   @default("[]") // JSON array of { claim, excerpt, url, observedAt }
+  multiSourceProvenance String   @default("[]") // JSON array of provider provenance records
+  guardVerdict          String   @default("CLEAN") // CLEAN, SANITIZED, SUSPICIOUS_INJECTION
+  embeddingJson         String   @default("[]") // Persistent semantic embedding vector for job description
+  aiStructuredJson      String   @default("{}") // AI-extracted structured job requirements & responsibilities
+  isExpired             Boolean  @default(false)
+  fetchedAt             DateTime @default(now())
+  discoveredAt          DateTime @default(now())
+  lastCheckedAt         DateTime @default(now())
+  isDemo                Boolean  @default(false)
+  
+  evaluations           Evaluation[]
+  applications          Application[]
+  preparationPlans      PreparationPlan[]
+}
+
+model Evaluation {
+  id                    String   @id @default(cuid())
+  opportunityId         String
+  opportunity           Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  recommendation        String   // APPLY_NOW, PREPARE_FIRST, KEEP_WATCHING, SKIP
+  overallScore          Float    // 0 - 100
+  semanticScore         Float    @default(0)    // 0 - 1 cosine similarity score
+  scoreBreakdown        String   // JSON object: { eligibility: number, skills: number, semantic?: number, quality: number, preferences: number, deadline: number }
+  hardBlockers          String   @default("[]") // JSON array of blockers if any
+  rationale             String
+  nextAction            String
+  aiMatchExplanation    String   @default("")   // Grounded AI match explanation
+  skillGapAnalysisJson  String   @default("[]") // Structured skill gap intelligence items
+  uncertainties         String   @default("[]") // JSON array of uncertainty notes
+  eligibilityChecks     String   @default("[]") // JSON array of { rule, status: "MET"|"NOT MET"|"UNKNOWN", reason, evidence }
+  evaluatedAt           DateTime @default(now())
+}
+
+model PreparationPlan {
+  id                    String   @id @default(cuid())
+  userId                String   @default("default")
+  opportunityId         String
+  opportunity           Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  title                 String
+  summary               String
+  items                 String   // JSON array of { id, gap, requirement, concreteAction, deliverable, completionCriteria, estimatedEffort, portfolioProof, isCompleted }
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Application {
+  id                    String   @id @default(cuid())
+  userId                String   @default("default")
+  opportunityId         String
+  opportunity           Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  stage                 String   @default("SAVED") // SAVED, PREPARING, READY_TO_APPLY, APPLIED, INTERVIEW, OFFER, REJECTED, WITHDRAWN, ARCHIVED
+  targetDeadline        DateTime?
+  plannedNextAction     String   @default("")
+  notes                 String   @default("")
+  materials             String   @default("{}") // JSON object of { resumeBulletsDraft: string, coverLetterDraft: string, questionsDraft: string, interviewChecklist: string }
+  outcome               String?  // OFFER, REJECTED, GHOSTED, DECLINED
+  outcomeReflection     String?  // Optional student reflection
+  outcomeLoggedAt       DateTime?
+  reminders             String   @default("[]") // JSON array of { id, title, dueDate, isDone }
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  events                ApplicationEvent[]
+
+  @@index([userId])
+}
+
+model ApplicationEvent {
+  id                    String   @id @default(cuid())
+  applicationId         String
+  application           Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  fromStage             String?
+  toStage               String
+  note                  String   @default("")
+  createdAt             DateTime @default(now())
+}
+
+model AgentRun {
+  id                    String   @id @default(cuid())
+  userId                String   @default("default")
+  trigger               String   // "SEARCH", "VERIFY", "EVALUATE", "PREPARE", "ADAPTIVE_SEARCH"
+  query                 String   @default("")
+  mode                  String   @default("DEMO") // "DEMO" | "LIVE"
+  status                String   // "RUNNING", "COMPLETED", "PARTIAL_FAILURE", "FAILED"
+  summary               String   @default("")
+  roundsJson            String   @default("[]") // JSON array of AdaptiveRoundMetrics
+  searchPlanJson        String   @default("[]") // JSON array of SearchPlan per round
+  coverageSummaryJson   String   @default("{}") // JSON coverage summary & provider statuses
+  stopReason            String   @default("")
+  budgetUsed            Int      @default(0)
+  budgetLimit           Int      @default(12)
+  startedAt             DateTime @default(now())
+  completedAt           DateTime?
+  steps                 AgentStep[]
+
+  @@index([userId])
+}
+
+model AgentStep {
+  id                    String   @id @default(cuid())
+  runId                 String
+  run                   AgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  stepNumber            Int
+  toolName              String
+  status                String   // "SUCCESS", "SKIPPED", "RETRYING", "FAILED"
+  inputSummary          String
+  outputSummary         String
+  sourceReferences      String   @default("[]") // JSON array of cited sources/URLs
+  errorDetails          String?
+  executedAt            DateTime @default(now())
+}
+
+model SearchCache {
+  id                    String   @id @default(cuid())
+  cacheKey              String   @unique
+  provider              String
+  query                 String
+  filtersJson           String   @default("{}")
+  payloadJson           String   // Serialized SearchProviderResult
+  fetchedAt             DateTime @default(now())
+  expiresAt             DateTime
+  createdAt             DateTime @default(now())
+}
+
+model UserFeedback {
+  id                    String   @id @default(cuid())
+  userId                String   @default("default")
+  profileId             String   @default("default")
+  opportunityId         String?
+  organization          String?
+  roleFamily            String?
+  signalType            String   // SAVE, MARK_RELEVANT, MARK_NOT_RELEVANT, HIDE_EMPLOYER, DISMISS_ROLE_FAMILY, ADJUST_PREFERENCES, MARK_APPLIED, RECORD_OUTCOME, RESET_PERSONALIZATION
+  outcome               String?  // INTERVIEW, OFFER, REJECTED, GHOSTED
+  notes                 String   @default("")
+  metadataJson          String   @default("{}")
+  createdAt             DateTime @default(now())
+
+  @@index([userId])
+}
+
+model SyncLog {
+  id                    String   @id @default(cuid())
+  provider              String   // e.g. "ALL", "CAREER_FEEDS", "FREEHIRE"
+  itemsFetched          Int      @default(0)
+  itemsAdded            Int      @default(0)
+  itemsUpdated          Int      @default(0)
+  itemsExpired          Int      @default(0)
+  durationMs            Int      @default(0)
+  status                String   // SUCCESS, PARTIAL, FAILED
+  errorDetails          String?
+  metricsJson           String   @default("{}")
+  startedAt             DateTime @default(now())
+  completedAt           DateTime @default(now())
+}
+
+model DurableTask {
+  id              String    @id @default(cuid())
+  taskType        String    // ADAPTIVE_SEARCH, VERIFY_ALL, OPPORTUNITY_REFRESH, CLEANUP_EXPIRED
+  userId          String    @default("default")
+  runId           String
+  status          String    // QUEUED, RUNNING, RETRY_SCHEDULED, COMPLETED, FAILED, CANCELLED
+  currentStep     String    @default("")
+  attemptCount    Int       @default(0)
+  maxAttempts     Int       @default(3)
+  createdAt       DateTime  @default(now())
+  startedAt       DateTime?
+  heartbeatAt     DateTime?
+  completedAt     DateTime?
+  failureReason   String?
+  nextRetryTime   DateTime?
+  idempotencyKey  String    @unique
+  progressPercent Int       @default(0)
+  leaseOwner      String?
+  leaseExpiresAt  DateTime?
+  payloadJson     String    @default("{}")
+  resultSummary   String?
+  checkpointJson  String    @default("{}")
+  updatedAt       DateTime  @updatedAt
+
+  @@index([status, leaseExpiresAt])
+  @@index([userId])
+}

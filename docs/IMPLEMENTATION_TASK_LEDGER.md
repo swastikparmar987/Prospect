@@ -1,0 +1,31 @@
+# PROSPECT — Implementation Task Ledger
+
+This ledger tracks all atomic implementation units, verification criteria, and execution statuses across the engineering protocol.
+
+---
+
+| Task ID | Task Name | Priority | Dependencies | Status | Files Changed | Implementation Notes | Tests Executed | Outstanding Issues | Last Updated |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **TSK-001** | Baseline Audit & Verification | P0 | None | COMPLETED | `docs/IMPLEMENTATION_MASTER_PLAN.md`, `docs/IMPLEMENTATION_TASK_LEDGER.md` | Verified clean git status, checked `.env` keys, verified Groq (`qwen/qwen3.8-27b`) and Tavily APIs live. Verified 100/100 baseline tests passing. | `npm test`, `npm run build` | None | 2026-11-08 23:25 |
+| **TSK-002** | Central AI Model Router | P0 | TSK-001 | COMPLETED | `src/lib/ai/model-router.ts`, `src/lib/adapters/llm-adapter.ts`, `src/lib/gemini-resume-extractor.ts` | Unified model routing across Fast Extraction, Reasoning, and Studio tasks. Groq primary with Qwen 3.8, deterministic fallbacks, token estimation, and Zod output schema enforcement. | `npm test`, `model-router.test.ts` | Gemini optional | 2026-11-08 23:45 |
+| **TSK-003** | Candidate Intelligence & Provenance | P0 | TSK-002 | COMPLETED | `src/types/index.ts`, `src/lib/candidate-intelligence.ts`, `src/lib/resume-parser.ts` | Added strict provenance enum (`RESUME_AI`, `RESUME_DETERMINISTIC`, `USER_INPUT`, `USER_OVERRIDE`, `CALCULATED`, `EXTERNAL_SOURCE`), alias taxonomy expansion, capability graph linking, and manual profile creation/updating. | `resume-extraction-engine.test.ts`, `resume-first-discovery.test.ts` | None | 2026-11-09 00:15 |
+| **TSK-004** | Career Outlook Engine & UI Integration | P0 | TSK-003 | COMPLETED | `src/lib/career-outlook.ts`, `src/app/page.tsx`, `src/components/views/DiscoverView.tsx`, `src/components/onboarding/CareerOutlookExperience.tsx` | 3 evidence-grounded directions, user selection/removal, custom target role evaluation, direct sidebar navigation, and Discover banner integration. | `career-outlook.test.ts` | None | 2026-11-09 00:45 |
+| **TSK-005** | Multi-Source Provider Catalog & Institutional Discovery | P1 | TSK-001 | COMPLETED | `src/lib/providers/source-catalog.ts`, `src/lib/providers/provider-registry.ts`, `src/lib/providers/tavily-provider.ts` | Standardized provider contract with rate limiting, timeouts, and health checks. Built curated institutional source catalog (IIT, IISc, DRDO, ISRO, AICTE, NSF) and Greenhouse/Lever/Ashby/FreeHire adapters. | `tavily-search.test.ts`, `sync-worker.test.ts` | None | 2026-11-09 01:15 |
+| **TSK-006** | Adaptive Search Planner & Diversity Engine | P1 | TSK-005 | COMPLETED | `src/lib/search-planner.ts`, `src/lib/agent/adaptive-search-loop.ts`, `src/lib/agent/orchestrator.ts` | 3-round adaptive strategy (Exact -> Adjacent -> Research & Institutional). Diversity scoring to prevent employer spam. Budget caps and query history tracking. | `adaptive-search.test.ts` | None | 2026-11-09 01:45 |
+| **TSK-007** | Opportunity Normalization, Dedup & SSRF-Safe Verification | P0 | TSK-005 | COMPLETED | `src/lib/normalizer.ts`, `src/lib/dedup.ts`, `src/lib/safe-url.ts`, `src/lib/posting-guard.ts`, `src/lib/url-importer.ts` | Canonical URL normalization, multi-signal deduplication preserving provenance, SSRF blocklist (private IPs, cloud metadata), and prompt injection neutralization. | `url-importer.test.ts`, `dedup.test.ts` | None | 2026-11-09 02:15 |
+| **TSK-008** | Eligibility, Matching & Explainable Recommendations | P0 | TSK-007 | COMPLETED | `src/lib/eligibility-engine.ts`, `src/lib/scoring-engine.ts` | Hard blocker overrides (`SKIP`), four distinct recommendations (`APPLY_NOW`, `PREPARE_FIRST`, `KEEP_WATCHING`, `SKIP`), explainable rationales based only on candidate facts. | `prospect.test.ts` | None | 2026-11-09 02:45 |
+| **TSK-009** | Skill Bridge, Preparation Studio & Application Tracker | P1 | TSK-008 | COMPLETED | `src/lib/gap-action-engine.ts`, `src/lib/prep-studio.ts`, `src/app/api/tracker/route.ts`, `src/components/views/TrackerView.tsx` | Practical deliverables, milestones, and effort estimates for `PREPARE_FIRST`. User-controlled application stages, event log, and feedback loop. | `prep-studio.test.ts`, `tracker.test.ts` | None | 2026-11-09 03:15 |
+| **TSK-010** | Durable Background Task Execution Engine | P0 | TSK-006 | COMPLETED | `src/lib/agent/durable-worker.ts`, `src/app/api/agent/runs/route.ts` | Durable task runner with states (`QUEUED`, `RUNNING`, `RETRY_SCHEDULED`, `COMPLETED`, `FAILED`, `CANCELLED`), task leases, heartbeats, exponential backoff, and idempotency. | `durable-worker.test.ts` | In-memory persistence backed by SQLite/PostgreSQL | 2026-11-09 03:45 |
+| **TSK-011** | Comprehensive E2E Journey Tests & Evaluation Dataset | P0 | TSK-001..010 | COMPLETED | `src/test/e2e-journeys.test.ts`, `src/test/evaluation-dataset.test.ts` | Real user journeys A through E (New student, Preparation, Application tracking, Failure recovery, Security/SSRF). Evaluation dataset covering 6 student personas and 3 benchmark opportunities. | `npm test` (131/131 passing across 16 suites) | None | 2026-11-08 23:45 |
+| **TSK-012** | PostgreSQL Migration Readiness & Production Documentation | P1 | TSK-010 | COMPLETED | `prisma/schema.prisma`, `docs/ARCHITECTURE.md`, `docs/PRODUCTION_READINESS.md`, `docs/KNOWN_LIMITATIONS.md` | PostgreSQL datasource compatibility, index optimization, connection pooling guidelines, environment documentation, zero TypeScript errors (`tsc --noEmit`), and clean Next.js 15.1 production build (18/18 routes). | `prisma validate`, `tsc --noEmit`, `npm run build` | Requires real Postgres DATABASE_URL in prod | 2026-11-08 23:45 |
+
+---
+
+### Status Definitions:
+- **QUEUED**: Awaiting prerequisites or execution sequence.
+- **IN_PROGRESS**: Active development and implementation underway.
+- **IMPLEMENTED**: Code committed and ready for test validation.
+- **TESTING**: Running test suite and verifying acceptance criteria.
+- **FAILED_RETRYABLE**: Bug caught in test; targeted repair in progress.
+- **BLOCKED**: External dependency or environment limitation preventing completion.
+- **COMPLETED**: Acceptance criteria met and verified with passing automated tests.
