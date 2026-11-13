@@ -23,6 +23,7 @@ import { InteractivePrepStudioMockup } from "./InteractivePrepStudioMockup";
 import { InteractiveTrackerMockup } from "./InteractiveTrackerMockup";
 import { InteractiveResumeMockup } from "./InteractiveResumeMockup";
 import { useScrollReveal } from "./useScrollReveal";
+import { NavTab } from "../Sidebar";
 
 const HIRING_COMPANIES = [
   { name: "OpenAI", logo: "/logo_openai.png" },
@@ -87,9 +88,19 @@ const FAQS = [
   },
 ];
 
-export function LandingExperience() {
+interface LandingExperienceProps {
+  onLaunchApp?: (tab?: NavTab) => void;
+}
+
+export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  const handleLaunch = (tab: NavTab = "discover") => {
+    if (onLaunchApp) {
+      onLaunchApp(tab);
+    }
+  };
 
   // Initialize the smooth IntersectionObserver scroll reveal system
   useScrollReveal();
@@ -158,13 +169,25 @@ export function LandingExperience() {
           <div className="flex items-center gap-3">
             <Link
               href="/?tab=discover"
-              className="hidden sm:inline-flex rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("discover");
+                }
+              }}
+              className="hidden sm:inline-flex rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all cursor-pointer"
             >
               Explore Live Roles
             </Link>
             <Link
-              href="/?tab=profile"
-              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-[#E0FB66] px-4 py-2 font-heading text-xs font-extrabold text-[#080808] shadow-[3px_3px_0px_#080808] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#080808] transition-all"
+              href="/?tab=discover"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("discover");
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-[#E0FB66] px-4 py-2 font-heading text-xs font-extrabold text-[#080808] shadow-[3px_3px_0px_#080808] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#080808] transition-all cursor-pointer"
             >
               <span>Launch App</span>
               <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
@@ -200,6 +223,12 @@ export function LandingExperience() {
           <div className="flex flex-wrap items-center justify-center gap-4 pt-3 reveal-init delay-300">
             <Link
               href="/?tab=profile"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("profile");
+                }
+              }}
               className="inline-flex items-center gap-2.5 rounded-2xl border-3 border-[#080808] bg-[#080808] px-8 py-4 font-heading text-base font-extrabold text-white shadow-[5px_5px_0px_#E0FB66] hover:-translate-y-1 hover:shadow-[7px_7px_0px_#E0FB66] transition-all cursor-pointer"
             >
               <span>Upload Resume & Start Free</span>
@@ -421,7 +450,13 @@ export function LandingExperience() {
 
             <Link
               href="/?tab=profile"
-              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("profile");
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto cursor-pointer"
             >
               <span>Test with Your Resume</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -452,7 +487,13 @@ export function LandingExperience() {
 
             <Link
               href="/?tab=outlook"
-              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("outlook");
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto cursor-pointer"
             >
               <span>View Career Outlook</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -559,7 +600,13 @@ export function LandingExperience() {
 
             <Link
               href="/?tab=discover"
-              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-[#E0FB66] px-4 py-2 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:-translate-y-0.5 transition-all self-start sm:self-auto"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("discover");
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-[#E0FB66] px-4 py-2 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:-translate-y-0.5 transition-all self-start sm:self-auto cursor-pointer"
             >
               <span>Explore 5,000+ Real Postings</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -590,7 +637,13 @@ export function LandingExperience() {
 
             <Link
               href="/?tab=prep"
-              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("prep");
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto cursor-pointer"
             >
               <span>Launch Studio</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -621,7 +674,13 @@ export function LandingExperience() {
 
             <Link
               href="/?tab=tracker"
-              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("tracker");
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] transition-all self-start sm:self-auto cursor-pointer"
             >
               <span>Open My Tracker</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -834,7 +893,13 @@ export function LandingExperience() {
           <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/?tab=profile"
-              className="inline-flex items-center gap-2.5 rounded-2xl border-3 border-[#080808] bg-[#080808] px-8 py-4 font-heading text-base font-extrabold text-white shadow-[4px_4px_0px_#FFFFFF] hover:-translate-y-1 transition-all"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("profile");
+                }
+              }}
+              className="inline-flex items-center gap-2.5 rounded-2xl border-3 border-[#080808] bg-[#080808] px-8 py-4 font-heading text-base font-extrabold text-white shadow-[4px_4px_0px_#FFFFFF] hover:-translate-y-1 transition-all cursor-pointer"
             >
               <span>Upload Resume & Start Free</span>
               <ArrowRight className="h-5 w-5 text-[#E0FB66]" />
@@ -842,7 +907,13 @@ export function LandingExperience() {
 
             <Link
               href="/?tab=discover"
-              className="inline-flex items-center gap-2.5 rounded-2xl border-3 border-[#080808] bg-white px-7 py-4 font-heading text-base font-extrabold text-[#080808] shadow-[4px_4px_0px_#080808] hover:bg-[#FEF189] hover:-translate-y-1 transition-all"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("discover");
+                }
+              }}
+              className="inline-flex items-center gap-2.5 rounded-2xl border-3 border-[#080808] bg-white px-7 py-4 font-heading text-base font-extrabold text-[#080808] shadow-[4px_4px_0px_#080808] hover:bg-[#FEF189] hover:-translate-y-1 transition-all cursor-pointer"
             >
               <span>Explore Live Opportunities</span>
             </Link>
@@ -866,11 +937,66 @@ export function LandingExperience() {
           </div>
 
           <div className="flex flex-wrap items-center gap-6 font-heading font-bold text-[#080808]">
-            <Link href="/?tab=profile" className="hover:underline">Resume & Profile</Link>
-            <Link href="/?tab=outlook" className="hover:underline">Career Outlook</Link>
-            <Link href="/?tab=discover" className="hover:underline">Opportunity Discovery</Link>
-            <Link href="/?tab=prep" className="hover:underline">Preparation Studio</Link>
-            <Link href="/?tab=tracker" className="hover:underline">Application Tracker</Link>
+            <Link
+              href="/?tab=profile"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("profile");
+                }
+              }}
+              className="hover:underline cursor-pointer"
+            >
+              Resume & Profile
+            </Link>
+            <Link
+              href="/?tab=outlook"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("outlook");
+                }
+              }}
+              className="hover:underline cursor-pointer"
+            >
+              Career Outlook
+            </Link>
+            <Link
+              href="/?tab=discover"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("discover");
+                }
+              }}
+              className="hover:underline cursor-pointer"
+            >
+              Opportunity Discovery
+            </Link>
+            <Link
+              href="/?tab=prep"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("prep");
+                }
+              }}
+              className="hover:underline cursor-pointer"
+            >
+              Preparation Studio
+            </Link>
+            <Link
+              href="/?tab=tracker"
+              onClick={(e) => {
+                if (onLaunchApp) {
+                  e.preventDefault();
+                  handleLaunch("tracker");
+                }
+              }}
+              className="hover:underline cursor-pointer"
+            >
+              Application Tracker
+            </Link>
           </div>
 
           <div className="text-center md:text-right text-[11px] text-[#777777]">

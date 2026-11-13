@@ -19,6 +19,7 @@ import { ProfileView } from "@/components/views/ProfileView";
 import { AgentActivityView } from "@/components/views/AgentActivityView";
 import { ProjectEvaluatorView } from "@/components/views/ProjectEvaluatorView";
 import { SchedulerView } from "@/components/views/SchedulerView";
+import { LandingExperience } from "@/components/landing/LandingExperience";
 import { ResumeUploadExperience } from "@/components/onboarding/ResumeUploadExperience";
 import { ProfileConfirmationView } from "@/components/onboarding/ProfileConfirmationView";
 import { CareerOutlookExperience } from "@/components/onboarding/CareerOutlookExperience";
@@ -44,7 +45,7 @@ import {
 import { Bell, Compass, Menu, Sparkles, Upload } from "lucide-react";
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<NavTab>("home");
+  const [activeTab, setActiveTab] = useState<NavTab>("landing");
   const [activeSidebarKey, setActiveSidebarKey] = useState<SidebarNavKey>("home");
   const [prepFocusTab, setPrepFocusTab] = useState<"resume" | "interview" | undefined>(undefined);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -132,8 +133,8 @@ export default function HomePage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const rawParam = new URLSearchParams(window.location.search).get("tab");
       const aliasMap: Record<string, NavTab> = {
+        landing: "landing",
         home: "home",
         discover: "discover",
         outlook: "outlook",
@@ -146,22 +147,39 @@ export default function HomePage() {
         projects: "projects",
         scheduler: "scheduler",
       };
-      if (rawParam && aliasMap[rawParam]) {
-        const mappedTab = aliasMap[rawParam];
-        setActiveTab(mappedTab);
-        const keyMap: Record<NavTab, SidebarNavKey> = {
-          home: "home",
-          discover: "discover",
-          outlook: "outlook",
-          tracker: rawParam === "tracker" ? "tracker" : "applications",
-          prep: "interview_prep",
-          profile: "profile",
-          projects: "projects",
-          scheduler: "scheduler",
-          agent: "agent",
-        };
-        setActiveSidebarKey(keyMap[mappedTab]);
-      }
+
+      const keyMap: Record<NavTab, SidebarNavKey> = {
+        landing: "home",
+        home: "home",
+        discover: "discover",
+        outlook: "outlook",
+        tracker: "applications",
+        prep: "interview_prep",
+        profile: "profile",
+        projects: "projects",
+        scheduler: "scheduler",
+        agent: "agent",
+      };
+
+      const syncTabFromUrl = () => {
+        const rawParam = new URLSearchParams(window.location.search).get("tab");
+        if (rawParam && aliasMap[rawParam]) {
+          const mappedTab = aliasMap[rawParam];
+          setActiveTab(mappedTab);
+          setActiveSidebarKey(
+            rawParam === "tracker" ? "tracker" : keyMap[mappedTab] || "home"
+          );
+        } else {
+          // Default to the landing page first when opening root URL
+          setActiveTab("landing");
+          setActiveSidebarKey("home");
+        }
+      };
+
+      syncTabFromUrl();
+
+      window.addEventListener("popstate", syncTabFromUrl);
+      return () => window.removeEventListener("popstate", syncTabFromUrl);
     }
   }, []);
 
@@ -951,6 +969,33 @@ export default function HomePage() {
 
   const userInitial = (profile?.fullName?.trim()?.charAt(0) || "S").toUpperCase();
 
+  // If activeTab is landing, render the rich 3D animated Landing Experience first!
+  if (activeTab === "landing") {
+    return (
+      <LandingExperience
+        onLaunchApp={(targetTab = "discover") => {
+          setActiveTab(targetTab);
+          const keyMap: Record<NavTab, SidebarNavKey> = {
+            landing: "home",
+            home: "home",
+            discover: "discover",
+            outlook: "outlook",
+            tracker: "applications",
+            prep: "interview_prep",
+            profile: "profile",
+            projects: "projects",
+            scheduler: "scheduler",
+            agent: "agent",
+          };
+          setActiveSidebarKey(keyMap[targetTab] || "home");
+          if (typeof window !== "undefined") {
+            window.history.pushState(null, "", `/?tab=${targetTab}`);
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-[#FDF9F3] text-[#080808]">
       {/* Fixed Neo-Brutalist Left Sidebar */}
@@ -960,6 +1005,10 @@ export default function HomePage() {
         onSelectNav={(tab, sidebarKey) => {
           setActiveTab(tab);
           setActiveSidebarKey(sidebarKey);
+          if (typeof window !== "undefined") {
+            const newUrl = tab === "landing" ? "/" : `/?tab=${tab}`;
+            window.history.pushState(null, "", newUrl);
+          }
           if (sidebarKey === "interview_prep") {
             setPrepFocusTab("interview");
           } else if (sidebarKey === "upskill") {

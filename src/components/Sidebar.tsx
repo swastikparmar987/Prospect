@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 export type NavTab =
+  | "landing"
   | "home"
   | "discover"
   | "outlook"
@@ -158,8 +159,9 @@ export function Sidebar({
 
         {/* Link to 3D Landing Page Showcase */}
         <Link
-          href="/landing"
-          className="flex items-center justify-between rounded-xl border-2 border-[#080808] bg-white px-3 py-1.5 font-heading text-xs font-extrabold text-[#080808] hover:bg-[#E0FB66] transition-all shadow-[2px_2px_0px_#080808] mb-4 group"
+          href="/"
+          onClick={() => handleNavClick("landing", "home")}
+          className="flex items-center justify-between rounded-xl border-2 border-[#080808] bg-white px-3 py-1.5 font-heading text-xs font-extrabold text-[#080808] hover:bg-[#E0FB66] transition-all shadow-[2px_2px_0px_#080808] mb-4 group cursor-pointer"
         >
           <span className="flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-[#080808]" />
