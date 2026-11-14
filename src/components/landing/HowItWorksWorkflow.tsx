@@ -1,13 +1,28 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { UploadCloud, Compass, Sparkles, Send, ArrowRight } from "lucide-react";
+import {
+  ScrollBeam,
+  useIsomorphicLayoutEffect,
+  usePrefersReducedMotion,
+  registerScrollTrigger,
+  gsap,
+  ScrollTrigger,
+} from "./ScrollAnimationEngine";
 
 interface HowItWorksWorkflowProps {
   onStageClick?: (tab: string) => void;
 }
 
 export function HowItWorksWorkflow({ onStageClick }: HowItWorksWorkflowProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const badgeRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [activatedSteps, setActivatedSteps] = useState<boolean[]>([false, false, false, false]);
+  const reducedMotion = usePrefersReducedMotion();
+
   const steps = [
     {
       num: "01",
@@ -39,8 +54,71 @@ export function HowItWorksWorkflow({ onStageClick }: HowItWorksWorkflowProps) {
     },
   ];
 
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window === "undefined" || !sectionRef.current) return;
+    registerScrollTrigger();
+
+    if (reducedMotion) {
+      setActivatedSteps([true, true, true, true]);
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      cardRefs.current.forEach((card, idx) => {
+        if (!card) return;
+
+        ScrollTrigger.create({
+          trigger: card,
+          start: "top 80%",
+          onEnter: () => {
+            setActivatedSteps((prev) => {
+              if (prev[idx]) return prev;
+              const next = [...prev];
+              next[idx] = true;
+              return next;
+            });
+
+            // Elevate the card and light up its step number badge
+            const badge = badgeRefs.current[idx];
+            gsap.to(card, {
+              y: -8,
+              duration: 0.5,
+              ease: "back.out(1.8)",
+            });
+
+            if (badge) {
+              gsap.fromTo(
+                badge,
+                {
+                  scale: 0.9,
+                  boxShadow: "2px 2px 0px #080808",
+                },
+                {
+                  scale: 1.12,
+                  boxShadow: "0 0 24px 6px rgba(224, 251, 102, 0.9), 3px 3px 0px #080808",
+                  duration: 0.45,
+                  yoyo: true,
+                  repeat: 1,
+                  ease: "power2.out",
+                }
+              );
+            }
+          },
+        });
+      });
+    }, sectionRef);
+
+    return () => {
+      ctx.revert();
+    };
+  }, [reducedMotion]);
+
   return (
-    <section id="how-it-works" className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20 border-t-2 border-[#080808]/10">
+    <section
+      ref={sectionRef}
+      id="how-it-works"
+      className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20 border-t-2 border-[#080808]/10"
+    >
       <div className="mb-12 md:mb-16 text-left">
         <div className="inline-flex items-center gap-2 bg-[#E0FB66] border-2 border-[#080808] px-3 py-1 rounded-full text-xs font-technical font-bold text-[#080808] uppercase tracking-wider mb-4 shadow-[2px_2px_0px_#080808]">
           Simple 4-Step Process
@@ -53,44 +131,120 @@ export function HowItWorksWorkflow({ onStageClick }: HowItWorksWorkflowProps) {
         </p>
       </div>
 
-      {/* Horizontal Connected Workflow */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-        {steps.map((step, index) => {
-          const Icon = step.icon;
-          return (
-            <div
-              key={step.num}
-              onClick={() => onStageClick?.(step.tab)}
-              className="group relative bg-[#FDF9F3] border-2 border-[#080808] rounded-2xl p-6 shadow-[4px_4px_0px_#080808] hover:shadow-[6px_6px_0px_#E0FB66] hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-            >
-              <div>
-                {/* Header with Step Number & Icon */}
-                <div className="flex items-center justify-between mb-5">
-                  <span className="font-technical font-extrabold text-2xl text-[#080808] bg-[#E0FB66] px-3 py-1 rounded-xl border-2 border-[#080808] shadow-[2px_2px_0px_#080808]">
-                    {step.num}
-                  </span>
-                  <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#080808] flex items-center justify-center shadow-[2px_2px_0px_#080808] group-hover:bg-[#E0FB66] transition-colors">
-                    <Icon className="w-5 h-5 text-[#080808] stroke-[2.2]" />
+      {/* Horizontal Connected Workflow with ScrollBeam */}
+      <div className="relative">
+        {/* Scroll-animated connecting beam/line across the 4 stages (01 -> 02 -> 03 -> 04) that fills in electric lime */}
+        <ScrollBeam
+          containerRef={sectionRef}
+          orientation="horizontal"
+          strokeColor="#E0FB66"
+          trackColor="rgba(8, 8, 8, 0.15)"
+          strokeWidth={4}
+          glow={true}
+          glowColor="#E0FB66"
+          headMarker={true}
+          headMarkerRadius={6}
+          startOffset="top 75%"
+          endOffset="bottom 45%"
+          className="hidden lg:block absolute left-8 right-8 top-11 -translate-y-1/2 z-0 h-6"
+          onProgress={(progress) => {
+            setActivatedSteps((prev) => {
+              const s0 = progress >= 0.05;
+              const s1 = progress >= 0.32;
+              const s2 = progress >= 0.62;
+              const s3 = progress >= 0.88;
+              if (
+                prev[0] === s0 &&
+                prev[1] === s1 &&
+                prev[2] === s2 &&
+                prev[3] === s3
+              ) {
+                return prev;
+              }
+              return [s0, s1, s2, s3];
+            });
+          }}
+        />
+
+        {/* Vertical connecting beam for Mobile / Tablet view */}
+        <ScrollBeam
+          containerRef={sectionRef}
+          orientation="vertical"
+          strokeColor="#E0FB66"
+          trackColor="rgba(8, 8, 8, 0.15)"
+          strokeWidth={4}
+          glow={true}
+          glowColor="#E0FB66"
+          headMarker={true}
+          headMarkerRadius={6}
+          startOffset="top 75%"
+          endOffset="bottom 45%"
+          className="lg:hidden absolute left-7 top-10 bottom-10 w-4 z-0"
+        />
+
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10"
+        >
+          {steps.map((step, index) => {
+            const Icon = step.icon;
+            const isActivated = activatedSteps[index];
+
+            return (
+              <div
+                key={step.num}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
+                onClick={() => onStageClick?.(step.tab)}
+                className={`group relative bg-[#FDF9F3] border-2 border-[#080808] rounded-2xl p-6 transition-all duration-300 cursor-pointer flex flex-col justify-between will-change-[transform,box-shadow] ${
+                  isActivated
+                    ? "shadow-[6px_6px_0px_#E0FB66] -translate-y-2 border-black"
+                    : "shadow-[4px_4px_0px_#080808] hover:shadow-[6px_6px_0px_#E0FB66] hover:-translate-y-1"
+                }`}
+              >
+                <div>
+                  {/* Header with Step Number & Icon */}
+                  <div className="flex items-center justify-between mb-5">
+                    <span
+                      ref={(el) => {
+                        badgeRefs.current[index] = el;
+                      }}
+                      className={`font-technical font-extrabold text-2xl text-[#080808] px-3 py-1 rounded-xl border-2 border-[#080808] transition-all duration-300 ${
+                        isActivated
+                          ? "bg-[#E0FB66] shadow-[0_0_20px_4px_rgba(224,251,102,0.8),2px_2px_0px_#080808] scale-105"
+                          : "bg-[#E0FB66] shadow-[2px_2px_0px_#080808]"
+                      }`}
+                    >
+                      {step.num}
+                    </span>
+                    <div
+                      className={`w-10 h-10 rounded-xl bg-white border-2 border-[#080808] flex items-center justify-center shadow-[2px_2px_0px_#080808] transition-colors ${
+                        isActivated ? "bg-[#E0FB66]" : "group-hover:bg-[#E0FB66]"
+                      }`}
+                    >
+                      <Icon className="w-5 h-5 text-[#080808] stroke-[2.2]" />
+                    </div>
                   </div>
+
+                  <h3 className="font-heading font-extrabold text-lg text-[#080808] mb-2 group-hover:text-black">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-[#666666] font-body leading-relaxed">
+                    {step.desc}
+                  </p>
                 </div>
 
-                <h3 className="font-heading font-extrabold text-lg text-[#080808] mb-2 group-hover:text-black">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-[#666666] font-body leading-relaxed">
-                  {step.desc}
-                </p>
+                <div className="mt-6 pt-4 border-t border-black/10 flex items-center justify-between text-xs font-bold text-[#080808]">
+                  <span className="font-technical">Step {index + 1} of 4</span>
+                  <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    Explore <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
               </div>
-
-              <div className="mt-6 pt-4 border-t border-black/10 flex items-center justify-between text-xs font-bold text-[#080808]">
-                <span className="font-technical">Step {index + 1} of 4</span>
-                <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                  Explore <ArrowRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </section>
   );

@@ -17,12 +17,20 @@ import { CursorTrail } from "./CursorTrail";
 import { FallingGoodies, GoofyEyeCompanion } from "./FallingGoodies";
 import { ScrollProgressBar } from "./ScrollEnhancements";
 import { InfiniteMarquee } from "./InfiniteMarquee";
+import {
+  useScrollAnimationEngine,
+  ScrollParallax,
+  ScrollReveal,
+} from "./ScrollAnimationEngine";
 
 interface LandingExperienceProps {
   onLaunchApp?: (tab?: NavTab) => void;
 }
 
 export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) {
+  // Initialize master GSAP ScrollTrigger animation engine
+  useScrollAnimationEngine({ refreshOnResize: true });
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroLeftRef = useRef<HTMLDivElement>(null);
   const heroPortalRef = useRef<HTMLDivElement>(null);
@@ -92,6 +100,128 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
 
       {/* Interactive Goofy Mascot Sticker with Real-time Googly Eyes */}
       <GoofyEyeCompanion position="bottom-right" />
+
+      {/* ------------------------------------------------------------- */}
+      {/* 0.5 FLOATING SCROLL-PARALLAX NEO-BRUTALIST BACKGROUND SHAPES  */}
+      {/* ------------------------------------------------------------- */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0" aria-hidden="true">
+        {/* Shape 1: Electric Lime Asterisk Badge (Hero/Under Marquee - Left) */}
+        <ScrollParallax
+          speed={0.25}
+          rotate={45}
+          className="absolute top-[380px] left-2 lg:left-6 xl:left-12 hidden lg:block"
+        >
+          <div className="w-12 h-12 bg-[#E0FB66] border-2 border-[#080808] rounded-2xl shadow-[4px_4px_0px_#080808] flex items-center justify-center font-heading font-black text-2xl text-[#080808]">
+            ✦
+          </div>
+        </ScrollParallax>
+
+        {/* Shape 2: Neo-Brutalist Pill "0% Ghost Jobs" (Upper Right) */}
+        <ScrollParallax
+          speed={-0.18}
+          rotate={-10}
+          className="absolute top-[540px] right-3 lg:right-8 xl:right-16 hidden md:block"
+        >
+          <div className="bg-white border-2 border-[#080808] rounded-full px-4 py-1.5 shadow-[3.5px_3.5px_0px_#080808] flex items-center gap-2 font-technical text-xs font-bold text-[#080808] uppercase tracking-wider">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#E0FB66] border border-black animate-pulse" />
+            0% Ghost Jobs
+          </div>
+        </ScrollParallax>
+
+        {/* Shape 3: Soft Grid Dots Matrix (Features Section - Left) */}
+        <ScrollParallax
+          speed={0.14}
+          className="absolute top-[1080px] left-3 lg:left-8 opacity-40 hidden sm:block"
+        >
+          <svg width="88" height="88" viewBox="0 0 88 88" fill="none" className="text-[#080808]">
+            <pattern id="grid-dots-features" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+              <circle cx="2.5" cy="2.5" r="2" fill="currentColor" />
+            </pattern>
+            <rect width="88" height="88" fill="url(#grid-dots-features)" />
+          </svg>
+        </ScrollParallax>
+
+        {/* Shape 4: Neo-Brutalist Pill "✦ Match Engine 99%" (Features Section - Right) */}
+        <ScrollParallax
+          speed={-0.22}
+          rotate={15}
+          className="absolute top-[1340px] right-2 lg:right-6 xl:right-12 hidden md:block"
+        >
+          <div className="bg-[#E0FB66] border-2 border-[#080808] rounded-full px-4 py-1.5 shadow-[4px_4px_0px_#080808] flex items-center gap-1.5 font-heading font-extrabold text-xs text-[#080808]">
+            <span>✦</span> Match Engine 99%
+          </div>
+        </ScrollParallax>
+
+        {/* Shape 5: Neo-Brutalist Pill "🛡️ Seniority Shield Active" (Workflow Section - Left) */}
+        <ScrollParallax
+          speed={0.2}
+          rotate={-8}
+          className="absolute top-[1840px] left-3 lg:left-8 xl:left-14 hidden lg:block"
+        >
+          <div className="bg-white border-2 border-[#080808] rounded-2xl px-4 py-2 shadow-[4px_4px_0px_#080808] flex items-center gap-2 font-technical text-xs font-bold text-[#080808]">
+            <span>🛡️</span> SENIORITY SHIELD ACTIVE
+          </div>
+        </ScrollParallax>
+
+        {/* Shape 6: Soft Grid Dots Matrix (Workflow Section - Right) */}
+        <ScrollParallax
+          speed={-0.16}
+          className="absolute top-[2080px] right-3 lg:right-8 opacity-35 hidden sm:block"
+        >
+          <svg width="104" height="104" viewBox="0 0 104 104" fill="none" className="text-[#080808]">
+            <pattern id="grid-dots-workflow" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+              <circle cx="2.5" cy="2.5" r="2" fill="currentColor" />
+            </pattern>
+            <rect width="104" height="104" fill="url(#grid-dots-workflow)" />
+          </svg>
+        </ScrollParallax>
+
+        {/* Shape 7: Electric Lime Asterisk Badge (Dashboard Preview - Left) */}
+        <ScrollParallax
+          speed={-0.24}
+          rotate={25}
+          className="absolute top-[2620px] left-2 lg:left-6 xl:left-12 hidden md:block"
+        >
+          <div className="w-11 h-11 bg-[#E0FB66] border-2 border-[#080808] rounded-xl shadow-[3.5px_3.5px_0px_#080808] flex items-center justify-center font-black text-xl text-[#080808]">
+            ✦
+          </div>
+        </ScrollParallax>
+
+        {/* Shape 8: Neo-Brutalist Pill "⚡ Explainable Fit" (Dashboard Preview - Right) */}
+        <ScrollParallax
+          speed={0.18}
+          rotate={-6}
+          className="absolute top-[2880px] right-3 lg:right-8 xl:right-14 hidden lg:block"
+        >
+          <div className="bg-white border-2 border-[#080808] rounded-full px-4 py-2 shadow-[4px_4px_0px_#E0FB66] flex items-center gap-2 font-heading font-extrabold text-xs text-[#080808]">
+            <span className="text-[#080808] font-technical">⚡</span> EXPLAINABLE FIT
+          </div>
+        </ScrollParallax>
+
+        {/* Shape 9: Neo-Brutalist Pill "🚀 1-Click Prep" (Final CTA - Left) */}
+        <ScrollParallax
+          speed={0.16}
+          rotate={12}
+          className="absolute top-[3420px] left-3 lg:left-10 hidden md:block"
+        >
+          <div className="bg-[#EAE2FA] border-2 border-[#080808] rounded-2xl px-3.5 py-1.5 shadow-[3px_3px_0px_#080808] font-technical text-xs font-bold text-[#080808] flex items-center gap-1.5">
+            <span>🚀</span> 1-CLICK PREP
+          </div>
+        </ScrollParallax>
+
+        {/* Shape 10: Soft Grid Dots Matrix (Final CTA - Right) */}
+        <ScrollParallax
+          speed={-0.2}
+          className="absolute top-[3620px] right-3 lg:right-8 opacity-30 hidden sm:block"
+        >
+          <svg width="88" height="88" viewBox="0 0 88 88" fill="none" className="text-[#080808]">
+            <pattern id="grid-dots-cta" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+              <circle cx="2.5" cy="2.5" r="2" fill="currentColor" />
+            </pattern>
+            <rect width="88" height="88" fill="url(#grid-dots-cta)" />
+          </svg>
+        </ScrollParallax>
+      </div>
 
       {/* ------------------------------------------------------------- */}
       {/* 1. FLOATING STICKY HEADER                                      */}
@@ -304,14 +434,16 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
       {/* ------------------------------------------------------------- */}
       {/* 3. FEATURE STRIP                                              */}
       {/* ------------------------------------------------------------- */}
-      <FeatureStrip onFeatureClick={(tab) => handleLaunch(tab as NavTab)} />
+      <ScrollReveal direction="up" distance={20} duration={0.6}>
+        <FeatureStrip onFeatureClick={(tab) => handleLaunch(tab as NavTab)} />
+      </ScrollReveal>
 
       {/* ------------------------------------------------------------- */}
       {/* 3.5 INFINITE NEO-BRUTALIST TICKER MARQUEE                     */}
       {/* ------------------------------------------------------------- */}
-      <div className="w-full my-6 md:my-10">
+      <ScrollReveal direction="none" duration={0.7} className="w-full my-6 md:my-10">
         <InfiniteMarquee speed="normal" pauseOnHover={true} />
-      </div>
+      </ScrollReveal>
 
       {/* ------------------------------------------------------------- */}
       {/* 4. FEATURES SECTION: "A smarter way to find your fit"        */}

@@ -1,35 +1,238 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { FileSpreadsheet, Search, Target, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import {
+  useIsomorphicLayoutEffect,
+  usePrefersReducedMotion,
+  registerScrollTrigger,
+  gsap,
+} from "./ScrollAnimationEngine";
 
 interface ThreeFeaturesCardsProps {
   onExploreFeature?: (tab: string) => void;
 }
 
 export function ThreeFeaturesCards({ onExploreFeature }: ThreeFeaturesCardsProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+  const subheadRef = useRef<HTMLParagraphElement | null>(null);
+  const cardsContainerRef = useRef<HTMLDivElement | null>(null);
+  const card1Ref = useRef<HTMLDivElement | null>(null);
+  const card2Ref = useRef<HTMLDivElement | null>(null);
+  const card3Ref = useRef<HTMLDivElement | null>(null);
+  const reducedMotion = usePrefersReducedMotion();
+
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window === "undefined" || !sectionRef.current) return;
+    registerScrollTrigger();
+
+    if (reducedMotion) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      // 1. Headline bouncy word reveal on scroll
+      if (headlineRef.current) {
+        const words = headlineRef.current.querySelectorAll(".bouncy-word");
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: headlineRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        });
+
+        tl.fromTo(
+          words,
+          {
+            opacity: 0,
+            y: 40,
+            scale: 0.75,
+            rotation: (i) => (i % 2 === 0 ? -8 : 8),
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotation: (i) => (i === 5 ? -1 : 0),
+            duration: 0.8,
+            stagger: 0.08,
+            ease: "back.out(2.2)",
+          }
+        );
+
+        if (subheadRef.current) {
+          tl.fromTo(
+            subheadRef.current,
+            { opacity: 0, y: 18 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+            "-=0.3"
+          );
+        }
+      }
+
+      // 2. Stagger 3 Neo-Brutalist cards:
+      // Card 1 tilts slightly from left, Card 2 pops up with elastic bounce, Card 3 tilts from right
+      // Subtle glowing electric-lime shadow pulse on entering viewport
+      if (cardsContainerRef.current && card1Ref.current && card2Ref.current && card3Ref.current) {
+        const cards = [card1Ref.current, card2Ref.current, card3Ref.current];
+
+        const cardsTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: cardsContainerRef.current,
+            start: "top 80%",
+            once: true,
+            onEnter: () => {
+              // Subtle glowing electric-lime shadow pulse
+              gsap.fromTo(
+                cards,
+                {
+                  boxShadow: "0 0 0px 0px rgba(224, 251, 102, 0)",
+                },
+                {
+                  boxShadow: "0 0 30px 6px rgba(224, 251, 102, 0.7), 5px 5px 0px #E0FB66",
+                  duration: 0.6,
+                  stagger: 0.15,
+                  yoyo: true,
+                  repeat: 1,
+                  ease: "power2.inOut",
+                  delay: 0.45,
+                  onComplete: () => {
+                    gsap.set(cards, { clearProps: "boxShadow" });
+                  },
+                }
+              );
+            },
+          },
+        });
+
+        // Card 1: tilts slightly from left
+        cardsTl.fromTo(
+          card1Ref.current,
+          {
+            opacity: 0,
+            x: -45,
+            y: 50,
+            rotation: -5,
+            scale: 0.92,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            rotation: 0,
+            scale: 1,
+            duration: 0.85,
+            ease: "power3.out",
+            onComplete: () => {
+              if (card1Ref.current) {
+                gsap.set(card1Ref.current, { clearProps: "transform" });
+              }
+            },
+          },
+          0
+        );
+
+        // Card 2: pops up with elastic bounce
+        cardsTl.fromTo(
+          card2Ref.current,
+          {
+            opacity: 0,
+            y: 70,
+            scale: 0.8,
+            rotation: 0,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+            duration: 1.1,
+            ease: "back.out(2.2)",
+            onComplete: () => {
+              if (card2Ref.current) {
+                gsap.set(card2Ref.current, { clearProps: "transform" });
+              }
+            },
+          },
+          0.15
+        );
+
+        // Card 3: tilts from right
+        cardsTl.fromTo(
+          card3Ref.current,
+          {
+            opacity: 0,
+            x: 45,
+            y: 50,
+            rotation: 5,
+            scale: 0.92,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            rotation: 0,
+            scale: 1,
+            duration: 0.85,
+            ease: "power3.out",
+            onComplete: () => {
+              if (card3Ref.current) {
+                gsap.set(card3Ref.current, { clearProps: "transform" });
+              }
+            },
+          },
+          0.3
+        );
+      }
+    }, sectionRef);
+
+    return () => {
+      ctx.revert();
+    };
+  }, [reducedMotion]);
+
   return (
-    <section id="features" className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20">
+    <section
+      ref={sectionRef}
+      id="features"
+      className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20"
+    >
       {/* Section Header */}
       <div className="mb-10 md:mb-14 text-left">
-        <h2 className="font-heading font-black text-3xl sm:text-4xl md:text-5xl text-[#080808] tracking-tight leading-[1.15]">
-          A smarter way to find{" "}
-          <span className="inline-block bg-[#E0FB66] text-[#080808] px-3 py-1 rounded-xl border-2 border-[#080808] shadow-[3px_3px_0px_#080808] transform -rotate-1">
+        <h2
+          ref={headlineRef}
+          className="font-heading font-black text-3xl sm:text-4xl md:text-5xl text-[#080808] tracking-tight leading-[1.15] flex flex-wrap items-baseline gap-x-2.5 gap-y-1.5"
+        >
+          <span className="bouncy-word inline-block will-change-[transform,opacity]">A</span>
+          <span className="bouncy-word inline-block will-change-[transform,opacity]">smarter</span>
+          <span className="bouncy-word inline-block will-change-[transform,opacity]">way</span>
+          <span className="bouncy-word inline-block will-change-[transform,opacity]">to</span>
+          <span className="bouncy-word inline-block will-change-[transform,opacity]">find</span>
+          <span className="bouncy-word inline-block bg-[#E0FB66] text-[#080808] px-3 py-1 rounded-xl border-2 border-[#080808] shadow-[3px_3px_0px_#080808] transform -rotate-1 will-change-[transform,opacity]">
             your fit
           </span>
-          .
+          <span className="bouncy-word inline-block will-change-[transform,opacity]">.</span>
         </h2>
-        <p className="mt-4 text-base sm:text-lg text-[#555555] max-w-2xl font-body">
+        <p
+          ref={subheadRef}
+          className="mt-4 text-base sm:text-lg text-[#555555] max-w-2xl font-body will-change-[transform,opacity]"
+        >
           Traditional job boards match blindly on title strings. Prospect builds an explainable
           intelligence model of what you can do today and what you can master next.
         </p>
       </div>
 
       {/* 3 Large Neo-Brutalist Feature Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      <div
+        ref={cardsContainerRef}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
+      >
         {/* CARD 1: Understand your profile */}
         <div
-          className="group relative bg-white border-2 border-[#080808] rounded-2xl p-6 sm:p-7 shadow-[5px_5px_0px_#E0FB66] transition-all duration-300 hover:-translate-y-1 hover:shadow-[7px_7px_0px_#080808] flex flex-col justify-between"
+          ref={card1Ref}
+          className="group relative bg-white border-2 border-[#080808] rounded-2xl p-6 sm:p-7 shadow-[5px_5px_0px_#E0FB66] transition-all duration-300 hover:-translate-y-1 hover:shadow-[7px_7px_0px_#080808] flex flex-col justify-between will-change-[transform,opacity,box-shadow]"
         >
           <div>
             <div className="flex items-center justify-between mb-5">
@@ -92,7 +295,8 @@ export function ThreeFeaturesCards({ onExploreFeature }: ThreeFeaturesCardsProps
 
         {/* CARD 2: Discover beyond job titles */}
         <div
-          className="group relative bg-white border-2 border-[#080808] rounded-2xl p-6 sm:p-7 shadow-[5px_5px_0px_#E0FB66] transition-all duration-300 hover:-translate-y-1 hover:shadow-[7px_7px_0px_#080808] flex flex-col justify-between"
+          ref={card2Ref}
+          className="group relative bg-white border-2 border-[#080808] rounded-2xl p-6 sm:p-7 shadow-[5px_5px_0px_#E0FB66] transition-all duration-300 hover:-translate-y-1 hover:shadow-[7px_7px_0px_#080808] flex flex-col justify-between will-change-[transform,opacity,box-shadow]"
         >
           <div>
             <div className="flex items-center justify-between mb-5">
@@ -150,7 +354,8 @@ export function ThreeFeaturesCards({ onExploreFeature }: ThreeFeaturesCardsProps
 
         {/* CARD 3: Know what to improve */}
         <div
-          className="group relative bg-white border-2 border-[#080808] rounded-2xl p-6 sm:p-7 shadow-[5px_5px_0px_#E0FB66] transition-all duration-300 hover:-translate-y-1 hover:shadow-[7px_7px_0px_#080808] flex flex-col justify-between"
+          ref={card3Ref}
+          className="group relative bg-white border-2 border-[#080808] rounded-2xl p-6 sm:p-7 shadow-[5px_5px_0px_#E0FB66] transition-all duration-300 hover:-translate-y-1 hover:shadow-[7px_7px_0px_#080808] flex flex-col justify-between will-change-[transform,opacity,box-shadow]"
         >
           <div>
             <div className="flex items-center justify-between mb-5">

@@ -1,12 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
   Clock,
+  Sparkles,
 } from "lucide-react";
+import {
+  useIsomorphicLayoutEffect,
+  usePrefersReducedMotion,
+  registerScrollTrigger,
+  gsap,
+  ScrollParallax,
+} from "./ScrollAnimationEngine";
 
 interface ProductDashboardPreviewProps {
   onOpenWorkspace?: (tab?: string) => void;
@@ -14,11 +22,81 @@ interface ProductDashboardPreviewProps {
 
 export function ProductDashboardPreview({ onOpenWorkspace }: ProductDashboardPreviewProps) {
   const [activeTab, setActiveTab] = useState<"discover" | "profile" | "prep">("discover");
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const dashboardWindowRef = useRef<HTMLDivElement | null>(null);
+  const haloRef = useRef<HTMLDivElement | null>(null);
+  const reducedMotion = usePrefersReducedMotion();
+
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window === "undefined" || !dashboardWindowRef.current) return;
+    registerScrollTrigger();
+
+    if (reducedMotion) {
+      gsap.set(dashboardWindowRef.current, { scale: 1, y: 0 });
+      if (haloRef.current) gsap.set(haloRef.current, { opacity: 0.5, scale: 1 });
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      // Dashboard smoothly zooms from scale 0.94 -> 1.0 with a soft glowing halo as it enters center of viewport
+      gsap.fromTo(
+        dashboardWindowRef.current,
+        {
+          scale: 0.94,
+          y: 45,
+          boxShadow: "0 0 0px 0px rgba(224, 251, 102, 0), 8px 8px 0px #080808",
+        },
+        {
+          scale: 1.0,
+          y: 0,
+          boxShadow: "0 0 50px 10px rgba(224, 251, 102, 0.45), 10px 10px 0px #080808",
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: dashboardWindowRef.current,
+            start: "top 92%",
+            end: "center center",
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
+
+      if (haloRef.current) {
+        gsap.fromTo(
+          haloRef.current,
+          {
+            opacity: 0,
+            scale: 0.88,
+          },
+          {
+            opacity: 0.75,
+            scale: 1.05,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: dashboardWindowRef.current,
+              start: "top 92%",
+              end: "center center",
+              scrub: 0.6,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => {
+      ctx.revert();
+    };
+  }, [reducedMotion]);
 
   return (
-    <section id="product-preview" className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20">
+    <section
+      ref={sectionRef}
+      id="product-preview"
+      className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-20"
+    >
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12 relative">
         <div>
           <div className="inline-flex items-center gap-2 bg-[#EAE2FA] border-2 border-[#080808] px-3 py-1 rounded-full text-xs font-technical font-bold text-[#080808] uppercase tracking-wider mb-4 shadow-[2px_2px_0px_#080808]">
             Interactive Dashboard Preview
@@ -31,16 +109,34 @@ export function ProductDashboardPreview({ onOpenWorkspace }: ProductDashboardPre
           </p>
         </div>
 
-        <button
-          onClick={() => onOpenWorkspace?.(activeTab)}
-          className="self-start md:self-auto bg-[#080808] text-white px-6 py-3 rounded-full font-heading font-bold text-sm border-2 border-[#080808] shadow-[4px_4px_0px_#E0FB66] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
-        >
-          Open Live Workspace <ArrowRight className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-4">
+          <ScrollParallax speed={-0.12} className="hidden lg:block">
+            <div className="bg-[#E0FB66] text-[#080808] text-xs font-bold px-3 py-1 rounded-xl border-2 border-[#080808] shadow-[3px_3px_0px_#080808] rotate-2 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" /> Live Reactive
+            </div>
+          </ScrollParallax>
+
+          <button
+            onClick={() => onOpenWorkspace?.(activeTab)}
+            className="self-start md:self-auto bg-[#080808] text-white px-6 py-3 rounded-full font-heading font-bold text-sm border-2 border-[#080808] shadow-[4px_4px_0px_#E0FB66] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
+          >
+            Open Live Workspace <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {/* Main Dashboard Window Mockup */}
-      <div className="bg-white border-2 border-[#080808] rounded-2xl md:rounded-3xl shadow-[8px_8px_0px_#080808] overflow-hidden">
+      {/* Main Dashboard Window Mockup with Scroll Parallax & Scale Zoom */}
+      <div className="relative">
+        {/* Soft glowing ambient halo behind dashboard */}
+        <div
+          ref={haloRef}
+          className="absolute -inset-4 md:-inset-8 bg-[#E0FB66]/40 rounded-3xl blur-3xl pointer-events-none -z-10 opacity-0 will-change-[transform,opacity]"
+        />
+
+        <div
+          ref={dashboardWindowRef}
+          className="bg-white border-2 border-[#080808] rounded-2xl md:rounded-3xl shadow-[8px_8px_0px_#080808] overflow-hidden will-change-[transform,box-shadow]"
+        >
         {/* Window Chrome Title Bar */}
         <div className="bg-[#FDF9F3] border-b-2 border-[#080808] px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -391,6 +487,7 @@ export function ProductDashboardPreview({ onOpenWorkspace }: ProductDashboardPre
           )}
         </div>
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }
