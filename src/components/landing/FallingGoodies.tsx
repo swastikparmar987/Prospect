@@ -614,6 +614,7 @@ export function GoofyEyeCompanion({
   const leftPupilRef = useRef<HTMLDivElement>(null);
   const rightPupilRef = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const bubbleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const quotes = customQuotes && customQuotes.length > 0 ? customQuotes : DEFAULT_GOOFY_QUOTES;
@@ -667,19 +668,25 @@ export function GoofyEyeCompanion({
     }
 
     const adjustBounds = () => {
-      if (!bubbleRef.current) return;
-      const rect = bubbleRef.current.getBoundingClientRect();
+      if (!bubbleRef.current || !buttonRef.current) return;
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const bubbleRect = bubbleRef.current.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
-      const safePadding = 16;
-      let shift = 0;
+      const safePadding = 20;
 
-      // Check if overflowing viewport right edge
-      if (rect.right > viewportWidth - safePadding) {
-        shift = (viewportWidth - safePadding) - rect.right;
-      }
-      // Check if overflowing viewport left edge
-      else if (rect.left < safePadding) {
-        shift = safePadding - rect.left;
+      // The unshifted center of the speech bubble is aligned to the center of the PAL button
+      const buttonCenter = buttonRect.left + buttonRect.width / 2;
+      const bubbleHalfWidth = bubbleRect.width / 2;
+
+      // Expected unshifted left and right in viewport coordinates
+      const unshiftedRight = buttonCenter + bubbleHalfWidth;
+      const unshiftedLeft = buttonCenter - bubbleHalfWidth;
+
+      let shift = 0;
+      if (unshiftedRight > viewportWidth - safePadding) {
+        shift = (viewportWidth - safePadding) - unshiftedRight;
+      } else if (unshiftedLeft < safePadding) {
+        shift = safePadding - unshiftedLeft;
       }
 
       setHorizontalShift(shift);
@@ -733,12 +740,12 @@ export function GoofyEyeCompanion({
   const getPositionClasses = () => {
     switch (position) {
       case "bottom-left":
-        return "fixed bottom-5 left-5 sm:bottom-6 sm:left-8 z-[75]";
+        return "fixed bottom-6 left-6 sm:bottom-8 sm:left-10 z-[80]";
       case "custom":
         return "";
       case "bottom-right":
       default:
-        return "fixed bottom-5 right-5 sm:bottom-6 sm:right-8 md:right-10 z-[75]";
+        return "fixed bottom-6 right-6 sm:bottom-8 sm:right-10 md:right-12 z-[80]";
     }
   };
 
@@ -776,22 +783,26 @@ export function GoofyEyeCompanion({
               ref={bubbleRef}
               style={{
                 transform: `translateX(calc(-50% + ${horizontalShift}px))`,
-                animation: "companionSpeechBounce 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
               }}
-              className="absolute bottom-[calc(100%+14px)] left-1/2 z-[90] pointer-events-none"
+              className="absolute bottom-[calc(100%+14px)] left-1/2 z-[90] pointer-events-none transition-transform duration-100 ease-out"
             >
-              <div className="relative bg-white text-[#080808] border-2 border-black shadow-[4px_4px_0px_#080808] rounded-xl px-4 py-2 font-technical font-bold text-xs sm:text-sm whitespace-nowrap flex items-center gap-1.5 select-none">
+              <div
+                style={{
+                  animation: "companionSpeechBounce 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
+                }}
+                className="relative bg-white text-[#080808] border-2 border-black shadow-[4px_4px_0px_#080808] rounded-xl px-4 py-2 font-technical font-bold text-xs sm:text-sm whitespace-nowrap flex items-center gap-1.5 select-none"
+              >
                 <span className="text-[#080808] font-bold">{quotes[quoteIndex]}</span>
                 {/* Pointer triangle tail anchored dynamically so it always points directly down at the PAL mascot button center */}
                 <div
                   style={{
-                    left: `calc(50% - ${horizontalShift}px)`,
+                    left: `clamp(18px, calc(50% - ${horizontalShift}px), calc(100% - 18px))`,
                   }}
                   className="absolute -bottom-2.5 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-black"
                 />
                 <div
                   style={{
-                    left: `calc(50% - ${horizontalShift}px)`,
+                    left: `clamp(18px, calc(50% - ${horizontalShift}px), calc(100% - 18px))`,
                   }}
                   className="absolute -bottom-2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[7px] border-t-white"
                 />
@@ -801,6 +812,7 @@ export function GoofyEyeCompanion({
 
           {/* Goofy Mascot Sticker Badge */}
           <button
+            ref={buttonRef}
             type="button"
             onClick={handleClick}
             onMouseEnter={handleMouseEnter}
