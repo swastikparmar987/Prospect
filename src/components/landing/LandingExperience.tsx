@@ -13,6 +13,10 @@ import { HowItWorksWorkflow } from "./HowItWorksWorkflow";
 import { ProductDashboardPreview } from "./ProductDashboardPreview";
 import { FinalCtaSection } from "./FinalCtaSection";
 import { ProspectFooter } from "./ProspectFooter";
+import { CursorTrail } from "./CursorTrail";
+import { FallingGoodies, GoofyEyeCompanion } from "./FallingGoodies";
+import { ScrollProgressBar } from "./ScrollEnhancements";
+import { InfiniteMarquee } from "./InfiniteMarquee";
 
 interface LandingExperienceProps {
   onLaunchApp?: (tab?: NavTab) => void;
@@ -74,6 +78,21 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
 
   return (
     <div className="min-h-screen bg-[#FDF9F3] text-[#080808] selection:bg-[#E0FB66] selection:text-[#080808] font-body relative overflow-x-hidden">
+      {/* ------------------------------------------------------------- */}
+      {/* 0. GLOBAL MOTION & INTERACTIVE OVERLAYS                       */}
+      {/* ------------------------------------------------------------- */}
+      {/* Sleek Hardware-Accelerated Scroll Progress Bar fixed to viewport top */}
+      <ScrollProgressBar zIndex={100} />
+
+      {/* Lightweight Canvas Cursor Trail with Glow & Click Sparkle Bursts */}
+      <CursorTrail />
+
+      {/* Playful Neo-Brutalist Falling Goodies Physics Drop Trigger */}
+      <FallingGoodies buttonPosition="bottom-left" />
+
+      {/* Interactive Goofy Mascot Sticker with Real-time Googly Eyes */}
+      <GoofyEyeCompanion position="bottom-right" />
+
       {/* ------------------------------------------------------------- */}
       {/* 1. FLOATING STICKY HEADER                                      */}
       {/* ------------------------------------------------------------- */}
@@ -286,6 +305,13 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
       {/* 3. FEATURE STRIP                                              */}
       {/* ------------------------------------------------------------- */}
       <FeatureStrip onFeatureClick={(tab) => handleLaunch(tab as NavTab)} />
+
+      {/* ------------------------------------------------------------- */}
+      {/* 3.5 INFINITE NEO-BRUTALIST TICKER MARQUEE                     */}
+      {/* ------------------------------------------------------------- */}
+      <div className="w-full my-6 md:my-10">
+        <InfiniteMarquee speed="normal" pauseOnHover={true} />
+      </div>
 
       {/* ------------------------------------------------------------- */}
       {/* 4. FEATURES SECTION: "A smarter way to find your fit"        */}
