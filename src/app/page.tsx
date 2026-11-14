@@ -1221,6 +1221,7 @@ export default function HomePage() {
                   onNavigate={(tab) => {
                     setActiveTab(tab);
                     const map: Record<NavTab, SidebarNavKey> = {
+                      landing: "home",
                       home: "home",
                       discover: "discover",
                       outlook: "outlook",

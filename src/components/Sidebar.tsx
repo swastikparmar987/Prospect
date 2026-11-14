@@ -79,6 +79,8 @@ export function Sidebar({
       ? "applications"
       : activeTab === "prep"
       ? "interview_prep"
+      : activeTab === "landing"
+      ? "home"
       : activeTab;
 
   const primaryItems: Array<{
