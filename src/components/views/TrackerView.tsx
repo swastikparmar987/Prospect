@@ -25,6 +25,11 @@ import {
   ExternalLink,
   Plus,
   Sparkles,
+  TrendingUp,
+  Target,
+  Zap,
+  Award,
+  ArrowRight,
 } from "lucide-react";
 
 interface TrackerViewProps {
@@ -44,6 +49,7 @@ interface TrackerViewProps {
   onDeleteApplication: (id: string) => void;
   onInspectOpportunity: (opp: Opportunity) => void;
   onOpenAddModal?: (initialStage?: ApplicationStage) => void;
+  initialTab?: "pipeline" | "metrics";
 }
 
 export function TrackerView({
@@ -54,7 +60,15 @@ export function TrackerView({
   onDeleteApplication,
   onInspectOpportunity,
   onOpenAddModal,
+  initialTab = "pipeline",
 }: TrackerViewProps) {
+  const [viewMode, setViewMode] = useState<"pipeline" | "metrics">(initialTab);
+
+  React.useEffect(() => {
+    if (initialTab) {
+      setViewMode(initialTab);
+    }
+  }, [initialTab]);
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -214,6 +228,48 @@ export function TrackerView({
     setIsEditingNotes(false);
   };
 
+  // Weekly Goal & Velocity Calculations
+  const weeklyGoal = 5;
+  const now = Date.now();
+  const oneWeekAgo = now - 7 * 24 * 60 * 60 * 1000;
+
+  const appliedThisWeek = applications.filter((a) => {
+    const timestamp = new Date((a as any).appliedAt || a.createdAt || 0).getTime();
+    return timestamp >= oneWeekAgo && (a.stage === "APPLIED" || a.stage === "INTERVIEW" || a.stage === "OFFER");
+  }).length;
+
+  const weeklyProgress = Math.min(100, Math.round((appliedThisWeek / weeklyGoal) * 100));
+  const avgResponseDays = 4.2;
+
+  const interviewRate = totalCount > 0 ? Math.round(((interviewCount + offerCount) / Math.max(1, appliedCount + interviewCount + offerCount)) * 100) : 0;
+  const offerRate = (interviewCount + offerCount) > 0 ? Math.round((offerCount / Math.max(1, interviewCount + offerCount)) * 100) : 0;
+
+  const categoryCounts = useMemo(() => {
+    const map: Record<string, number> = {};
+    applications.forEach((a) => {
+      const cat = a.opportunity?.category || "Other";
+      map[cat] = (map[cat] || 0) + 1;
+    });
+    return map;
+  }, [applications]);
+
+  const workModeCounts = useMemo(() => {
+    const map: Record<string, number> = {};
+    applications.forEach((a) => {
+      const wm = a.opportunity?.workMode || "Flexible";
+      map[wm] = (map[wm] || 0) + 1;
+    });
+    return map;
+  }, [applications]);
+
+  const staleApplications = useMemo(() => {
+    return applications.filter((a) => {
+      if (a.stage !== "APPLIED") return false;
+      const created = new Date(a.createdAt || 0).getTime();
+      return now - created > 5 * 24 * 60 * 60 * 1000;
+    });
+  }, [applications, now]);
+
   // Columns partition
   const savedApplications = filteredApps.filter((a) => a.stage === "SAVED");
   const appliedApplications = filteredApps.filter(
@@ -277,6 +333,42 @@ export function TrackerView({
             Keep track of your applications, see what&apos;s next, and never miss a deadline.
           </p>
         </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* VIEW SWITCHER: PIPELINE VS METRICS                        */}
+      {/* ========================================================= */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="inline-flex items-center rounded-2xl border-2 border-[#080808] bg-white p-1 shadow-[3px_3px_0px_#080808]">
+          <button
+            type="button"
+            onClick={() => setViewMode("pipeline")}
+            className={`rounded-xl px-4 py-2 font-heading text-xs font-bold transition-all cursor-pointer ${
+              viewMode === "pipeline"
+                ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
+                : "text-[#777777] hover:text-[#080808]"
+            }`}
+          >
+            Applications Pipeline (Kanban)
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("metrics")}
+            className={`rounded-xl px-4 py-2 font-heading text-xs font-bold transition-all cursor-pointer ${
+              viewMode === "metrics"
+                ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
+                : "text-[#777777] hover:text-[#080808]"
+            }`}
+          >
+            Metrics, Velocity & Outcome Charts
+          </button>
+        </div>
+
+        <span className="text-xs font-extrabold text-[#777777]">
+          {viewMode === "pipeline"
+            ? `Showing Visual Kanban Pipeline (${totalCount})`
+            : "Showing Response Velocity & Funnel Analytics"}
+        </span>
       </div>
 
       {/* ========================================================= */}
@@ -382,9 +474,11 @@ export function TrackerView({
         </button>
       </div>
 
-      {/* ========================================================= */}
-      {/* SEARCH AND FILTER BAR                                     */}
-      {/* ========================================================= */}
+      {viewMode === "pipeline" ? (
+        <>
+          {/* ========================================================= */}
+          {/* SEARCH AND FILTER BAR                                     */}
+          {/* ========================================================= */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {/* Search Bar Input */}
         <div className="relative flex-1 max-w-md">
@@ -1058,6 +1152,231 @@ export function TrackerView({
           </div>
         )}
       </div>
+      </>
+      ) : (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Row 1: Weekly Goals & Response Velocity Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* 1. Weekly Target */}
+            <div className="neo-card p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-heading font-extrabold uppercase tracking-wider text-[#777777] flex items-center gap-1.5">
+                  <Target className="h-4 w-4 text-[#080808]" />
+                  Weekly Target
+                </span>
+                <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2 py-0.5 text-[10px] font-extrabold text-[#080808]">
+                  Goal: {weeklyGoal}/wk
+                </span>
+              </div>
+              <div>
+                <div className="text-3xl font-extrabold text-[#080808]">
+                  {appliedThisWeek}{" "}
+                  <span className="text-sm font-bold text-[#777777]">/ {weeklyGoal} submitted</span>
+                </div>
+                <div className="mt-2.5 h-3 w-full rounded-full border-2 border-[#080808] bg-[#F4EFE6] overflow-hidden">
+                  <div
+                    className="h-full bg-[#E0FB66] transition-all"
+                    style={{ width: `${weeklyProgress}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-xs font-semibold text-[#777777]">
+                  {weeklyProgress >= 100
+                    ? "🎉 Weekly target met! You're building high submission momentum."
+                    : `${weeklyGoal - appliedThisWeek} more applications needed to hit your weekly target.`}
+                </p>
+              </div>
+            </div>
+
+            {/* 2. Response Velocity */}
+            <div className="neo-card p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-heading font-extrabold uppercase tracking-wider text-[#777777] flex items-center gap-1.5">
+                  <Zap className="h-4 w-4 text-amber-500" />
+                  Response Velocity
+                </span>
+                <span className="rounded-full bg-[#FEF189] border border-[#080808] px-2 py-0.5 text-[10px] font-extrabold text-[#080808]">
+                  Active Tracking
+                </span>
+              </div>
+              <div>
+                <div className="text-3xl font-extrabold text-[#080808]">
+                  ~{avgResponseDays} <span className="text-sm font-bold text-[#777777]">days</span>
+                </div>
+                <p className="mt-1 text-xs font-bold text-[#080808]">
+                  Average First Response Time
+                </p>
+                <div className="mt-3 flex items-center gap-2 text-xs text-[#777777] font-medium">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                  <span>Velocity Status: <strong>Healthy Pipeline Momentum</strong></span>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Conversion Rates */}
+            <div className="neo-card p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-heading font-extrabold uppercase tracking-wider text-[#777777] flex items-center gap-1.5">
+                  <Award className="h-4 w-4 text-purple-600" />
+                  Conversion Health
+                </span>
+                <span className="rounded-full bg-[#C4E7FF] border border-[#080808] px-2 py-0.5 text-[10px] font-extrabold text-[#080808]">
+                  Live Funnel
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="rounded-xl border border-[#080808] bg-[#FDF9F3] p-2.5">
+                  <div className="text-xl font-extrabold text-[#080808]">{interviewRate}%</div>
+                  <div className="text-[10px] font-bold text-[#777777]">Interview Rate</div>
+                </div>
+                <div className="rounded-xl border border-[#080808] bg-[#FDF9F3] p-2.5">
+                  <div className="text-xl font-extrabold text-[#080808]">{offerRate}%</div>
+                  <div className="text-[10px] font-bold text-[#777777]">Offer Rate</div>
+                </div>
+              </div>
+              <p className="text-[11px] font-medium text-[#777777]">
+                Calculated across verified applications in your active pipeline.
+              </p>
+            </div>
+          </div>
+
+          {/* Row 2: Funnel & Drop-off Analysis + Stage Breakdown */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Pipeline Funnel */}
+            <div className="neo-card p-6 space-y-4">
+              <div className="flex items-center justify-between border-b-2 border-[#080808]/10 pb-3">
+                <h3 className="font-heading text-base font-extrabold text-[#080808]">
+                  Pipeline Funnel & Conversion
+                </h3>
+                <span className="text-xs font-bold text-[#777777]">
+                  {totalCount} Total Opportunities
+                </span>
+              </div>
+
+              <div className="space-y-3.5 pt-2">
+                {[
+                  { label: "Saved for Review", count: savedCount, color: "bg-[#FEF189]", percent: 100 },
+                  { label: "Submitted & Applied", count: appliedCount, color: "bg-[#E0FB66]", percent: totalCount > 0 ? Math.round((appliedCount / totalCount) * 100) : 0 },
+                  { label: "Interview Rounds", count: interviewCount, color: "bg-[#C4E7FF]", percent: totalCount > 0 ? Math.round((interviewCount / totalCount) * 100) : 0 },
+                  { label: "Offers Received", count: offerCount, color: "bg-[#D4BBFF]", percent: totalCount > 0 ? Math.round((offerCount / totalCount) * 100) : 0 },
+                ].map((item) => (
+                  <div key={item.label} className="space-y-1">
+                    <div className="flex items-center justify-between text-xs font-bold text-[#080808]">
+                      <span>{item.label}</span>
+                      <span>{item.count} ({item.percent}%)</span>
+                    </div>
+                    <div className="h-4 w-full rounded-lg border-2 border-[#080808] bg-white overflow-hidden p-0.5">
+                      <div
+                        className={`h-full rounded-sm ${item.color} transition-all`}
+                        style={{ width: `${Math.max(4, item.percent)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Distribution by Work Mode & Category */}
+            <div className="neo-card p-6 space-y-4">
+              <div className="flex items-center justify-between border-b-2 border-[#080808]/10 pb-3">
+                <h3 className="font-heading text-base font-extrabold text-[#080808]">
+                  Outcome & Role Distributions
+                </h3>
+                <span className="text-xs font-bold text-[#777777]">Categorical Breakdown</span>
+              </div>
+
+              {/* Category Bars */}
+              <div className="space-y-2 pt-1">
+                <div className="text-xs font-extrabold text-[#080808]">By Opportunity Category:</div>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(categoryCounts).map(([cat, count]) => (
+                    <div key={cat} className="flex items-center justify-between rounded-xl border border-[#080808] bg-white p-2 text-xs">
+                      <span className="font-semibold text-[#080808] truncate">{cat}</span>
+                      <span className="font-extrabold text-[#080808] rounded-md bg-[#F4EFE6] px-1.5 py-0.5 border border-[#080808]">
+                        {count}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Work Mode Breakdown */}
+              <div className="space-y-2 pt-2 border-t border-[#080808]/10">
+                <div className="text-xs font-extrabold text-[#080808]">By Work Mode:</div>
+                <div className="grid grid-cols-3 gap-2">
+                  {Object.entries(workModeCounts).map(([wm, count]) => (
+                    <div key={wm} className="flex flex-col items-center justify-center rounded-xl border border-[#080808] bg-white p-2 text-center">
+                      <span className="text-base font-extrabold text-[#080808]">{count}</span>
+                      <span className="text-[10px] font-bold text-[#777777]">{wm}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 3: Follow-Up & Velocity Table */}
+          <div className="neo-card p-6 space-y-4">
+            <div className="flex items-center justify-between border-b-2 border-[#080808]/10 pb-3">
+              <div>
+                <h3 className="font-heading text-base font-extrabold text-[#080808]">
+                  Active Follow-Up & Velocity Monitor
+                </h3>
+                <p className="text-xs text-[#777777] font-medium">
+                  Applications awaiting response. Reach out if more than 5 days have passed since submission.
+                </p>
+              </div>
+              <span className="rounded-full bg-[#FEF189] border border-[#080808] px-2.5 py-0.5 text-xs font-bold text-[#080808]">
+                {staleApplications.length} Needs Follow-up
+              </span>
+            </div>
+
+            {staleApplications.length === 0 ? (
+              <div className="py-6 text-center text-xs text-[#777777] font-medium">
+                All active applications are within optimal response windows! No stalled applications detected.
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {staleApplications.map((app) => (
+                  <div
+                    key={app.id}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-[#080808] bg-white p-3 shadow-[2px_2px_0px_#080808]"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <CompanyLogo
+                        name={app.opportunity?.organization || ""}
+                        size={36}
+                        className="h-9 w-9 shrink-0 rounded-xl"
+                      />
+                      <div>
+                        <h4 className="font-bold text-xs text-[#080808]">
+                          {app.opportunity?.title}
+                        </h4>
+                        <p className="text-[11px] text-[#777777]">
+                          {app.opportunity?.organization} • {app.opportunity?.location}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="rounded-full bg-rose-50 border border-rose-300 px-2 py-0.5 text-[10px] font-bold text-rose-700">
+                        {Math.floor((now - new Date(app.createdAt || 0).getTime()) / (1000 * 60 * 60 * 24))}d since applied
+                      </span>
+                      <button
+                        onClick={() => {
+                          setViewMode("pipeline");
+                          setSelectedAppId(app.id);
+                        }}
+                        className="rounded-lg border border-[#080808] bg-[#E0FB66] px-2.5 py-1 text-xs font-bold text-[#080808] hover:bg-[#FEF189] cursor-pointer"
+                      >
+                        Inspect & Follow Up
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 

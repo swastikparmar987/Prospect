@@ -476,29 +476,39 @@ export function CareerOutlookExperience({
       </div>
 
       {/* ========================================================= */}
-      {/* 4. DISCOVERY PREFERENCES & CONFIRMATION ACTION BAR        */}
+      {/* 4. SLEEK NEO-BRUTALIST STICKY ACTION STRIP                */}
       {/* ========================================================= */}
-      <div className="sticky bottom-4 z-20 rounded-2xl border-2 border-[#080808] bg-white p-5 sm:p-6 shadow-[5px_5px_0px_#080808] space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#E0FB66] border border-[#080808]" />
-              <span className="text-xs font-extrabold uppercase tracking-wider text-[#080808]">
-                Ready to Discover
+      <div className="sticky bottom-3 z-30 rounded-xl border-2 border-[#080808] bg-white/95 backdrop-blur-md px-4 py-2.5 shadow-[4px_4px_0px_#080808] transition-all">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Status Badge + Direction Count + Metadata */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 min-w-0">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-[#080808] bg-[#E0FB66] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#080808] shrink-0 shadow-[1px_1px_0px_#080808]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#080808] animate-pulse" />
+              Ready to Discover
+            </span>
+
+            <div className="flex items-center gap-2 text-xs font-bold text-[#080808] truncate">
+              <span>
+                <strong className="underline decoration-[#E0FB66] decoration-2">
+                  {selectedCount}
+                </strong>{" "}
+                {selectedCount === 1 ? "direction" : "directions"} selected
+              </span>
+              <span className="text-[#D8D5CE] hidden md:inline">•</span>
+              <span className="text-[11px] font-semibold text-[#555555] hidden md:inline truncate">
+                {location} ({selectedWorkModes.join(", ")})
               </span>
             </div>
-            <p className="text-sm font-bold text-[#080808]">
-              Prospect will search real-time opportunities across your {selectedCount} selected career {selectedCount === 1 ? "direction" : "directions"}.
-            </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2 shrink-0">
             {onBackToProfile && (
               <button
                 type="button"
                 onClick={onBackToProfile}
                 disabled={isSearching}
-                className="neo-btn-outline px-4 py-3 text-xs sm:text-sm cursor-pointer"
+                className="rounded-lg border-2 border-[#080808] bg-white px-3 py-1.5 text-xs font-bold text-[#080808] hover:bg-[#FDF9F3] shadow-[2px_2px_0px_#080808] transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer disabled:opacity-50"
               >
                 {backButtonLabel || "Review Profile"}
               </button>
@@ -508,41 +518,21 @@ export function CareerOutlookExperience({
               type="button"
               onClick={handleFinalConfirm}
               disabled={isSearching || selectedCount === 0}
-              className="neo-btn-primary px-6 py-3.5 text-center text-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border-2 border-[#080808] bg-[#080808] hover:bg-[#1a1a1a] text-white px-4 py-1.5 text-xs sm:text-sm font-bold shadow-[2px_2px_0px_#E0FB66] transition active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50 cursor-pointer"
             >
               {isSearching ? (
                 <>
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  <span>Launching Opportunity Agent...</span>
+                  <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <span>Launching Agent...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4 text-[#E0FB66]" />
-                  <span>Confirm Career Direction & Find Opportunities</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <Sparkles className="h-3.5 w-3.5 text-[#E0FB66]" />
+                  <span>Confirm & Find Opportunities</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-[#E0FB66]" />
                 </>
               )}
             </button>
-          </div>
-        </div>
-
-        {/* Search Mode & Location summary pill */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#D8D5CE] pt-3 text-[11px] text-[#777777]">
-          <div className="flex items-center gap-3">
-            <span>
-              Target Location: <strong className="text-[#080808]">{location}</strong>
-            </span>
-            <span>•</span>
-            <span>
-              Modes: <strong className="text-[#080808]">{selectedWorkModes.join(", ")}</strong>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-[#777777]">Search Engine:</span>
-            <span className="rounded-md px-2 py-0.5 font-bold border border-[#080808] bg-[#E0FB66] text-[#080808]">
-              Live Web Search (Tavily)
-            </span>
           </div>
         </div>
       </div>

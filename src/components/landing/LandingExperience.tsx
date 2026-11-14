@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { ArrowRight, GraduationCap, Menu, X, ChevronRight } from "lucide-react";
 import gsap from "gsap";
 import { NavTab } from "../Sidebar";
@@ -22,16 +23,28 @@ import {
   ScrollParallax,
   ScrollReveal,
 } from "./ScrollAnimationEngine";
+import { AuthModal } from "../auth/AuthModal";
 
 interface LandingExperienceProps {
   onLaunchApp?: (tab?: NavTab) => void;
+  onOpenAuth?: (mode?: "signin" | "signup", targetTab?: NavTab) => void;
+  isAuthenticated?: boolean;
 }
 
-export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) {
+export function LandingExperience({
+  onLaunchApp,
+  onOpenAuth,
+  isAuthenticated = false,
+}: LandingExperienceProps = {}) {
   // Initialize master GSAP ScrollTrigger animation engine
   useScrollAnimationEngine({ refreshOnResize: true });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [internalAuthOpen, setInternalAuthOpen] = useState(false);
+  const [internalAuthMode, setInternalAuthMode] = useState<"signin" | "signup">("signin");
+  const [internalAuthPrompt, setInternalAuthPrompt] = useState<string | undefined>(undefined);
+  const [pendingTargetTab, setPendingTargetTab] = useState<NavTab>("discover");
+
   const heroLeftRef = useRef<HTMLDivElement>(null);
   const heroPortalRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
@@ -41,6 +54,26 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
       onLaunchApp(tab);
     } else {
       window.location.href = `/?tab=${tab}`;
+    }
+  };
+
+  const triggerAuthOrLaunch = (
+    mode: "signin" | "signup",
+    targetTab: NavTab = "discover",
+    promptMsg?: string
+  ) => {
+    if (isAuthenticated) {
+      handleLaunch(targetTab);
+      return;
+    }
+
+    if (onOpenAuth) {
+      onOpenAuth(mode, targetTab);
+    } else {
+      setInternalAuthMode(mode);
+      setPendingTargetTab(targetTab);
+      setInternalAuthPrompt(promptMsg);
+      setInternalAuthOpen(true);
     }
   };
 
@@ -95,8 +128,8 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
       {/* Lightweight Canvas Cursor Trail with Glow & Click Sparkle Bursts */}
       <CursorTrail />
 
-      {/* Playful Neo-Brutalist Falling Goodies Physics Drop Trigger */}
-      <FallingGoodies buttonPosition="bottom-left" />
+      {/* Playful Neo-Brutalist Falling Goodies with Gentle Physics */}
+      <FallingGoodies autoDrift={true} />
 
       {/* Interactive Goofy Mascot Sticker with Real-time Googly Eyes */}
       <GoofyEyeCompanion position="bottom-right" />
@@ -231,16 +264,21 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
         className="sticky top-3 sm:top-5 z-50 w-full max-w-6xl mx-auto px-4 sm:px-6"
       >
         <div className="bg-[#FDF9F3] border-2 border-[#080808] rounded-full py-2 px-4 sm:px-6 shadow-[4px_4px_0px_#080808] flex items-center justify-between">
-          {/* Left: Brand Logo & Wordmark */}
-          <div
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          {/* Left: Brand Logo & Wordmark - Links cleanly to top of landing page */}
+          <Link
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             className="flex items-center gap-2.5 cursor-pointer group"
+            aria-label="Prospect Landing Page"
           >
             <ProspectLogo size={30} />
             <span className="font-heading font-black text-xl text-[#080808] tracking-tight group-hover:opacity-90 transition-opacity">
               Prospect
             </span>
-          </div>
+          </Link>
 
           <div className="hidden md:block w-px h-6 bg-black/15 mx-2" />
 
@@ -259,13 +297,13 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
               How it works
             </a>
             <button
-              onClick={() => handleLaunch("discover")}
+              onClick={() => triggerAuthOrLaunch("signin", "discover", "Please sign in to explore live opportunities.")}
               className="hover:text-[#080808] transition-colors font-bold"
             >
               Opportunities
             </button>
             <button
-              onClick={() => handleLaunch("profile")}
+              onClick={() => triggerAuthOrLaunch("signup", "profile", "Please sign in to access student intelligence & profiles.")}
               className="hover:text-[#080808] transition-colors font-bold"
             >
               For students
@@ -277,13 +315,13 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
           {/* Right Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
             <button
-              onClick={() => handleLaunch("discover")}
+              onClick={() => triggerAuthOrLaunch("signin", "discover")}
               className="text-sm font-heading font-bold text-[#080808] hover:underline px-3 py-1.5 transition-all"
             >
               Log in
             </button>
             <button
-              onClick={() => handleLaunch("profile")}
+              onClick={() => triggerAuthOrLaunch("signup", "profile")}
               className="bg-[#E0FB66] text-[#080808] font-heading font-extrabold text-sm px-4 py-2 rounded-full border-2 border-[#080808] shadow-[2.5px_2.5px_0px_#080808] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
             >
               Get started <ChevronRight className="w-4 h-4 stroke-[3]" />
@@ -320,7 +358,7 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                handleLaunch("discover");
+                triggerAuthOrLaunch("signin", "discover", "Please sign in to explore live opportunities.");
               }}
               className="text-left py-1.5 border-b border-black/10 text-[#080808]"
             >
@@ -329,7 +367,7 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                handleLaunch("profile");
+                triggerAuthOrLaunch("signup", "profile", "Please sign in to access student intelligence & profiles.");
               }}
               className="text-left py-1.5 border-b border-black/10 text-[#080808]"
             >
@@ -340,8 +378,8 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  handleLaunch("profile")}
-                }
+                  triggerAuthOrLaunch("signup", "profile");
+                }}
                 className="w-full bg-[#E0FB66] text-[#080808] py-2.5 rounded-full border-2 border-black font-extrabold shadow-[2px_2px_0px_#080808] text-center"
               >
                 Get started →
@@ -349,8 +387,8 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  handleLaunch("discover")}
-                }
+                  triggerAuthOrLaunch("signin", "discover");
+                }}
                 className="w-full bg-white text-[#080808] py-2 rounded-full border border-black/20 font-bold text-center"
               >
                 Log in
@@ -393,8 +431,8 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
             {/* Buttons Row */}
             <div className="mt-7 flex flex-wrap items-center gap-3.5">
               <button
-                onClick={() => handleLaunch("profile")}
-                className="bg-[#080808] text-white px-7 py-3.5 rounded-full font-heading font-bold text-sm sm:text-base border-2 border-[#080808] shadow-[4px_4px_0px_#080808] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2 group"
+                onClick={() => triggerAuthOrLaunch("signup", "profile")}
+                className="bg-[#080808] text-white px-7 py-3.5 rounded-full font-heading font-bold text-sm sm:text-base border-2 border-[#080808] shadow-[4px_4px_0px_#080808] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2 group cursor-pointer"
               >
                 Discover your path <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
@@ -426,7 +464,7 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
             <ProspectPortal3D className="w-full h-full relative z-0" />
 
             {/* Floating Opportunity Cards & Skill Chips Overlay */}
-            <HeroFloatingOverlay onSelectRole={() => handleLaunch("discover")} />
+            <HeroFloatingOverlay onSelectRole={() => triggerAuthOrLaunch("signin", "discover")} />
           </div>
         </div>
       </section>
@@ -435,7 +473,7 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
       {/* 3. FEATURE STRIP                                              */}
       {/* ------------------------------------------------------------- */}
       <ScrollReveal direction="up" distance={20} duration={0.6}>
-        <FeatureStrip onFeatureClick={(tab) => handleLaunch(tab as NavTab)} />
+        <FeatureStrip onFeatureClick={(tab) => triggerAuthOrLaunch("signin", tab as NavTab)} />
       </ScrollReveal>
 
       {/* ------------------------------------------------------------- */}
@@ -448,30 +486,42 @@ export function LandingExperience({ onLaunchApp }: LandingExperienceProps = {}) 
       {/* ------------------------------------------------------------- */}
       {/* 4. FEATURES SECTION: "A smarter way to find your fit"        */}
       {/* ------------------------------------------------------------- */}
-      <ThreeFeaturesCards onExploreFeature={(tab) => handleLaunch(tab as NavTab)} />
+      <ThreeFeaturesCards onExploreFeature={(tab) => triggerAuthOrLaunch("signin", tab as NavTab)} />
 
       {/* ------------------------------------------------------------- */}
       {/* 5. HOW IT WORKS SECTION                                       */}
       {/* ------------------------------------------------------------- */}
-      <HowItWorksWorkflow onStageClick={(tab) => handleLaunch(tab as NavTab)} />
+      <HowItWorksWorkflow onStageClick={(tab) => triggerAuthOrLaunch("signin", tab as NavTab)} />
 
       {/* ------------------------------------------------------------- */}
       {/* 6. PRODUCT PREVIEW SECTION: Large Dashboard Composition       */}
       {/* ------------------------------------------------------------- */}
-      <ProductDashboardPreview onOpenWorkspace={(tab) => handleLaunch(tab as NavTab)} />
+      <ProductDashboardPreview onOpenWorkspace={(tab) => triggerAuthOrLaunch("signin", tab as NavTab)} />
 
       {/* ------------------------------------------------------------- */}
       {/* 7. FINAL CTA BILLBOARD SECTION                                */}
       {/* ------------------------------------------------------------- */}
       <FinalCtaSection
-        onGetStarted={() => handleLaunch("profile")}
-        onExploreRoles={() => handleLaunch("discover")}
+        onGetStarted={() => triggerAuthOrLaunch("signup", "profile")}
+        onExploreRoles={() => triggerAuthOrLaunch("signin", "discover")}
       />
 
       {/* ------------------------------------------------------------- */}
       {/* 8. FOOTER                                                     */}
       {/* ------------------------------------------------------------- */}
-      <ProspectFooter onNavTab={(tab) => handleLaunch(tab as NavTab)} />
+      <ProspectFooter onNavTab={(tab) => triggerAuthOrLaunch("signin", tab as NavTab)} />
+
+      {/* Standalone Fallback AuthModal */}
+      <AuthModal
+        isOpen={internalAuthOpen}
+        onClose={() => setInternalAuthOpen(false)}
+        onSuccess={(session) => {
+          setInternalAuthOpen(false);
+          handleLaunch(pendingTargetTab);
+        }}
+        initialMode={internalAuthMode}
+        promptMessage={internalAuthPrompt}
+      />
     </div>
   );
 }

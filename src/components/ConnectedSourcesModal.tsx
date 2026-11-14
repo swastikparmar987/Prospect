@@ -252,10 +252,10 @@ export function ConnectedSourcesModal({
             </div>
             <div>
               <h2 className="text-xl font-extrabold tracking-tight text-[#080808]">
-                Connected Sources & Job URL Import
+                Opportunity Sources & Verified Ingestion Hub
               </h2>
               <p className="text-xs text-[#777777]">
-                Transparent source statuses, legal platform integration disclaimers, and universal URL ingestion.
+                Inspect verified employer boards, legal integration statuses, and ingest direct job posting URLs.
               </p>
             </div>
           </div>

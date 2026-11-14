@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import {
   Activity,
   Bell,
@@ -13,11 +14,13 @@ import {
 } from "lucide-react";
 
 export type NavTab =
+  | "landing"
   | "home"
   | "discover"
   | "outlook"
   | "tracker"
   | "prep"
+  | "upskill"
   | "profile"
   | "agent";
 
@@ -30,7 +33,7 @@ interface NavbarProps {
   isDemoMode: boolean;
   userInitial?: string;
   userName?: string;
-  onOpenSetupHint: () => void;
+  onOpenSetupHint?: () => void;
 }
 
 export function Navbar({
@@ -94,11 +97,17 @@ export function Navbar({
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FDF9F3]/95 backdrop-blur-sm border-b-2 border-[#080808]">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
-        {/* Left: Brand Lockup */}
-        <button
-          type="button"
-          onClick={() => onSelectTab("home")}
+        {/* Left: Brand Lockup - Links cleanly to landing page */}
+        <Link
+          href="/"
+          onClick={(e) => {
+            if (onSelectTab) {
+              e.preventDefault();
+              onSelectTab("landing");
+            }
+          }}
           className="flex items-center gap-2.5 group cursor-pointer focus:outline-none"
+          aria-label="Prospect Landing Page"
         >
           <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#080808] text-white font-heading font-extrabold text-base shadow-[2px_2px_0px_#E0FB66] group-hover:-translate-y-0.5 transition-transform">
             P
@@ -106,7 +115,7 @@ export function Navbar({
           <span className="font-heading text-lg font-extrabold tracking-tight text-[#080808]">
             Prospect
           </span>
-        </button>
+        </Link>
 
         {/* Center: Clean Editorial Navigation Pills (Desktop) */}
         <nav
@@ -140,36 +149,20 @@ export function Navbar({
           ))}
         </nav>
 
-        {/* Right: Mode Status, Notification Bell & User Initial Avatar */}
+        {/* Right: Discovery Status Pill, Notifications & User Avatar */}
         <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onOpenSetupHint}
-            title="Inspect live search and AI engine status"
-            className={`hidden sm:inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3 py-1 text-[11px] font-heading font-bold shadow-[2px_2px_0px_#080808] transition-all cursor-pointer ${
-              isDemoMode
-                ? "bg-[#FEF189] text-[#080808]"
-                : "bg-white text-[#080808] hover:bg-[#E0FB66]"
-            }`}
-          >
-            <span
-              className={`h-2 w-2 rounded-full border border-[#080808] ${
-                isDemoMode ? "bg-[#FEF189]" : "bg-[#E0FB66] animate-pulse"
-              }`}
-            />
-            <span>{isDemoMode ? "DEMO" : "LIVE"}</span>
-          </button>
+          <div className="hidden sm:inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white px-3 py-1 text-[11px] font-heading font-extrabold shadow-[2px_2px_0px_#080808] text-[#080808]">
+            <span className="h-2 w-2 rounded-full bg-[#E0FB66] border border-[#080808] animate-pulse" />
+            <span>DISCOVERY ACTIVE</span>
+          </div>
 
-          <button
-            type="button"
-            onClick={onOpenSetupHint}
-            title="Provider & Engine Status"
-            aria-label="Notifications and Engine Status"
-            className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-transparent hover:border-[#080808] hover:bg-white text-[#080808] transition-all cursor-pointer"
+          <div
+            title="Intelligence Feeds Active"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-transparent hover:border-[#080808] hover:bg-white text-[#080808] transition-all"
           >
             <Bell className="h-[18px] w-[18px] stroke-[2]" />
-            <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-[#080808]" />
-          </button>
+            <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          </div>
 
           <button
             type="button"

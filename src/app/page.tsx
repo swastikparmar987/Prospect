@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
 import { Sidebar, NavTab, SidebarNavKey } from "@/components/Sidebar";
-import { SetupHintModal } from "@/components/SetupHintModal";
 import {
   AiCareerChatDrawer,
   ChatActionPayload,
@@ -15,8 +13,8 @@ import { HomeView } from "@/components/views/HomeView";
 import { DiscoverView } from "@/components/views/DiscoverView";
 import { TrackerView } from "@/components/views/TrackerView";
 import { PreparationPlansView } from "@/components/views/PreparationPlansView";
+import { UpskillView } from "@/components/views/UpskillView";
 import { ProfileView } from "@/components/views/ProfileView";
-import { AgentActivityView } from "@/components/views/AgentActivityView";
 import { ProjectEvaluatorView } from "@/components/views/ProjectEvaluatorView";
 import { SchedulerView } from "@/components/views/SchedulerView";
 import { LandingExperience } from "@/components/landing/LandingExperience";
@@ -42,7 +40,8 @@ import {
   LocationDiscoveryMode,
   RankingEvaluationMetrics,
 } from "@/types";
-import { Bell, Compass, Menu, Sparkles, Upload } from "lucide-react";
+import { Bell, Compass, Menu, Upload, LogOut } from "lucide-react";
+import { AuthModal, AuthSessionUser } from "@/components/auth/AuthModal";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<NavTab>("landing");
@@ -52,9 +51,16 @@ export default function HomePage() {
   const [sourcesModalOpen, setSourcesModalOpen] = useState(false);
   const [searchMode, setSearchMode] = useState<"DEMO" | "LIVE">("LIVE");
   const [statusData, setStatusData] = useState<any>(null);
-  const [setupModalOpen, setSetupModalOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [addModalStage, setAddModalStage] = useState<ApplicationStage>("SAVED");
+
+  // Session & Authentication States (Mandatory Security Gate)
+  const [sessionUser, setSessionUser] = useState<AuthSessionUser | null>(null);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<"signin" | "signup">("signin");
+  const [authPromptMessage, setAuthPromptMessage] = useState<string | undefined>(undefined);
+  const [pendingAuthTargetTab, setPendingAuthTargetTab] = useState<NavTab>("discover");
 
   // Core Data States
   const [opportunities, setOpportunities] = useState<
@@ -131,6 +137,121 @@ export default function HomePage() {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
+  // Session Verification & Lifecycle Handlers
+  useEffect(() => {
+    const verifySession = async () => {
+      try {
+        const storedToken =
+          typeof window !== "undefined"
+            ? localStorage.getItem("prospect_session_token")
+            : null;
+        const storedName =
+          typeof window !== "undefined"
+            ? localStorage.getItem("prospect_user_name")
+            : null;
+
+        if (storedToken) {
+          const res = await fetch("/api/auth/session", {
+            headers: {
+              authorization: `Bearer ${storedToken}`,
+              "x-prospect-session": storedToken,
+            },
+          });
+          const data = await res.json();
+          if (data.isAuthenticated) {
+            setSessionUser({
+              userId: data.user.userId,
+              email: data.user.email,
+              role: data.user.role || "STUDENT",
+              fullName: storedName || undefined,
+            });
+            setSessionToken(storedToken);
+          } else {
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("prospect_session_token");
+              localStorage.removeItem("prospect_user_email");
+              localStorage.removeItem("prospect_user_id");
+            }
+            setSessionUser(null);
+            setSessionToken(null);
+          }
+        }
+      } catch (err) {
+        console.error("Session check error:", err);
+      }
+    };
+
+    verifySession();
+  }, []);
+
+  const handleAuthSuccess = async (session: {
+    user: AuthSessionUser;
+    token: string;
+  }) => {
+    setAuthModalOpen(false);
+    setAuthPromptMessage(undefined);
+    setSessionUser(session.user);
+    setSessionToken(session.token);
+
+    // Initialize/load profile & intelligence and workspace datasets with session
+    await Promise.all([
+      loadProfileAndIntelligence(),
+      loadOpportunities(),
+      loadApplications(),
+      loadStatus(),
+    ]);
+
+    const targetTab = pendingAuthTargetTab || "discover";
+    setActiveTab(targetTab);
+    const keyMap: Record<NavTab, SidebarNavKey> = {
+      landing: "home",
+      home: "home",
+      discover: "discover",
+      outlook: "outlook",
+      tracker: "applications",
+      prep: "interview_prep",
+      upskill: "upskill",
+      profile: "profile",
+      projects: "projects",
+      scheduler: "scheduler",
+      agent: "agent",
+    };
+    setActiveSidebarKey(keyMap[targetTab] || "home");
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", `/?tab=${targetTab}`);
+    }
+    showToast(`Signed in as ${session.user.fullName || session.user.email}`);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const storedToken =
+        typeof window !== "undefined"
+          ? localStorage.getItem("prospect_session_token")
+          : null;
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: storedToken ? { authorization: `Bearer ${storedToken}` } : {},
+      });
+    } catch (e) {
+      console.error("Logout request error:", e);
+    } finally {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("prospect_session_token");
+        localStorage.removeItem("prospect_user_email");
+        localStorage.removeItem("prospect_user_id");
+        localStorage.removeItem("prospect_user_name");
+        window.history.pushState(null, "", "/");
+      }
+      setSessionUser(null);
+      setSessionToken(null);
+      setProfile(null);
+      setActiveTab("landing");
+      setActiveSidebarKey("home");
+      showToast("Signed out successfully. Session invalidated.");
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const aliasMap: Record<string, NavTab> = {
@@ -142,6 +263,7 @@ export default function HomePage() {
         tracker: "tracker",
         applications: "tracker",
         prep: "prep",
+        upskill: "upskill",
         agent: "agent",
         profile: "profile",
         projects: "projects",
@@ -155,6 +277,7 @@ export default function HomePage() {
         outlook: "outlook",
         tracker: "applications",
         prep: "interview_prep",
+        upskill: "upskill",
         profile: "profile",
         projects: "projects",
         scheduler: "scheduler",
@@ -167,7 +290,15 @@ export default function HomePage() {
           const mappedTab = aliasMap[rawParam];
           setActiveTab(mappedTab);
           setActiveSidebarKey(
-            rawParam === "tracker" ? "tracker" : keyMap[mappedTab] || "home"
+            rawParam === "tracker"
+              ? "tracker"
+              : rawParam === "applications"
+              ? "applications"
+              : rawParam === "upskill"
+              ? "upskill"
+              : rawParam === "prep" || rawParam === "interview_prep"
+              ? "interview_prep"
+              : keyMap[mappedTab] || "home"
           );
         } else {
           // Default to the landing page first when opening root URL
@@ -972,27 +1103,51 @@ export default function HomePage() {
   // If activeTab is landing, render the rich 3D animated Landing Experience first!
   if (activeTab === "landing") {
     return (
-      <LandingExperience
-        onLaunchApp={(targetTab = "discover") => {
-          setActiveTab(targetTab);
-          const keyMap: Record<NavTab, SidebarNavKey> = {
-            landing: "home",
-            home: "home",
-            discover: "discover",
-            outlook: "outlook",
-            tracker: "applications",
-            prep: "interview_prep",
-            profile: "profile",
-            projects: "projects",
-            scheduler: "scheduler",
-            agent: "agent",
-          };
-          setActiveSidebarKey(keyMap[targetTab] || "home");
-          if (typeof window !== "undefined") {
-            window.history.pushState(null, "", `/?tab=${targetTab}`);
-          }
-        }}
-      />
+      <>
+        <LandingExperience
+          isAuthenticated={!!sessionUser}
+          onOpenAuth={(mode = "signin", targetTab = "discover") => {
+            setAuthModalMode(mode);
+            setPendingAuthTargetTab(targetTab);
+            setAuthPromptMessage(undefined);
+            setAuthModalOpen(true);
+          }}
+          onLaunchApp={(targetTab = "discover") => {
+            if (!sessionUser) {
+              setAuthModalMode("signin");
+              setPendingAuthTargetTab(targetTab);
+              setAuthPromptMessage("Please sign in or authorize as a demo student to access your workspace.");
+              setAuthModalOpen(true);
+              return;
+            }
+            setActiveTab(targetTab);
+            const keyMap: Record<NavTab, SidebarNavKey> = {
+              landing: "home",
+              home: "home",
+              discover: "discover",
+              outlook: "outlook",
+              tracker: "applications",
+              prep: "interview_prep",
+              upskill: "upskill",
+              profile: "profile",
+              projects: "projects",
+              scheduler: "scheduler",
+              agent: "agent",
+            };
+            setActiveSidebarKey(keyMap[targetTab] || "home");
+            if (typeof window !== "undefined") {
+              window.history.pushState(null, "", `/?tab=${targetTab}`);
+            }
+          }}
+        />
+        <AuthModal
+          isOpen={authModalOpen}
+          initialMode={authModalMode}
+          promptMessage={authPromptMessage}
+          onClose={() => setAuthModalOpen(false)}
+          onSuccess={handleAuthSuccess}
+        />
+      </>
     );
   }
 
@@ -1011,8 +1166,6 @@ export default function HomePage() {
           }
           if (sidebarKey === "interview_prep") {
             setPrepFocusTab("interview");
-          } else if (sidebarKey === "upskill") {
-            setPrepFocusTab("resume");
           } else {
             setPrepFocusTab(undefined);
           }
@@ -1030,6 +1183,7 @@ export default function HomePage() {
         isAgentRunning={isAgentRunning}
         mobileOpen={mobileMenuOpen}
         onCloseMobile={() => setMobileMenuOpen(false)}
+        onLogout={handleLogout}
       />
 
       {/* Right Main Content Column */}
@@ -1049,8 +1203,10 @@ export default function HomePage() {
             <button
               type="button"
               onClick={() => {
-                setActiveTab("home");
-                setActiveSidebarKey("home");
+                setActiveTab("landing");
+                if (typeof window !== "undefined") {
+                  window.history.pushState(null, "", "/");
+                }
               }}
               className="flex items-center gap-2 font-heading text-base font-extrabold text-[#080808] cursor-pointer"
             >
@@ -1061,46 +1217,20 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Right: Live Pill, Bell & Profile Initial */}
+          {/* Right: Live Status Pill, Notifications & Profile Initial */}
           <div className="flex items-center gap-2.5">
-            <Link
-              href="/landing"
-              title="Explore 3D Landing Page & Architecture Tour"
-              className="hidden md:inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#E0FB66] px-3 py-1 text-[11px] font-heading font-extrabold shadow-[2px_2px_0px_#080808] hover:-translate-y-0.5 transition-all text-[#080808] cursor-pointer"
-            >
-              <Sparkles className="h-3 w-3 stroke-[2.5]" />
-              <span>3D Tour</span>
-            </Link>
-            <button
-              type="button"
-              onClick={() => setSetupModalOpen(true)}
-              title="Inspect live search and AI engine status"
-              className={`hidden sm:inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3 py-1 text-[11px] font-heading font-bold shadow-[2px_2px_0px_#080808] transition-all cursor-pointer ${
-                searchMode === "DEMO"
-                  ? "bg-[#FEF189] text-[#080808]"
-                  : "bg-white text-[#080808] hover:bg-[#E0FB66]"
-              }`}
-            >
-              <span
-                className={`h-2 w-2 rounded-full border border-[#080808] ${
-                  searchMode === "DEMO"
-                    ? "bg-[#FEF189]"
-                    : "bg-[#E0FB66] animate-pulse"
-                }`}
-              />
-              <span>{searchMode === "DEMO" ? "DEMO" : realtimeConnected ? "LIVE AUTO-SYNC" : "LIVE"}</span>
-            </button>
+            <div className="hidden sm:inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white px-3 py-1 text-[11px] font-heading font-extrabold shadow-[2px_2px_0px_#080808] text-[#080808]">
+              <span className="h-2 w-2 rounded-full bg-[#E0FB66] border border-[#080808] animate-pulse" />
+              <span>DISCOVERY ACTIVE</span>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => setSetupModalOpen(true)}
-              title="Provider & Engine Status"
-              aria-label="Notifications and Engine Status"
-              className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-transparent hover:border-[#080808] hover:bg-white text-[#080808] transition-all cursor-pointer"
+            <div
+              title="Intelligence Feeds Active"
+              className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-transparent hover:border-[#080808] hover:bg-white text-[#080808] transition-all"
             >
               <Bell className="h-[18px] w-[18px] stroke-[2]" />
-              <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-[#080808]" />
-            </button>
+              <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            </div>
 
             <button
               type="button"
@@ -1121,6 +1251,18 @@ export default function HomePage() {
               }`}
             >
               {userInitial}
+            </button>
+
+            {/* Header Logout Action */}
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Sign out of Prospect"
+              aria-label="Sign out"
+              className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white hover:bg-red-50 text-[#080808] hover:text-red-600 px-2.5 py-1 text-[11px] font-heading font-bold shadow-[2px_2px_0px_#080808] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
+            >
+              <LogOut className="h-3 w-3 stroke-[2.5]" />
+              <span className="hidden sm:inline">Log out</span>
             </button>
           </div>
         </header>
@@ -1179,35 +1321,6 @@ export default function HomePage() {
             />
           ) : (
             <>
-              {(activeTab === "outlook" || activeTab === "agent") && (
-                <div className="mx-auto max-w-6xl mb-6 flex flex-wrap items-center justify-between gap-3">
-                  <div className="inline-flex items-center rounded-full border-2 border-[#080808] bg-white p-1 shadow-[3px_3px_0px_#080808]">
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab("outlook")}
-                      className={`rounded-full px-4 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
-                        activeTab === "outlook"
-                          ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                          : "text-[#777777] hover:text-[#080808]"
-                      }`}
-                    >
-                      Career Outlook
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab("agent")}
-                      className={`rounded-full px-4 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
-                        activeTab === "agent"
-                          ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                          : "text-[#777777] hover:text-[#080808]"
-                      }`}
-                    >
-                      Search & Agent Activity
-                    </button>
-                  </div>
-                </div>
-              )}
-
               {activeTab === "home" && (
                 <HomeView
                   profile={profile}
@@ -1227,6 +1340,7 @@ export default function HomePage() {
                       outlook: "outlook",
                       tracker: "applications",
                       prep: "interview_prep",
+                      upskill: "upskill",
                       profile: "profile",
                       projects: "projects",
                       scheduler: "scheduler",
@@ -1292,6 +1406,7 @@ export default function HomePage() {
                   applications={applications}
                   upcomingDeadlines={upcomingDeadlines}
                   userProfile={profile}
+                  initialTab={activeSidebarKey === "tracker" ? "metrics" : "pipeline"}
                   onUpdateApplication={handleUpdateApplication}
                   onDeleteApplication={handleDeleteApplication}
                   onInspectOpportunity={handleInspectOpportunity}
@@ -1382,6 +1497,20 @@ export default function HomePage() {
                 />
               )}
 
+              {activeTab === "upskill" && (
+                <UpskillView
+                  userProfile={profile}
+                  onNavigateDiscover={() => {
+                    setActiveTab("discover");
+                    setActiveSidebarKey("discover");
+                  }}
+                  onOpenProjectLab={() => {
+                    setActiveTab("projects");
+                    setActiveSidebarKey("projects");
+                  }}
+                />
+              )}
+
               {activeTab === "profile" && (
                 <ProfileView
                   profile={profile}
@@ -1412,23 +1541,6 @@ export default function HomePage() {
                   }}
                 />
               )}
-
-              {activeTab === "agent" && (
-                <AgentActivityView
-                  runs={agentRuns}
-                  onRefresh={() => {
-                    loadAgentRuns();
-                    loadOpportunities();
-                    loadPlans();
-                  }}
-                  onRunCompleted={(msg) => {
-                    showToast(msg);
-                    loadOpportunities();
-                    loadPlans();
-                    loadProfileAndIntelligence();
-                  }}
-                />
-              )}
             </>
           )}
         </main>
@@ -1436,19 +1548,23 @@ export default function HomePage() {
         {/* Footer */}
         <footer className="mt-auto border-t-2 border-[#080808] bg-[#FDF9F3] py-4 text-xs text-[#777777]">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 sm:flex-row sm:px-6 lg:px-8">
-            <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("landing");
+                if (typeof window !== "undefined") {
+                  window.history.pushState(null, "", "/");
+                }
+              }}
+              className="flex items-center space-x-2 text-left hover:opacity-80 transition-opacity cursor-pointer"
+            >
               <span className="font-heading font-extrabold text-[#080808]">PROSPECT</span>
               <span>—</span>
               <span>Adaptive Career Intelligence Engine</span>
-            </div>
+            </button>
 
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setSetupModalOpen(true)}
-                className="font-bold text-[#080808] hover:underline cursor-pointer"
-              >
-                Engine Status (Live Multi-Source APIs)
-              </button>
+              <span className="font-bold text-[#080808]">Verified Employer Ingestion Active</span>
               <span>•</span>
               <span>Human In The Loop Verified</span>
             </div>
@@ -1506,12 +1622,13 @@ export default function HomePage() {
         onExecuteAction={handleExecuteChatAction}
       />
 
-      {/* Setup Hint & Engine Settings Modal */}
-      <SetupHintModal
-        isOpen={setupModalOpen}
-        onClose={() => setSetupModalOpen(false)}
-        statusData={statusData}
-        onUploadNewResume={() => setOnboardingStep("UPLOAD")}
+      {/* Workspace Authentication Guard Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        initialMode={authModalMode}
+        promptMessage={authPromptMessage}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
       />
     </div>
   );

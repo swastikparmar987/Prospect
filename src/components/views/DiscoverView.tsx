@@ -1025,24 +1025,24 @@ export function DiscoverView({
       {/* ===================================================== */}
       {/* 2. UNIFIED SEARCH BAR WITH LOCATION CHIP & BLACK CTA   */}
       {/* ===================================================== */}
-      <div className="flex flex-col md:flex-row md:items-center gap-2 bg-white rounded-2xl border-2 border-[#080808] shadow-[4px_4px_0px_#080808] p-2 focus-within:shadow-[4px_4px_0px_#E0FB66] transition-all">
+      <div className="flex flex-col md:flex-row md:items-center gap-2 bg-white rounded-xl border-2 border-[#080808] shadow-[3px_3px_0px_#080808] p-1.5 sm:p-2 focus-within:shadow-[3px_3px_0px_#E0FB66] transition-all">
         <div className="flex items-center flex-1 px-2">
-          <Search className="h-4.5 w-4.5 text-[#080808] stroke-[2] mr-2.5 shrink-0" />
+          <Search className="h-4 w-4 text-[#080808] stroke-[2.2] mr-2 shrink-0" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search roles, skills, or companies... (e.g., "ML Intern", "Data Science")'
-            className="w-full bg-transparent text-sm font-medium text-[#080808] placeholder-[#777777] outline-none py-1.5"
+            className="w-full bg-transparent text-xs sm:text-sm font-medium text-[#080808] placeholder-[#777777] outline-none py-1"
           />
         </div>
 
-        <div className="flex items-center justify-between md:justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 md:border-l-2 border-[#D8D5CE] md:pl-2.5">
+        <div className="flex items-center justify-between md:justify-end gap-2 pt-1.5 md:pt-0 border-t md:border-t-0 md:border-l-2 border-[#080808]/15 md:pl-2">
           <button
             type="button"
             onClick={() => setShowLocationPanel((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#080808] bg-[#E0FB66] hover:bg-[#FEF189] px-3 py-1.5 font-heading text-xs font-bold text-[#080808] transition cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] bg-[#E0FB66] hover:bg-[#FEF189] px-2.5 py-1 sm:py-1.5 font-heading text-xs font-bold text-[#080808] shadow-[2px_2px_0px_#080808] transition cursor-pointer shrink-0"
             title="Configure GPS, City & Work Mode Discovery"
           >
             <MapPin className="h-3.5 w-3.5 shrink-0" />
@@ -1060,7 +1060,7 @@ export function DiscoverView({
                 : "Global (All)"}
             </span>
             <ChevronDown
-              className={`h-3.5 w-3.5 transition-transform ${
+              className={`h-3 w-3 transition-transform ${
                 showLocationPanel ? "rotate-180" : ""
               }`}
             />
@@ -1080,14 +1080,14 @@ export function DiscoverView({
               });
             }}
             disabled={isAgentRunning}
-            className="rounded-xl bg-[#080808] hover:-translate-y-0.5 text-white px-4 py-2 flex items-center gap-2 font-heading text-xs sm:text-sm font-bold shadow-[2px_2px_0px_#E0FB66] transition-all shrink-0 disabled:opacity-60 cursor-pointer"
+            className="rounded-lg bg-[#080808] hover:bg-[#1a1a1a] text-white px-3.5 py-1 sm:py-1.5 flex items-center gap-1.5 font-heading text-xs sm:text-sm font-bold shadow-[2px_2px_0px_#E0FB66] transition-all shrink-0 disabled:opacity-60 cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
           >
             <Sparkles
-              className={`h-4 w-4 text-[#E0FB66] ${
+              className={`h-3.5 w-3.5 text-[#E0FB66] ${
                 isAgentRunning ? "animate-spin" : ""
               }`}
             />
-            <span>{isAgentRunning ? "Searching..." : "Run Adaptive Search"}</span>
+            <span>{isAgentRunning ? "Searching..." : "Search"}</span>
           </button>
         </div>
       </div>
@@ -1095,8 +1095,8 @@ export function DiscoverView({
       {/* ===================================================== */}
       {/* 3. QUICK-FILTER PILLS + MORE FILTERS + SORT PILL      */}
       {/* ===================================================== */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 text-xs">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {/* Resume / Local Vicinity Quick Pill */}
           <button
             type="button"
@@ -1110,11 +1110,11 @@ export function DiscoverView({
                 locationMode: "VICINITY",
               });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               selectedLocationMode === "VICINITY" &&
               selectedCategory === "ALL" &&
               selectedWorkMode === "ALL"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1141,9 +1141,9 @@ export function DiscoverView({
                 locationMode: "ALL",
               });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               isAllQuickActive
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1159,9 +1159,9 @@ export function DiscoverView({
               setSelectedCategory(next);
               handleApplyFilters({ category: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               selectedCategory === "Internship"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1178,9 +1178,9 @@ export function DiscoverView({
               setSelectedCategory(next);
               handleApplyFilters({ category: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               selectedCategory === "Entry-level"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1196,9 +1196,9 @@ export function DiscoverView({
               setSelectedWorkMode(next);
               handleApplyFilters({ workMode: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               selectedWorkMode === "Remote"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1206,10 +1206,10 @@ export function DiscoverView({
             <span>Remote</span>
           </button>
 
-          {/* Platform Filters: LinkedIn Only / Naukri Only / Company Boards / Public APIs */}
+          {/* Platform Filters: LinkedIn / Naukri / Company Boards / Public APIs */}
           {[
-            { id: "LINKEDIN", label: "LinkedIn Only" },
-            { id: "NAUKRI", label: "Naukri Only" },
+            { id: "LINKEDIN", label: "LinkedIn" },
+            { id: "NAUKRI", label: "Naukri" },
             { id: "BOARDS", label: "Company Boards" },
             { id: "PUBLIC", label: "Public APIs" },
           ].map((plat) => (
@@ -1221,9 +1221,9 @@ export function DiscoverView({
                 setSelectedPlatform(next);
                 handleApplyFilters({ platform: next });
               }}
-              className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
                 selectedPlatform === plat.id
-                  ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                  ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                   : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
               }`}
             >
@@ -1240,9 +1240,9 @@ export function DiscoverView({
               setSelectedWorkMode(next);
               handleApplyFilters({ workMode: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               selectedWorkMode === "Hybrid"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1258,9 +1258,9 @@ export function DiscoverView({
               setSelectedWorkMode(next);
               handleApplyFilters({ workMode: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               selectedWorkMode === "On-site"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1273,7 +1273,7 @@ export function DiscoverView({
             <button
               type="button"
               onClick={onOpenProjectLab}
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#EAE2FE] hover:bg-[#E0FB66] px-3.5 py-1.5 font-heading text-xs font-bold text-[#080808] transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] bg-[#EAE2FE] hover:bg-[#E0FB66] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold text-[#080808] shadow-[2px_2px_0px_#080808] transition-all cursor-pointer"
             >
               <Sparkles className="h-3.5 w-3.5" />
               <span>Test Project</span>
@@ -1284,13 +1284,13 @@ export function DiscoverView({
           <button
             type="button"
             onClick={() => setShowMoreFilters((prev) => !prev)}
-            className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
               showMoreFilters ||
               showAiPanel ||
               selectedDeadline !== "ALL" ||
               selectedLocation !== "ALL" ||
               viewMode !== "ALL"
-                ? "bg-[#FEF189] text-[#080808] shadow-[2px_2px_0px_#080808]"
+                ? "bg-[#FEF189] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
                 : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
             }`}
           >
@@ -1320,7 +1320,7 @@ export function DiscoverView({
           <button
             type="button"
             onClick={() => setSortDropdownOpen((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white px-3.5 py-1.5 font-heading text-xs font-semibold text-[#080808] hover:bg-[#FEF189]/40 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] bg-white px-3 py-1 font-heading text-xs font-semibold text-[#080808] hover:bg-[#FEF189]/40 shadow-[2px_2px_0px_#080808] transition-all cursor-pointer"
           >
             <span className="text-[#777777] font-medium">Sort:</span>
             <span className="font-bold">
@@ -1331,7 +1331,7 @@ export function DiscoverView({
           </button>
 
           {sortDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-2xl border-2 border-[#080808] bg-white p-1.5 shadow-[4px_4px_0px_#080808] z-30">
+            <div className="absolute right-0 mt-2 w-48 rounded-xl border-2 border-[#080808] bg-white p-1.5 shadow-[4px_4px_0px_#080808] z-30">
               {sortOptions.map((opt) => (
                 <button
                   key={opt.value}
@@ -1341,7 +1341,7 @@ export function DiscoverView({
                     setSortDropdownOpen(false);
                     handleApplyFilters({ sortBy: opt.value });
                   }}
-                  className={`w-full text-left px-3 py-1.5 rounded-xl text-xs transition-colors ${
+                  className={`w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors ${
                     selectedSort === opt.value
                       ? "bg-[#E0FB66] text-[#080808] font-bold border border-[#080808]"
                       : "text-[#080808] hover:bg-[#FDF9F3] font-medium"

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { ProspectLogo } from "./ProspectLogo";
 
 interface ProspectFooterProps {
@@ -14,12 +15,23 @@ export function ProspectFooter({ onNavTab }: ProspectFooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand Info */}
           <div className="md:col-span-1 space-y-4">
-            <div className="flex items-center gap-2.5">
+            <Link
+              href="/"
+              onClick={(e) => {
+                if (onNavTab) {
+                  e.preventDefault();
+                  onNavTab("landing");
+                }
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="flex items-center gap-2.5 cursor-pointer group w-fit"
+              aria-label="Prospect Landing Page"
+            >
               <ProspectLogo size={28} />
-              <span className="font-heading font-black text-xl text-[#080808] tracking-tight">
+              <span className="font-heading font-black text-xl text-[#080808] tracking-tight group-hover:opacity-90 transition-opacity">
                 Prospect
               </span>
-            </div>
+            </Link>
             <p className="text-xs text-[#666666] font-body leading-relaxed">
               AI-powered Career Intelligence and Opportunity Discovery Platform. Understand your
               strengths, discover roles that fit, and build the career you want.

@@ -1,15 +1,14 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import {
-  ArrowUpRight,
   BookOpen,
   BriefcaseBusiness,
   CalendarClock,
   FolderGit2,
   Home,
   Link2,
+  LogOut,
   Search,
   Sparkles,
   Target,
@@ -25,6 +24,7 @@ export type NavTab =
   | "outlook"
   | "tracker"
   | "prep"
+  | "upskill"
   | "profile"
   | "projects"
   | "scheduler"
@@ -53,6 +53,7 @@ interface SidebarProps {
   isAgentRunning?: boolean;
   mobileOpen?: boolean;
   onCloseMobile?: () => void;
+  onLogout?: () => void;
 }
 
 export function Sidebar({
@@ -65,6 +66,7 @@ export function Sidebar({
   isAgentRunning = false,
   mobileOpen = false,
   onCloseMobile,
+  onLogout,
 }: SidebarProps) {
   // Resolve highlighted item cleanly when deep-linking via ?tab= or programmatic navigation
   const resolvedKey: SidebarNavKey =
@@ -72,16 +74,18 @@ export function Sidebar({
     ((activeSidebarKey === "applications" && activeTab === "tracker") ||
       (activeSidebarKey === "tracker" && activeTab === "tracker") ||
       (activeSidebarKey === "interview_prep" && activeTab === "prep") ||
-      (activeSidebarKey === "upskill" && activeTab === "prep") ||
+      (activeSidebarKey === "upskill" && activeTab === "upskill") ||
       activeSidebarKey === activeTab)
       ? activeSidebarKey
       : activeTab === "tracker"
-      ? "applications"
+      ? (activeSidebarKey === "tracker" ? "tracker" : "applications")
       : activeTab === "prep"
       ? "interview_prep"
+      : activeTab === "upskill"
+      ? "upskill"
       : activeTab === "landing"
       ? "home"
-      : activeTab;
+      : (activeTab as any);
 
   const primaryItems: Array<{
     key: SidebarNavKey;
@@ -112,7 +116,7 @@ export function Sidebar({
     },
     {
       key: "upskill",
-      tab: "prep",
+      tab: "upskill",
       label: "Upskill",
       icon: BookOpen,
     },
@@ -133,11 +137,12 @@ export function Sidebar({
     <div className="flex h-full flex-col justify-between bg-[#FDF9F3] border-r-2 border-[#080808] select-none">
       {/* Brand Header & Navigation */}
       <div className="px-4 pt-5 pb-3 flex-1 overflow-y-auto">
-        <div className="flex items-center justify-between px-1.5 mb-3">
+        <div className="flex items-center justify-between px-1.5 mb-4">
           <button
             type="button"
-            onClick={() => handleNavClick("home", "home")}
+            onClick={() => handleNavClick("landing", "home")}
             className="flex items-center gap-2.5 group cursor-pointer focus:outline-none"
+            aria-label="Prospect Landing Page"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#080808] text-white font-heading font-extrabold text-base shadow-[2px_2px_0px_#E0FB66] group-hover:-translate-y-0.5 transition-transform">
               P
@@ -158,19 +163,6 @@ export function Sidebar({
             </button>
           )}
         </div>
-
-        {/* Link to 3D Landing Page Showcase */}
-        <Link
-          href="/"
-          onClick={() => handleNavClick("landing", "home")}
-          className="flex items-center justify-between rounded-xl border-2 border-[#080808] bg-white px-3 py-1.5 font-heading text-xs font-extrabold text-[#080808] hover:bg-[#E0FB66] transition-all shadow-[2px_2px_0px_#080808] mb-4 group cursor-pointer"
-        >
-          <span className="flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-[#080808]" />
-            <span>Product Showcase</span>
-          </span>
-          <ArrowUpRight className="h-3.5 w-3.5 text-[#777777] group-hover:text-[#080808] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-        </Link>
 
         {/* Primary Menu List */}
         <nav className="space-y-1" aria-label="Main Navigation">
@@ -209,144 +201,63 @@ export function Sidebar({
           })}
         </nav>
 
-        {/* Secondary Section: Connected Sources & 3D Tour */}
-        <div className="my-4 border-t border-[#D8D5CE]" />
-        <div className="space-y-1">
-          <Link
-            href="/landing"
-            onClick={onCloseMobile}
-            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-heading font-semibold text-[#080808]/80 border-2 border-transparent hover:bg-white hover:text-[#080808] transition-all cursor-pointer"
-          >
-            <Sparkles className="h-4 w-4 shrink-0 stroke-[2] text-[#080808]" />
-            <span className="truncate">3D Tour & Landing</span>
-          </Link>
-
+        {/* Secondary Section: Opportunity Sources Hub */}
+        <div className="my-3.5 border-t-2 border-[#080808]/10" />
+        <div className="px-0.5">
           <button
             type="button"
             onClick={() => {
               onOpenSources();
               onCloseMobile?.();
             }}
-            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-heading font-semibold text-[#080808]/80 border-2 border-transparent hover:bg-white hover:text-[#080808] transition-all cursor-pointer"
+            className="group flex w-full items-center justify-between rounded-xl border-2 border-[#080808] bg-white p-2.5 font-heading text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] hover:bg-[#FEF189] hover:-translate-y-0.5 transition-all cursor-pointer"
           >
-            <Link2 className="h-4 w-4 shrink-0 stroke-[2]" />
-            <span className="truncate">Connected Sources</span>
+            <span className="flex items-center gap-2 min-w-0">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#E0FB66] border border-[#080808]">
+                <Link2 className="h-3.5 w-3.5 stroke-[2.5] text-[#080808]" />
+              </span>
+              <span className="truncate">Opportunity Sources</span>
+            </span>
+            <span className="rounded-full bg-[#080808] text-[#E0FB66] px-1.5 py-0.5 text-[9px] font-extrabold">
+              Hub
+            </span>
           </button>
         </div>
       </div>
 
-      {/* Bottom Highlight Card: AI Career Agent */}
+      {/* Bottom Status Card: Minimalist Neo-Brutalist Engine Status */}
       <div className="p-3.5 pt-2">
-        <button
-          type="button"
-          onClick={() => handleNavClick("agent", "agent")}
-          className={`w-full rounded-2xl border-2 border-[#080808] bg-[#E0FB66] p-3.5 text-left transition-all cursor-pointer shadow-[3px_3px_0px_#080808] hover:-translate-y-0.5 ${
-            resolvedKey === "agent" ? "ring-2 ring-[#080808]" : ""
-          }`}
-        >
-          <div className="flex items-start justify-between">
-            {/* Neo-Brutalist Cute Robot Emblem */}
-            <svg
-              width="34"
-              height="34"
-              viewBox="0 0 36 36"
-              fill="none"
-              aria-hidden="true"
-              className="shrink-0"
-            >
-              {/* Antenna */}
-              <line
-                x1="15"
-                y1="9"
-                x2="15"
-                y2="4"
-                stroke="#080808"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <circle
-                cx="15"
-                cy="3.5"
-                r="2"
-                fill="#FFFFFF"
-                stroke="#080808"
-                strokeWidth="1.8"
-              />
-              {/* Spark ticks top-right */}
-              <line
-                x1="25"
-                y1="5"
-                x2="27"
-                y2="2.5"
-                stroke="#080808"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-              <line
-                x1="29"
-                y1="8"
-                x2="32.5"
-                y2="7"
-                stroke="#080808"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-              {/* Bot Head */}
-              <rect
-                x="6"
-                y="9"
-                width="18"
-                height="16"
-                rx="4.5"
-                fill="#FFFFFF"
-                stroke="#080808"
-                strokeWidth="2"
-              />
-              {/* Ears */}
-              <rect
-                x="3.5"
-                y="14"
-                width="2.5"
-                height="6"
-                rx="1"
-                fill="#080808"
-              />
-              <rect
-                x="24"
-                y="14"
-                width="2.5"
-                height="6"
-                rx="1"
-                fill="#080808"
-              />
-              {/* Eyes & Smile */}
-              <circle cx="11.5" cy="16" r="1.5" fill="#080808" />
-              <circle cx="18.5" cy="16" r="1.5" fill="#080808" />
-              <path
-                d="M11.5 20.2C13 21.6 17 21.6 18.5 20.2"
-                stroke="#080808"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-            </svg>
-
-            {isAgentRunning && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#080808] px-2 py-0.5 font-heading text-[10px] font-bold text-[#E0FB66]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#E0FB66] animate-pulse" />
-                Live
+        <div className="w-full rounded-2xl border-2 border-[#080808] bg-[#F4EFE6] p-3 shadow-[3px_3px_0px_#080808]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-            )}
+              <span className="font-heading text-xs font-extrabold text-[#080808]">
+                Intelligence Engine
+              </span>
+            </div>
+            <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2 py-0.5 text-[9px] font-extrabold text-[#080808]">
+              {isAgentRunning ? "Running" : "Live"}
+            </span>
           </div>
+          <div className="mt-1 text-[11px] font-semibold text-[#080808]/75">
+            Verified Ingestion Active • Ghost-Free
+          </div>
+        </div>
 
-          <div className="mt-2">
-            <div className="font-heading text-sm font-extrabold text-[#080808] leading-tight">
-              AI Career Agent
-            </div>
-            <div className="mt-0.5 text-[10.5px] font-semibold text-[#080808]/80">
-              Discover • Match • Prepare • Track
-            </div>
-          </div>
-        </button>
+        {onLogout && (
+          <button
+            type="button"
+            onClick={onLogout}
+            title="Sign out and return to landing page"
+            className="mt-2.5 w-full flex items-center justify-center gap-2 rounded-xl border-2 border-[#080808] bg-white hover:bg-red-50 text-[#080808] hover:text-red-600 px-3 py-2 text-xs font-heading font-bold shadow-[2px_2px_0px_#080808] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
+          >
+            <LogOut className="h-3.5 w-3.5 stroke-[2.5]" />
+            <span>Sign Out</span>
+          </button>
+        )}
       </div>
     </div>
   );
