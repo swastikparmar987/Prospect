@@ -42,7 +42,7 @@ const SOURCES: SourceCardInfo[] = [
     status: "ACTIVE",
     description: "Direct real-time ingestion from public boards API.",
     badgeText: "Live Feed Active",
-    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    badgeColor: "bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]",
     supportedCompanies: "Groww, Rubrik, Anthropic, Databricks, Coinbase, Airbnb, Dropbox, Stripe, Figma, Vercel",
   },
   {
@@ -51,7 +51,7 @@ const SOURCES: SourceCardInfo[] = [
     status: "ACTIVE",
     description: "Direct real-time ingestion from public postings API.",
     badgeText: "Live Feed Active",
-    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    badgeColor: "bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]",
     supportedCompanies: "Weights & Biases, Spotify",
   },
   {
@@ -60,7 +60,7 @@ const SOURCES: SourceCardInfo[] = [
     status: "ACTIVE",
     description: "Direct real-time ingestion from public job-board API.",
     badgeText: "Live Feed Active",
-    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    badgeColor: "bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]",
     supportedCompanies: "OpenAI, Cohere, Perplexity, Supabase, Linear, Modal",
   },
   {
@@ -69,7 +69,7 @@ const SOURCES: SourceCardInfo[] = [
     status: "ACTIVE",
     description: "Real-time multi-platform public JSON job APIs for engineering, AI, and remote roles.",
     badgeText: "Multi-Platform Active",
-    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    badgeColor: "bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]",
   },
   {
     name: "FreeHire Open Index",
@@ -77,7 +77,7 @@ const SOURCES: SourceCardInfo[] = [
     status: "ACTIVE",
     description: "Verified public tech, AI, and remote opportunities index.",
     badgeText: "Connected",
-    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    badgeColor: "bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]",
   },
   {
     name: "Tavily Web Search",
@@ -85,7 +85,7 @@ const SOURCES: SourceCardInfo[] = [
     status: "CONNECTED",
     description: "Autonomous real-time web discovery across LinkedIn Jobs, Naukri, Indeed, Wellfound, and university portals.",
     badgeText: "Connected",
-    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    badgeColor: "bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]",
   },
   {
     name: "LinkedIn Jobs",
@@ -94,7 +94,7 @@ const SOURCES: SourceCardInfo[] = [
     description:
       "Automated scraping restricted by LinkedIn Terms of Service & anti-bot protection. Use one-click search and paste posting links below.",
     badgeText: "Deep-Link & URL Import",
-    badgeColor: "bg-amber-50 text-amber-900 border-amber-200",
+    badgeColor: "bg-[#FEF9E7] text-[#92400E] border-[#F5DFA0]",
     searchUrlBuilder: (query, loc) =>
       `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(
         query
@@ -107,7 +107,7 @@ const SOURCES: SourceCardInfo[] = [
     description:
       "Automated scraping gated by Cloudflare. Use pre-filtered search and paste posting links below.",
     badgeText: "Deep-Link & URL Import",
-    badgeColor: "bg-amber-50 text-amber-900 border-amber-200",
+    badgeColor: "bg-[#FEF9E7] text-[#92400E] border-[#F5DFA0]",
     searchUrlBuilder: (query, loc) =>
       `https://www.indeed.com/jobs?q=${encodeURIComponent(query)}${
         loc ? `&l=${encodeURIComponent(loc)}` : ""
@@ -120,7 +120,7 @@ const SOURCES: SourceCardInfo[] = [
     description:
       "Direct automated scraping restricted. One-click deep search generates targeted queries for India tech opportunities.",
     badgeText: "Deep-Link & URL Import",
-    badgeColor: "bg-amber-50 text-amber-900 border-amber-200",
+    badgeColor: "bg-[#FEF9E7] text-[#92400E] border-[#F5DFA0]",
     searchUrlBuilder: (query, loc) =>
       `https://www.naukri.com/${encodeURIComponent(
         query.toLowerCase().replace(/\s+/g, "-")
@@ -133,7 +133,7 @@ const SOURCES: SourceCardInfo[] = [
     description:
       "One-click search for internships and student research roles. Paste direct links below for fit evaluation.",
     badgeText: "Deep-Link & URL Import",
-    badgeColor: "bg-amber-50 text-amber-900 border-amber-200",
+    badgeColor: "bg-[#FEF9E7] text-[#92400E] border-[#F5DFA0]",
     searchUrlBuilder: (query) =>
       `https://internshala.com/internships/keywords-${encodeURIComponent(
         query.toLowerCase().replace(/\s+/g, "-")
@@ -180,8 +180,8 @@ export function ConnectedSourcesModal({
         status: tavilyConfigured ? ("CONNECTED" as const) : ("RESTRICTED_BY_TERMS" as const),
         badgeText: tavilyConfigured ? "Live API Active" : "API Key Not Configured",
         badgeColor: tavilyConfigured
-          ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-          : "bg-slate-100 text-slate-600 border-slate-200",
+          ? "bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]"
+          : "bg-[#F4F5F0] text-[#4B5563] border-black/[0.08]",
       };
     }
     return src;
@@ -241,119 +241,128 @@ export function ConnectedSourcesModal({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#080808]/60 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F1113]/55 backdrop-blur-sm animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#FDF9F3] rounded-2xl border-2 border-[#080808] shadow-[6px_6px_0px_#080808] flex flex-col overflow-hidden text-[#080808]">
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#F7F7F3] rounded-[26px] border border-black/[0.08] shadow-[0_24px_60px_rgba(15,23,42,0.16)] flex flex-col overflow-hidden text-[#101214]">
         {/* Header */}
-        <div className="px-6 py-5 border-b-2 border-[#080808] bg-white flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-[#E0FB66] border-2 border-[#080808] flex items-center justify-center text-[#080808]">
-              <Radio className="h-5 w-5 animate-pulse" />
+        <div className="px-6 py-5 border-b border-black/[0.06] bg-white flex items-center justify-between">
+          <div className="flex items-center gap-3.5">
+            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4] border border-[#C7E938]/60 flex items-center justify-center text-[#101214] shadow-[0_2px_10px_rgba(205,238,54,0.22)]">
+              <Radio className="h-5 w-5 text-[#4D7C0F] animate-pulse" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold tracking-tight text-[#080808]">
-                Opportunity Sources & Verified Ingestion Hub
-              </h2>
-              <p className="text-xs text-[#777777]">
-                Inspect verified employer boards, legal integration statuses, and ingest direct job posting URLs.
+              <div className="flex items-center gap-2">
+                <h2 className="font-heading text-xl font-bold tracking-tight text-[#101214]">
+                  Opportunity Sources &amp; Ingestion Hub
+                </h2>
+                <span className="hidden sm:inline-flex items-center rounded-full bg-[#E3FC6D] border border-[#C6E832] px-2.5 py-0.5 text-[10px] font-semibold text-[#0E1012]">
+                  Live Hub
+                </span>
+              </div>
+              <p className="text-xs text-[#6B7280] mt-0.5">
+                Inspect verified employer boards, integration statuses, and ingest direct job posting URLs.
               </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="rounded-xl border-2 border-[#080808] p-2 text-[#080808] hover:bg-[#FEF189] transition-colors cursor-pointer"
+            aria-label="Close modal"
+            className="rounded-full border border-black/[0.08] bg-[#F7F7F3] p-2 text-[#4B5563] hover:bg-[#EAECE4] hover:text-[#101214] transition-colors cursor-pointer"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Content Body */}
         <div className="p-6 overflow-y-auto space-y-6">
           {/* Section 1: Universal URL Importer */}
-          <section className="bg-white rounded-2xl border-2 border-[#080808] p-5 shadow-[4px_4px_0px_#080808]">
-            <div className="flex items-center gap-2 mb-2">
-              <Link2 className="h-5 w-5 text-[#080808]" />
-              <h3 className="text-base font-extrabold text-[#080808]">
-                Direct Job URL Ingestion & Candidate Analysis
+          <section className="bg-white rounded-[22px] border border-black/[0.07] p-5 sm:p-6 shadow-[0_8px_30px_rgba(15,23,42,0.045)]">
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="h-8 w-8 rounded-xl bg-[#F4F5F0] border border-black/[0.06] flex items-center justify-center text-[#101214]">
+                <Link2 className="h-4 w-4" />
+              </div>
+              <h3 className="font-heading text-base font-bold text-[#101214]">
+                Direct Job URL Ingestion &amp; Candidate Analysis
               </h3>
             </div>
-            <p className="text-xs text-[#777777] mb-4">
+            <p className="text-xs text-[#6B7280] mb-4 leading-relaxed">
               Encountered a job link on LinkedIn, X, Slack, or a company site? Paste any URL below. Prospect fetches the posting safely, extracts requirements, neutralizes prompt injection, evaluates your fit, and builds your preparation plan.
             </p>
 
-            <form onSubmit={handleImport} className="flex flex-col sm:flex-row gap-2">
+            <form onSubmit={handleImport} className="flex flex-col sm:flex-row gap-2.5">
               <input
                 type="url"
                 required
                 value={importUrl}
                 onChange={(e) => setImportUrl(e.target.value)}
                 placeholder="https://boards.greenhouse.io/... or https://www.linkedin.com/jobs/view/..."
-                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm text-[#080808] placeholder-[#777777] focus:outline-none focus:bg-white transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-black/[0.10] bg-[#FAFBF7] text-sm text-[#101214] placeholder-[#9CA3AF] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 focus:outline-none transition-all"
               />
               <button
                 type="submit"
                 disabled={isImporting || !importUrl.trim()}
-                className="px-5 py-2.5 rounded-xl border-2 border-[#080808] bg-[#E0FB66] hover:bg-[#FEF189] text-[#080808] text-sm font-extrabold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-[2px_2px_0px_#080808]"
+                className="px-5 py-2.5 rounded-full bg-[#101214] text-white text-xs sm:text-sm font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shrink-0 cursor-pointer"
               >
                 {isImporting ? (
                   <>
-                    <Sparkles className="h-4 w-4 animate-spin text-[#080808]" />
+                    <Sparkles className="h-4 w-4 animate-spin text-[#E3FC6D]" />
                     <span>Analyzing...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 text-[#080808]" />
-                    <span>Import & Analyze</span>
+                    <Sparkles className="h-4 w-4 text-[#E3FC6D]" />
+                    <span>Import &amp; Analyze</span>
                   </>
                 )}
               </button>
             </form>
 
             {importError && (
-              <div className="mt-3 p-3 rounded-xl bg-rose-50 border-2 border-[#080808] text-xs text-rose-900 flex items-start gap-2 font-medium">
-                <AlertCircle className="h-4 w-4 text-rose-700 shrink-0 mt-0.5" />
+              <div className="mt-3 p-3.5 rounded-2xl bg-[#FFF1F2] border border-[#FECDD3] text-xs text-[#9F1239] flex items-start gap-2 font-medium">
+                <AlertCircle className="h-4 w-4 text-[#E11D48] shrink-0 mt-0.5" />
                 <span>{importError}</span>
               </div>
             )}
 
             {/* Ingestion Preview Card */}
             {importResult && (
-              <div className="mt-4 p-4 rounded-xl bg-[#FDF9F3] border-2 border-[#080808] animate-in fade-in">
+              <div className="mt-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#F3FCDA]/70 to-[#FAFBF7] border border-[#C7E938]/55 animate-in fade-in">
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E0FB66] text-[#080808] border border-[#080808]">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832]">
                         {importResult.opportunity.verificationStatus}
                       </span>
                       {importResult.note && (
-                        <span className="text-[11px] text-[#777777]">
+                        <span className="text-[11px] text-[#6B7280]">
                           • {importResult.note}
                         </span>
                       )}
                     </div>
-                    <h4 className="text-lg font-extrabold text-[#080808]">
+                    <h4 className="font-heading text-lg font-bold text-[#101214]">
                       {importResult.opportunity.title}
                     </h4>
-                    <p className="text-xs text-[#080808] font-semibold flex items-center gap-1.5">
-                      <Building2 className="h-3.5 w-3.5" />
+                    <p className="text-xs text-[#4B5563] font-medium flex items-center gap-1.5">
+                      <Building2 className="h-3.5 w-3.5 text-[#101214]" />
                       {importResult.opportunity.organization} • {importResult.opportunity.location} ({importResult.opportunity.workMode})
                     </p>
                   </div>
 
                   <div className="text-right shrink-0">
                     <div className="inline-flex flex-col items-end">
-                      <span className="text-xs font-semibold text-[#777777]">Fit Score</span>
-                      <span className="text-2xl font-extrabold text-[#080808]">
+                      <span className="text-[11px] font-medium text-[#6B7280]">Fit Score</span>
+                      <span className="font-heading text-2xl font-bold text-[#101214]">
                         {Math.round(importResult.evaluation.overallScore)}%
                       </span>
-                      <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-md bg-[#E0FB66] border border-[#080808] text-[#080808] mt-1">
+                      <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-0.5 rounded-full bg-[#E3FC6D] border border-[#C6E832] text-[#0E1012] mt-1">
                         {importResult.evaluation.recommendation.replace("_", " ")}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <p className="mt-3 text-xs text-[#080808]/85 line-clamp-2">
+                <p className="mt-3 text-xs text-[#4B5563] line-clamp-2 leading-relaxed">
                   {importResult.opportunity.description}
                 </p>
 
@@ -362,7 +371,7 @@ export function ConnectedSourcesModal({
                     {importResult.opportunity.requiredSkills.map((sk) => (
                       <span
                         key={sk}
-                        className="px-2 py-0.5 rounded-md bg-white border border-[#080808] text-[11px] text-[#080808] font-semibold"
+                        className="px-2.5 py-0.5 rounded-full bg-white border border-black/[0.08] text-[11px] text-[#101214] font-medium"
                       >
                         {sk}
                       </span>
@@ -370,37 +379,39 @@ export function ConnectedSourcesModal({
                   </div>
                 )}
 
-                <div className="mt-4 pt-3 border-t border-[#D8D5CE] flex items-center justify-between gap-2">
-                  <span className="text-xs text-[#777777]">
+                <div className="mt-4 pt-3 border-t border-black/[0.06] flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs text-[#6B7280]">
                     {importResult.evaluation.rationale}
                   </span>
                   <div className="flex items-center gap-2 shrink-0">
                     {onInspectOpportunity && (
                       <button
+                        type="button"
                         onClick={() =>
                           onInspectOpportunity(
                             importResult.opportunity,
                             importResult.evaluation
                           )
                         }
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs font-bold text-[#080808] hover:bg-[#FEF189] transition-colors"
+                        className="px-3.5 py-1.5 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] text-xs font-semibold transition-all cursor-pointer"
                       >
                         Inspect Details
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={handleSaveResult}
                       disabled={isSaved}
-                      className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#080808] text-white text-xs font-bold hover:bg-[#080808]/90 transition-colors disabled:opacity-60 flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-1.5 rounded-full bg-[#101214] text-white text-xs font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] transition-all disabled:opacity-60 flex items-center gap-1.5 cursor-pointer"
                     >
                       {isSaved ? (
                         <>
-                          <Check className="h-3.5 w-3.5 text-[#E0FB66]" />
+                          <Check className="h-3.5 w-3.5 text-[#E3FC6D]" />
                           <span>Saved to Tracker</span>
                         </>
                       ) : (
                         <>
-                          <Bookmark className="h-3.5 w-3.5 text-[#E0FB66]" />
+                          <Bookmark className="h-3.5 w-3.5 text-[#E3FC6D]" />
                           <span>Save to Tracker</span>
                         </>
                       )}
@@ -412,20 +423,22 @@ export function ConnectedSourcesModal({
           </section>
 
           {/* Section 2: One-Click Deep-Search Portals */}
-          <section className="bg-white rounded-2xl border-2 border-[#080808] p-5 shadow-[4px_4px_0px_#080808]">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <ExternalLink className="h-5 w-5 text-[#080808]" />
-                <h3 className="text-base font-extrabold text-[#080808]">
+          <section className="bg-white rounded-[22px] border border-black/[0.07] p-5 sm:p-6 shadow-[0_8px_30px_rgba(15,23,42,0.045)]">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-xl bg-[#F4F5F0] border border-black/[0.06] flex items-center justify-center text-[#101214]">
+                  <ExternalLink className="h-4 w-4" />
+                </div>
+                <h3 className="font-heading text-base font-bold text-[#101214]">
                   One-Click Pre-Filtered Deep Search
                 </h3>
               </div>
-              <span className="text-[11px] text-[#777777]">
-                Target: <strong className="text-[#080808]">{defaultQuery}</strong>
+              <span className="text-[11px] text-[#6B7280] bg-[#F4F5F0] border border-black/[0.06] rounded-full px-3 py-1">
+                Target: <strong className="text-[#101214]">{defaultQuery}</strong>
               </span>
             </div>
-            <p className="text-xs text-[#777777] mb-4">
-              Direct automated scraping on these platforms is restricted by terms or anti-bot gates. Click any button below to launch a targeted search with your profile preferences, then paste the job URL into the tool above.
+            <p className="text-xs text-[#6B7280] mb-4 leading-relaxed">
+              Direct automated scraping on these platforms is restricted by terms or anti-bot gates. Click any card below to launch a targeted search with your profile preferences, then paste the job URL above.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
@@ -437,21 +450,21 @@ export function ConnectedSourcesModal({
                     href={searchUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3.5 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] hover:bg-[#E0FB66]/45 transition-all flex flex-col justify-between group"
+                    className="p-3.5 rounded-2xl border border-black/[0.07] bg-[#FAFBF7] hover:bg-gradient-to-br hover:from-[#F3FCDA]/80 hover:to-white hover:border-[#C7E938]/60 hover:shadow-[0_6px_18px_rgba(15,23,42,0.05)] transition-all flex flex-col justify-between group"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-extrabold text-xs text-[#080808]">
+                        <span className="font-heading font-bold text-xs text-[#101214]">
                           {s.name}
                         </span>
-                        <ExternalLink className="h-3.5 w-3.5 text-[#777777] group-hover:text-[#080808] transition-colors" />
+                        <ExternalLink className="h-3.5 w-3.5 text-[#6B7280] group-hover:text-[#101214] transition-colors" />
                       </div>
-                      <p className="text-[11px] text-[#777777] line-clamp-2">
+                      <p className="text-[11px] text-[#6B7280] line-clamp-2 leading-relaxed">
                         {s.description}
                       </p>
                     </div>
-                    <span className="mt-3 text-[10px] font-bold text-[#080808] flex items-center gap-1">
-                      Search on {s.name} <ArrowRight className="h-3 w-3" />
+                    <span className="mt-3 text-[11px] font-semibold text-[#101214] flex items-center gap-1">
+                      Search on {s.name} <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                     </span>
                   </a>
                 );
@@ -461,31 +474,31 @@ export function ConnectedSourcesModal({
 
           {/* Section 3: Source Status & Infrastructure Grid */}
           <section className="space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#080808]">
-              Ingestion Providers & Architecture Status
+            <h3 className="text-[11px] font-heading font-bold uppercase tracking-[0.12em] text-[#6B7280] px-1">
+              Ingestion Providers &amp; Board Statuses
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {dynamicSources.map((s) => (
                 <div
                   key={s.name}
-                  className="p-4 rounded-xl bg-white border-2 border-[#080808] shadow-[3px_3px_0px_#080808] flex items-start justify-between gap-3"
+                  className="p-4 rounded-[20px] bg-white border border-black/[0.07] shadow-[0_4px_18px_rgba(15,23,42,0.035)] flex items-start justify-between gap-3"
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-extrabold text-sm text-[#080808]">
+                  <div className="space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-heading font-bold text-sm text-[#101214]">
                         {s.name}
                       </span>
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold border border-[#080808] ${s.badgeColor}`}
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${s.badgeColor}`}
                       >
                         {s.badgeText}
                       </span>
                     </div>
-                    <p className="text-xs text-[#777777]">{s.description}</p>
+                    <p className="text-xs text-[#6B7280] leading-relaxed">{s.description}</p>
                     {s.supportedCompanies && (
-                      <p className="text-[11px] text-[#080808] font-semibold pt-1">
-                        Supported: {s.supportedCompanies}
+                      <p className="text-[11px] text-[#4B5563] font-medium pt-0.5">
+                        Supported: <span className="text-[#101214]">{s.supportedCompanies}</span>
                       </p>
                     )}
                   </div>
@@ -496,16 +509,17 @@ export function ConnectedSourcesModal({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t-2 border-[#080808] bg-white flex items-center justify-between text-xs text-[#777777]">
+        <div className="px-6 py-4 border-t border-black/[0.06] bg-white flex flex-wrap items-center justify-between gap-3 text-xs text-[#6B7280]">
           <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-[#080808]" />
+            <Shield className="h-4 w-4 text-[#4D7C0F] shrink-0" />
             <span>
               All incoming postings are guarded against prompt injection and malicious payloads.
             </span>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border-2 border-[#080808] bg-[#E0FB66] text-[#080808] font-bold hover:bg-[#FEF189] transition-colors cursor-pointer"
+            className="px-5 py-2 rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] transition-all cursor-pointer"
           >
             Close
           </button>

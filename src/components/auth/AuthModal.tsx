@@ -103,7 +103,7 @@ export function AuthModal({
             userId: data.user.userId,
             email: data.user.email,
             role: data.user.role || "STUDENT",
-            fullName: "Alex Chen (Demo Student)",
+            fullName: undefined,
           },
           token: data.token,
         });

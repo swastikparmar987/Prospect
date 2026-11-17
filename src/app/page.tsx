@@ -17,6 +17,7 @@ import { UpskillView } from "@/components/views/UpskillView";
 import { ProfileView } from "@/components/views/ProfileView";
 import { ProjectEvaluatorView } from "@/components/views/ProjectEvaluatorView";
 import { SchedulerView } from "@/components/views/SchedulerView";
+import { CareerIntelligenceCommandCenter } from "@/components/views/CareerIntelligenceCommandCenter";
 import { LandingExperience } from "@/components/landing/LandingExperience";
 import { ResumeUploadExperience } from "@/components/onboarding/ResumeUploadExperience";
 import { ProfileConfirmationView } from "@/components/onboarding/ProfileConfirmationView";
@@ -40,7 +41,17 @@ import {
   LocationDiscoveryMode,
   RankingEvaluationMetrics,
 } from "@/types";
-import { Bell, Compass, Menu, Upload, LogOut } from "lucide-react";
+import {
+  Bell,
+  Compass,
+  Link2,
+  LogOut,
+  Menu,
+  Search,
+  Sparkles,
+  Upload,
+  UserRound,
+} from "lucide-react";
 import { AuthModal, AuthSessionUser } from "@/components/auth/AuthModal";
 
 export default function HomePage() {
@@ -113,6 +124,26 @@ export default function HomePage() {
     mode?: "DEMO" | "LIVE";
   }>({ locationMode: "VICINITY" });
   const latestOppRequestIdRef = useRef(0);
+  const freshSinceRef = useRef<string | null>(null);
+
+  const getAuthHeaders = useCallback(
+    (extra: Record<string, string> = {}): Record<string, string> => {
+      const token =
+        sessionToken ||
+        (typeof window !== "undefined"
+          ? localStorage.getItem("prospect_session_token")
+          : null);
+      if (token) {
+        return {
+          authorization: `Bearer ${token}`,
+          "x-prospect-session": token,
+          ...extra,
+        };
+      }
+      return extra;
+    },
+    [sessionToken]
+  );
 
   // Resume-First Onboarding States (Phases 1-10 + Career Outlook)
   const [onboardingStep, setOnboardingStep] = useState<
@@ -136,6 +167,57 @@ export default function HomePage() {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
   };
+
+  // Time-aware workspace greeting (computed client-side to prevent hydration mismatch)
+  const [timeGreeting, setTimeGreeting] = useState<string>("Welcome back");
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setTimeGreeting("Good morning");
+    else if (hour < 17) setTimeGreeting("Good afternoon");
+    else setTimeGreeting("Good evening");
+  }, []);
+
+  // Header Notification Popover & Profile Avatar Dropdown States
+  const [notifPopoverOpen, setNotifPopoverOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const notifMenuRef = useRef<HTMLDivElement | null>(null);
+  const profileMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!notifPopoverOpen && !profileMenuOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        notifPopoverOpen &&
+        notifMenuRef.current &&
+        !notifMenuRef.current.contains(target)
+      ) {
+        setNotifPopoverOpen(false);
+      }
+      if (
+        profileMenuOpen &&
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(target)
+      ) {
+        setProfileMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setNotifPopoverOpen(false);
+        setProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [notifPopoverOpen, profileMenuOpen]);
 
   // Session Verification & Lifecycle Handlers
   useEffect(() => {
@@ -193,15 +275,24 @@ export default function HomePage() {
     setSessionUser(session.user);
     setSessionToken(session.token);
 
-    // Initialize/load profile & intelligence and workspace datasets with session
+    // Clear stale pre-login client state so newly logged-in user strictly sees zero mock/old data
+    setProfile(null);
+    setCareerOutlook(null);
+    setCapabilityMap(null);
+    setExpandedRoles([]);
+    setOpportunities([]);
+    setPreparationPlans([]);
+    setApplications([]);
+    freshSinceRef.current = null;
+    setOnboardingStep("CHECKING");
+
+    // Initialize/load profile & intelligence with the fresh session token
     await Promise.all([
-      loadProfileAndIntelligence(),
-      loadOpportunities(),
-      loadApplications(),
+      loadProfileAndIntelligence(undefined, session.token),
       loadStatus(),
     ]);
 
-    const targetTab = pendingAuthTargetTab || "discover";
+    const targetTab = pendingAuthTargetTab || "home";
     setActiveTab(targetTab);
     const keyMap: Record<NavTab, SidebarNavKey> = {
       landing: "home",
@@ -246,6 +337,12 @@ export default function HomePage() {
       setSessionUser(null);
       setSessionToken(null);
       setProfile(null);
+      setCareerOutlook(null);
+      setOpportunities([]);
+      setPreparationPlans([]);
+      setApplications([]);
+      freshSinceRef.current = null;
+      setOnboardingStep("CHECKING");
       setActiveTab("landing");
       setActiveSidebarKey("home");
       showToast("Signed out successfully. Session invalidated.");
@@ -289,6 +386,9 @@ export default function HomePage() {
         if (rawParam && aliasMap[rawParam]) {
           const mappedTab = aliasMap[rawParam];
           setActiveTab(mappedTab);
+          if (mappedTab === "prep") {
+            setPrepFocusTab("interview");
+          }
           setActiveSidebarKey(
             rawParam === "tracker"
               ? "tracker"
@@ -343,6 +443,7 @@ export default function HomePage() {
         action?: string;
         sortBy?: string;
         mode?: "DEMO" | "LIVE";
+        tokenOverride?: string;
       } = {}
     ) => {
       setLoadingOpportunities(true);
@@ -351,6 +452,10 @@ export default function HomePage() {
       try {
         const searchParams = new URLSearchParams();
         searchParams.set("mode", params.mode || searchMode);
+        searchParams.set("requireProfile", "1");
+        if (freshSinceRef.current) {
+          searchParams.set("freshSince", freshSinceRef.current);
+        }
         if (params.query) searchParams.set("q", params.query);
         if (params.category && params.category !== "ALL")
           searchParams.set("category", params.category);
@@ -370,10 +475,21 @@ export default function HomePage() {
           searchParams.set("action", params.action);
         if (params.sortBy) searchParams.set("sortBy", params.sortBy);
 
-        const res = await fetch(`/api/opportunities?${searchParams.toString()}`);
+        const headers = params.tokenOverride
+          ? {
+              authorization: `Bearer ${params.tokenOverride}`,
+              "x-prospect-session": params.tokenOverride,
+            }
+          : getAuthHeaders();
+
+        const res = await fetch(`/api/opportunities?${searchParams.toString()}`, {
+          headers,
+        });
         const data = await res.json();
         if (reqId !== latestOppRequestIdRef.current) return;
-        if (data.opportunities) {
+        if (data.profileConfigured === false) {
+          setOpportunities([]);
+        } else if (data.opportunities) {
           setOpportunities(data.opportunities);
         }
         if (data.personalizationSummary) {
@@ -391,20 +507,31 @@ export default function HomePage() {
         setLoadingOpportunities(false);
       }
     },
-    [searchMode]
+    [searchMode, getAuthHeaders]
   );
 
   // 3. Load Profile & Search Intelligence
   const loadProfileAndIntelligence = useCallback(
-    async (modeOverride?: "DEMO" | "LIVE") => {
+    async (modeOverride?: "DEMO" | "LIVE", tokenOverride?: string) => {
       try {
         const activeMode = modeOverride || searchMode;
+        const headers = tokenOverride
+          ? {
+              authorization: `Bearer ${tokenOverride}`,
+              "x-prospect-session": tokenOverride,
+            }
+          : getAuthHeaders();
         const [profRes, intelRes] = await Promise.all([
-          fetch("/api/profile"),
-          fetch(`/api/search/intelligence?mode=${activeMode}`),
+          fetch("/api/profile", { headers }),
+          fetch(`/api/search/intelligence?mode=${activeMode}`, { headers }),
         ]);
         const profData = await profRes.json();
-        if (profData.profile && (profData.profile.skills?.length > 0 || profData.profile.fullName)) {
+        const hasValidProfile = Boolean(
+          profData.profile &&
+            ((profData.profile.skills && profData.profile.skills.length > 0) ||
+              profData.profile.fullName)
+        );
+        if (hasValidProfile) {
           setProfile(profData.profile);
           if (profData.profile.locationPreference) {
             setLocationPreference(profData.profile.locationPreference);
@@ -419,6 +546,10 @@ export default function HomePage() {
         } else {
           setProfile(null);
           setCareerOutlook(null);
+          setOpportunities([]);
+          setPreparationPlans([]);
+          setApplications([]);
+          freshSinceRef.current = null;
           setOnboardingStep((prev) => (prev === "CHECKING" ? "UPLOAD" : prev));
         }
         const intelData = await intelRes.json();
@@ -428,12 +559,14 @@ export default function HomePage() {
         if (intelData.expandedRoles) {
           setExpandedRoles(intelData.expandedRoles);
         }
+        return hasValidProfile;
       } catch (err) {
         console.error(err);
         setOnboardingStep((prev) => (prev === "CHECKING" ? "UPLOAD" : prev));
+        return false;
       }
     },
-    [searchMode]
+    [searchMode, getAuthHeaders]
   );
 
   // 4. Load Tracker Applications
@@ -441,7 +574,9 @@ export default function HomePage() {
     async (modeOverride?: "DEMO" | "LIVE") => {
       try {
         const activeMode = modeOverride || searchMode;
-        const res = await fetch(`/api/tracker?mode=${activeMode}`);
+        const res = await fetch(`/api/tracker?mode=${activeMode}`, {
+          headers: getAuthHeaders(),
+        });
         const data = await res.json();
         if (data.applications) setApplications(data.applications);
         if (data.upcomingDeadlines) setUpcomingDeadlines(data.upcomingDeadlines);
@@ -449,40 +584,55 @@ export default function HomePage() {
         console.error(err);
       }
     },
-    [searchMode]
+    [searchMode, getAuthHeaders]
   );
 
   // 5. Load Preparation Plans
-  const loadPlans = async () => {
+  const loadPlans = useCallback(async () => {
     try {
-      const res = await fetch("/api/preparation-plans");
+      const res = await fetch("/api/preparation-plans?requireProfile=1", {
+        headers: getAuthHeaders(),
+      });
       const data = await res.json();
       if (data.plans) setPreparationPlans(data.plans);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [getAuthHeaders]);
 
   // 6. Load Agent Runs Trace
-  const loadAgentRuns = async () => {
+  const loadAgentRuns = useCallback(async () => {
     try {
-      const res = await fetch("/api/agent/runs");
+      const res = await fetch("/api/agent/runs", { headers: getAuthHeaders() });
       const data = await res.json();
       if (data.runs) setAgentRuns(data.runs);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [getAuthHeaders]);
 
-  // Initial Data Bootstrap
+  // Initial Data Bootstrap (profile check precedes opportunity & plan fetches)
   useEffect(() => {
-    loadStatus();
-    loadProfileAndIntelligence();
-    loadOpportunities({ locationMode: "VICINITY" });
-    loadApplications();
-    loadPlans();
-    loadAgentRuns();
-  }, [loadOpportunities, loadProfileAndIntelligence]);
+    let active = true;
+    (async () => {
+      await loadStatus();
+      const hasValidProfile = await loadProfileAndIntelligence();
+      if (!active) return;
+      if (hasValidProfile) {
+        await Promise.all([
+          loadOpportunities({ locationMode: "VICINITY" }),
+          loadApplications(),
+          loadPlans(),
+          loadAgentRuns(),
+        ]);
+      } else {
+        setLoadingOpportunities(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loadOpportunities, loadProfileAndIntelligence, loadApplications, loadPlans, loadAgentRuns]);
 
   // Real-Time Server-Sent Events (SSE) Auto-Sync Subscription
   useEffect(() => {
@@ -535,7 +685,7 @@ export default function HomePage() {
     try {
       const res = await fetch("/api/tracker", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           opportunityId: opp.id,
           stage: addModalStage || "SAVED",
@@ -568,7 +718,7 @@ export default function HomePage() {
     try {
       const res = await fetch("/api/tracker", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify(params),
       });
       if (res.ok) {
@@ -583,7 +733,10 @@ export default function HomePage() {
   // Delete Application from Tracker
   const handleDeleteApplication = async (id: string) => {
     try {
-      const res = await fetch(`/api/tracker?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/tracker?id=${id}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
       if (res.ok) {
         showToast("Application removed from tracker.");
         loadApplications();
@@ -619,11 +772,12 @@ export default function HomePage() {
     }
     const controller = new AbortController();
     abortControllerRef.current = controller;
+    const runStartIso = new Date(Date.now() - 10000).toISOString();
 
     try {
       const res = await fetch("/api/opportunities", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         signal: controller.signal,
         body: JSON.stringify({
           query,
@@ -644,8 +798,14 @@ export default function HomePage() {
       if (!res.ok) {
         setAgentExecutionError(data.error || data.details || "Search request failed.");
         showToast(data.error || data.details || "Search request failed.");
-      } else if (data.summary) {
-        showToast(data.summary);
+      } else {
+        freshSinceRef.current = runStartIso;
+        if (Array.isArray(data.opportunities)) {
+          setOpportunities(data.opportunities);
+        }
+        if (data.summary) {
+          showToast(data.summary);
+        }
       }
 
       if (data.liveEvents && Array.isArray(data.liveEvents)) {
@@ -733,7 +893,7 @@ export default function HomePage() {
     try {
       await fetch("/api/feedback", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           opportunityId: opp.id,
           organization: opp.organization,
@@ -766,7 +926,7 @@ export default function HomePage() {
     try {
       await fetch("/api/feedback", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           signalType: "DISMISS_ROLE_FAMILY",
           roleFamily: roleTitle,
@@ -784,7 +944,7 @@ export default function HomePage() {
     try {
       await fetch("/api/feedback", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           signalType: "RESET_PERSONALIZATION",
           notes: "User restored excluded role families and hidden employers.",
@@ -809,7 +969,7 @@ export default function HomePage() {
     try {
       const res = await fetch("/api/preparation-plans", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ planId, itemId, isCompleted: !currentStatus }),
       });
       const data = await res.json();
@@ -823,11 +983,30 @@ export default function HomePage() {
     }
   };
 
+  const handleGeneratePlan = async (opportunityId: string) => {
+    try {
+      const res = await fetch("/api/preparation-plans", {
+        method: "POST",
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ opportunityId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        await loadPlans();
+        showToast(data.message || "Synthesized resume-grounded preparation plan!");
+      } else {
+        showToast(data.error || "Could not generate preparation plan.");
+      }
+    } catch {
+      showToast("Network error generating preparation plan.");
+    }
+  };
+
   // Save Profile Facts
   const handleSaveProfile = async (updated: Partial<UserProfile>) => {
     const res = await fetch("/api/profile", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify(updated),
     });
     if (!res.ok) throw new Error("Failed to save profile");
@@ -857,15 +1036,19 @@ export default function HomePage() {
     ) {
       return;
     }
-    const res = await fetch("/api/profile", { method: "DELETE" });
+    const res = await fetch("/api/profile", {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
     if (res.ok) {
       setProfile(null);
       setCapabilityMap(null);
       setExpandedRoles([]);
       setOpportunities([]);
+      setPreparationPlans([]);
+      freshSinceRef.current = null;
       setOnboardingStep("UPLOAD");
       showToast("All profile data and extracted facts have been deleted.");
-      loadOpportunities();
     }
   };
 
@@ -895,7 +1078,7 @@ export default function HomePage() {
       // 1. Persist confirmed profile to Prisma SQLite database
       const saveRes = await fetch("/api/profile", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           ...confirmedProfile,
           targetRoles: searchPreferences.targetRoles,
@@ -954,13 +1137,14 @@ export default function HomePage() {
     setAgentExecutionError(null);
     setPendingPreferences(searchPreferences);
     setSearchMode(searchPreferences.mode);
+    const runStartIso = new Date(Date.now() - 10000).toISOString();
 
     try {
       // 1. Persist confirmed career directions
       try {
         await fetch("/api/career-outlook", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: getAuthHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({
             selectedDirections,
             customDirections: searchPreferences.targetRoles.filter(
@@ -987,7 +1171,7 @@ export default function HomePage() {
 
       const searchRes = await fetch("/api/opportunities", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           query: queryStr,
           category: searchPreferences.categories[0] || "Internship",
@@ -1003,17 +1187,17 @@ export default function HomePage() {
       if (!searchRes.ok) {
         setAgentExecutionError(searchData.error || searchData.details || "Search provider error.");
       } else {
+        freshSinceRef.current = runStartIso;
+        if (Array.isArray(searchData.opportunities)) {
+          setOpportunities(searchData.opportunities);
+        }
         await Promise.all([
-          loadOpportunities({
-            locationMode: "VICINITY",
-            mode: searchPreferences.mode,
-          }),
           loadAgentRuns(),
           loadPlans(),
           loadProfileAndIntelligence(searchPreferences.mode),
         ]);
         showToast(
-          `Synced local vicinity discovery for ${cleanLoc || "your profile"}!`
+          `Synced real-time discovery for ${cleanLoc || "your profile"}!`
         );
       }
     } catch (err: any) {
@@ -1098,7 +1282,32 @@ export default function HomePage() {
     [loadOpportunities, showToast]
   );
 
-  const userInitial = (profile?.fullName?.trim()?.charAt(0) || "S").toUpperCase();
+  const displayFirstName = (() => {
+    const full = profile?.fullName?.trim() || sessionUser?.fullName?.trim();
+    if (full) {
+      const first = full.split(/\s+/)[0]?.replace(/[^a-zA-Z0-9'-]/g, "");
+      if (first) return first;
+    }
+    const email = sessionUser?.email?.trim();
+    if (email && email.includes("@")) {
+      const prefix = email.split("@")[0]?.split(/[._+-]/)[0]?.trim();
+      if (prefix) {
+        return prefix.charAt(0).toUpperCase() + prefix.slice(1);
+      }
+    }
+    return null;
+  })();
+
+  const greetingText = displayFirstName
+    ? `${timeGreeting}, ${displayFirstName} 👋`
+    : "Welcome back 👋";
+
+  const userInitial = (
+    profile?.fullName?.trim()?.charAt(0) ||
+    sessionUser?.fullName?.trim()?.charAt(0) ||
+    sessionUser?.email?.trim()?.charAt(0) ||
+    "P"
+  ).toUpperCase();
 
   // If activeTab is landing, render the rich 3D animated Landing Experience first!
   if (activeTab === "landing") {
@@ -1152,8 +1361,8 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#FDF9F3] text-[#080808]">
-      {/* Fixed Neo-Brutalist Left Sidebar */}
+    <div className="workspace-shell flex min-h-screen bg-[#F8F6F1] text-[#111111]">
+      {/* Dark Obsidian Left Sidebar */}
       <Sidebar
         activeTab={activeTab}
         activeSidebarKey={activeSidebarKey}
@@ -1188,15 +1397,22 @@ export default function HomePage() {
 
       {/* Right Main Content Column */}
       <div className="flex flex-1 flex-col min-w-0">
-        {/* Slim Top-Right Utility Header (Mobile menu + Bell + Avatar) */}
-        <header className="sticky top-0 z-20 flex items-center justify-between md:justify-end bg-[#FDF9F3]/95 backdrop-blur-sm px-4 pt-3.5 pb-2 sm:px-6 lg:px-8">
+        {/* Sleek Top Greeting & Utility Header */}
+        <header className="sticky top-0 z-20 flex items-center justify-between bg-[#F8F6F1]/90 backdrop-blur-md border-b border-[#E9E6DF] px-4 sm:px-6 lg:px-8 py-3">
+          {/* Desktop Time-Aware Greeting */}
+          <div className="hidden md:flex items-center gap-3 min-w-0">
+            <h1 className="font-heading text-[17px] font-bold tracking-tight text-[#111111] truncate">
+              {greetingText}
+            </h1>
+          </div>
+
           {/* Mobile Brand & Hamburger */}
           <div className="flex items-center gap-2.5 md:hidden">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open navigation menu"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-[#080808] bg-white text-[#080808] shadow-[2px_2px_0px_#080808] cursor-pointer"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E9E6DF] bg-white text-[#111111] shadow-[0_2px_10px_rgba(17,17,17,0.04)] hover:bg-[#FDFBF8] transition-all cursor-pointer"
             >
               <Menu className="h-4.5 w-4.5" />
             </button>
@@ -1208,67 +1424,296 @@ export default function HomePage() {
                   window.history.pushState(null, "", "/");
                 }
               }}
-              className="flex items-center gap-2 font-heading text-base font-extrabold text-[#080808] cursor-pointer"
+              aria-label="Prospect Landing Page"
+              className="flex items-center gap-2 font-heading text-base font-bold text-[#111111] cursor-pointer"
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#080808] text-white text-sm font-extrabold">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#101010] text-[#DFFF43] text-sm font-extrabold shadow-[0_2px_8px_rgba(17,17,17,0.2)] ring-1 ring-[#DFFF43]/40">
                 P
               </span>
               <span>Prospect</span>
             </button>
           </div>
 
-          {/* Right: Live Status Pill, Notifications & Profile Initial */}
+          {/* Right: Live Status Pill, Notification Popover, Profile Avatar Menu & Desktop Sign Out */}
           <div className="flex items-center gap-2.5">
-            <div className="hidden sm:inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white px-3 py-1 text-[11px] font-heading font-extrabold shadow-[2px_2px_0px_#080808] text-[#080808]">
-              <span className="h-2 w-2 rounded-full bg-[#E0FB66] border border-[#080808] animate-pulse" />
+            <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-[#E9E6DF] bg-white px-3.5 py-1.5 text-[11px] font-heading font-bold tracking-wide text-[#111111] shadow-[0_2px_10px_rgba(17,17,17,0.04)]">
+              <span className="relative flex h-2 w-2">
+                {isAgentRunning && (
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A6D94B] opacity-75" />
+                )}
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#70B93F]" />
+              </span>
               <span>DISCOVERY ACTIVE</span>
             </div>
 
-            <div
-              title="Intelligence Feeds Active"
-              className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-transparent hover:border-[#080808] hover:bg-white text-[#080808] transition-all"
-            >
-              <Bell className="h-[18px] w-[18px] stroke-[2]" />
-              <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {/* Notification Bell + Floating Popover */}
+            <div className="relative" ref={notifMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setProfileMenuOpen(false);
+                  setNotifPopoverOpen((prev) => !prev);
+                }}
+                aria-expanded={notifPopoverOpen}
+                aria-haspopup="dialog"
+                title="Notifications & Intelligence Status"
+                aria-label="Notifications and intelligence updates"
+                className={`relative flex h-9 w-9 items-center justify-center rounded-full border shadow-[0_2px_10px_rgba(17,17,17,0.04)] text-[#111111] transition-all cursor-pointer ${
+                  notifPopoverOpen
+                    ? "bg-[#F1FFC7] border-[#D7ED93]"
+                    : "bg-white border-[#E9E6DF] hover:border-[#D5D0C6] hover:-translate-y-0.5"
+                }`}
+              >
+                <Bell className="h-4 w-4 stroke-[2]" />
+                {(liveUpdatesCount > 0 || isAgentRunning) && (
+                  <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-[#70B93F] ring-2 ring-white" />
+                )}
+              </button>
+
+              {notifPopoverOpen && (
+                <div
+                  role="dialog"
+                  aria-label="Intelligence notifications"
+                  className="absolute right-0 mt-2.5 w-80 max-w-[calc(100vw-2rem)] rounded-[20px] bg-white border border-[#E9E6DF] shadow-[0_18px_48px_rgba(17,17,17,0.12)] p-4 z-40 text-left"
+                >
+                  <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[#E9E6DF]">
+                    <span className="font-heading text-[13px] font-bold text-[#111111]">
+                      Notifications
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                        isAgentRunning
+                          ? "bg-[#DFFF43] text-[#111111]"
+                          : liveUpdatesCount > 0
+                          ? "bg-[#F1FFC7] text-[#111111] border border-[#D7ED93]"
+                          : "bg-[#F8F6F1] text-[#777777] border border-[#E9E6DF]"
+                      }`}
+                    >
+                      {isAgentRunning
+                        ? "Scanning"
+                        : liveUpdatesCount > 0
+                        ? `${liveUpdatesCount} updates`
+                        : "Live Feed"}
+                    </span>
+                  </div>
+
+                  <div className="py-3 space-y-2.5">
+                    {isAgentRunning && (
+                      <div className="rounded-2xl bg-[#F6FFE0] border border-[#D7ED93] p-3 text-xs text-[#111111]">
+                        <div className="font-heading font-bold">
+                          Live discovery run in progress
+                        </div>
+                        <p className="text-[11px] text-[#555555] mt-0.5">
+                          Evaluating verified employer feeds against your profile.
+                        </p>
+                      </div>
+                    )}
+
+                    {liveUpdatesCount > 0 && (
+                      <div className="rounded-2xl bg-[#FDFBF8] border border-[#E9E6DF] p-3 text-xs text-[#111111]">
+                        <div className="font-heading font-semibold">
+                          {liveUpdatesCount} real-time sync{" "}
+                          {liveUpdatesCount === 1 ? "update" : "updates"} received
+                        </div>
+                        <p className="text-[11px] text-[#777777] mt-0.5">
+                          Workspace opportunities and readiness signals refreshed.
+                        </p>
+                      </div>
+                    )}
+
+                    {agentRuns[0] && (
+                      <div className="rounded-2xl bg-[#FDFBF8] border border-[#E9E6DF] p-3 text-xs text-[#111111]">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-heading font-semibold truncate">
+                            Latest Run ({agentRuns[0].status.toLowerCase()})
+                          </span>
+                          {agentRuns[0].coverageSummary && (
+                            <span className="shrink-0 text-[10px] font-bold text-[#70B93F]">
+                              {agentRuns[0].coverageSummary.totalUniqueEvaluated} evaluated
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-[#777777] mt-1 line-clamp-2">
+                          {agentRuns[0].summary || agentRuns[0].query}
+                        </p>
+                      </div>
+                    )}
+
+                    {lastSyncAt && (
+                      <div className="flex items-center justify-between px-1 text-[11px] text-[#777777]">
+                        <span>Last background sync</span>
+                        <span className="font-medium text-[#111111]">
+                          {new Date(lastSyncAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                    )}
+
+                    {!isAgentRunning &&
+                      liveUpdatesCount === 0 &&
+                      !lastSyncAt &&
+                      agentRuns.length === 0 && (
+                        <div className="rounded-2xl bg-[#FDFBF8] border border-[#E9E6DF] px-3.5 py-4 text-center text-xs text-[#777777]">
+                          All caught up — no unread updates yet.
+                        </div>
+                      )}
+                  </div>
+
+                  <div className="pt-2.5 border-t border-[#E9E6DF] grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotifPopoverOpen(false);
+                        setActiveTab("discover");
+                        setActiveSidebarKey("discover");
+                        if (typeof window !== "undefined") {
+                          window.history.pushState(null, "", "/?tab=discover");
+                        }
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#E9E6DF] bg-[#FDFBF8] hover:bg-[#F1FFC7]/60 hover:border-[#D7ED93] px-3 py-1.5 text-xs font-heading font-semibold text-[#111111] transition-colors cursor-pointer"
+                    >
+                      <Search className="h-3.5 w-3.5" />
+                      <span>Discover</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotifPopoverOpen(false);
+                        setActiveTab("outlook");
+                        setActiveSidebarKey("outlook");
+                        if (typeof window !== "undefined") {
+                          window.history.pushState(null, "", "/?tab=outlook");
+                        }
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#E9E6DF] bg-[#FDFBF8] hover:bg-[#EAE3FF]/60 hover:border-[#D9CCF8] px-3 py-1.5 text-xs font-heading font-semibold text-[#111111] transition-colors cursor-pointer"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>Intelligence</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab("profile");
-                setActiveSidebarKey("profile");
-              }}
-              title={
-                profile?.fullName
-                  ? `${profile.fullName} — Profile & Resume`
-                  : "Profile & Resume"
-              }
-              aria-label="Open Candidate Profile"
-              className={`flex h-9 w-9 items-center justify-center rounded-full font-heading text-sm font-extrabold transition-all cursor-pointer ${
-                activeTab === "profile"
-                  ? "bg-[#E0FB66] text-[#080808] border-2 border-[#080808] shadow-[2px_2px_0px_#080808]"
-                  : "bg-[#080808] text-white border-2 border-[#080808] hover:-translate-y-0.5 shadow-[2px_2px_0px_#D8D5CE]"
-              }`}
-            >
-              {userInitial}
-            </button>
+            {/* Profile Avatar + Accessible Dropdown Menu */}
+            <div className="relative" ref={profileMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setNotifPopoverOpen(false);
+                  setProfileMenuOpen((prev) => !prev);
+                }}
+                aria-expanded={profileMenuOpen}
+                aria-haspopup="menu"
+                title={
+                  profile?.fullName
+                    ? `${profile.fullName} — Account & Profile`
+                    : "Account & Profile"
+                }
+                aria-label="Open Account Menu"
+                className={`flex h-9 w-9 items-center justify-center rounded-full font-heading text-sm font-bold transition-all cursor-pointer ${
+                  profileMenuOpen || activeTab === "profile"
+                    ? "bg-[#DFFF43] text-[#111111] ring-2 ring-[#111111] shadow-[0_4px_12px_rgba(223,255,67,0.35)]"
+                    : "bg-[#111111] text-[#DFFF43] ring-2 ring-[#DFFF43]/55 hover:ring-[#DFFF43] hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(17,17,17,0.16)]"
+                }`}
+              >
+                {userInitial}
+              </button>
 
-            {/* Header Logout Action */}
+              {profileMenuOpen && (
+                <div
+                  role="menu"
+                  aria-label="Profile actions"
+                  className="absolute right-0 mt-2.5 w-64 rounded-[20px] bg-white border border-[#E9E6DF] shadow-[0_18px_48px_rgba(17,17,17,0.12)] p-2 z-40 text-left"
+                >
+                  <div className="px-3 py-2.5 border-b border-[#E9E6DF] mb-1.5">
+                    <div className="font-heading text-xs font-bold text-[#111111] truncate">
+                      {profile?.fullName || sessionUser?.fullName || "Prospect Member"}
+                    </div>
+                    <div className="text-[11px] text-[#777777] truncate mt-0.5">
+                      {profile?.email || sessionUser?.email || "Authenticated Session"}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                      setActiveTab("profile");
+                      setActiveSidebarKey("profile");
+                      if (typeof window !== "undefined") {
+                        window.history.pushState(null, "", "/?tab=profile");
+                      }
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-heading font-semibold text-[#111111] hover:bg-[#F8F6F1] transition-colors cursor-pointer"
+                  >
+                    <UserRound className="h-3.5 w-3.5 text-[#777777]" />
+                    <span>My Profile &amp; Resume</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                      setSourcesModalOpen(true);
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-heading font-semibold text-[#111111] hover:bg-[#F8F6F1] transition-colors cursor-pointer"
+                  >
+                    <Link2 className="h-3.5 w-3.5 text-[#777777]" />
+                    <span>Opportunity Sources</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                      setOnboardingStep("UPLOAD");
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-heading font-semibold text-[#111111] hover:bg-[#F8F6F1] transition-colors cursor-pointer"
+                  >
+                    <Upload className="h-3.5 w-3.5 text-[#777777]" />
+                    <span>Upload New Resume</span>
+                  </button>
+
+                  <div className="my-1.5 border-t border-[#E9E6DF]" />
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-heading font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Subtle Desktop Header Logout Pill */}
             <button
               type="button"
               onClick={handleLogout}
               title="Sign out of Prospect"
               aria-label="Sign out"
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white hover:bg-red-50 text-[#080808] hover:text-red-600 px-2.5 py-1 text-[11px] font-heading font-bold shadow-[2px_2px_0px_#080808] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
+              className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-[#E9E6DF] bg-white hover:bg-red-50/80 hover:border-red-200 text-[#111111]/80 hover:text-red-600 px-3 py-1.5 text-[12px] font-heading font-semibold shadow-[0_2px_10px_rgba(17,17,17,0.04)] transition-all cursor-pointer"
             >
-              <LogOut className="h-3 w-3 stroke-[2.5]" />
-              <span className="hidden sm:inline">Log out</span>
+              <LogOut className="h-3.5 w-3.5 stroke-[2]" />
+              <span>Sign out</span>
             </button>
           </div>
         </header>
 
         {/* View Content */}
-        <main className="flex-1 px-4 pt-2 pb-6 sm:px-6 lg:px-8 w-full min-w-0">
+        <main className="flex-1 px-4 pt-5 pb-8 sm:px-6 lg:px-8 w-full min-w-0">
           {onboardingStep === "UPLOAD" ? (
             <ResumeUploadExperience
               onParsedSuccess={handleResumeParsed}
@@ -1355,44 +1800,51 @@ export default function HomePage() {
               )}
 
               {activeTab === "outlook" && (
-                careerOutlook || profile ? (
-                  <CareerOutlookExperience
-                    outlook={
-                      careerOutlook || (profile ? generateCareerOutlook(profile) : ({} as any))
+                profile ? (
+                  <CareerIntelligenceCommandCenter
+                    profile={profile}
+                    opportunities={opportunities}
+                    capabilityMap={capabilityMap}
+                    expandedRoles={expandedRoles}
+                    careerOutlook={
+                      careerOutlook || (profile ? generateCareerOutlook(profile) : null)
                     }
-                    userProfile={profile || (extractedResumeData?.extractedProfile as any) || ({} as any)}
                     initialPreferences={pendingPreferences}
-                    onConfirm={async (selectedDirs, prefs) => {
+                    isSearching={isAgentRunning}
+                    onConfirmOutlookAndSearch={async (selectedDirs, prefs) => {
                       await handleConfirmCareerOutlookAndSearch(selectedDirs, prefs);
                       setActiveTab("discover");
+                      setActiveSidebarKey("discover");
                     }}
-                    onBackToProfile={() => setActiveTab("discover")}
-                    backButtonLabel="Back to Discover Opportunities"
-                    isSearching={isAgentRunning}
+                    onNavigateDiscover={() => {
+                      setActiveTab("discover");
+                      setActiveSidebarKey("discover");
+                    }}
+                    onUploadResume={() => setOnboardingStep("UPLOAD")}
                   />
                 ) : onboardingStep === "CHECKING" ? (
                   <div className="mx-auto max-w-4xl py-12 px-4 space-y-6 animate-pulse">
-                    <div className="neo-card h-40 p-8 space-y-4">
-                      <div className="h-6 w-48 rounded bg-[#D8D5CE]/50" />
-                      <div className="h-8 w-96 rounded bg-[#D8D5CE]/50" />
-                      <div className="h-4 w-72 rounded bg-[#D8D5CE]/30" />
+                    <div className="ws-card h-44 p-8 space-y-4">
+                      <div className="h-5 w-44 rounded-full bg-[#E9E6DF]/80" />
+                      <div className="h-8 w-80 max-w-full rounded-xl bg-[#E9E6DF]/80" />
+                      <div className="h-4 w-64 max-w-full rounded-full bg-[#E9E6DF]/60" />
                     </div>
                   </div>
                 ) : (
-                  <div className="mx-auto max-w-xl py-16 px-4 text-center space-y-4 neo-card p-10">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#080808] bg-[#E0FB66] text-[#080808]">
+                  <div className="mx-auto max-w-xl my-8 text-center space-y-4 ws-card p-10">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F6FFE0] to-[#F1FFC7] border border-[#D7ED93] text-[#111111] shadow-[0_6px_18px_rgba(166,217,75,0.22)]">
                       <Compass className="h-7 w-7" />
                     </div>
-                    <h2 className="font-heading text-2xl font-extrabold text-[#080808]">
+                    <h2 className="font-heading text-2xl font-bold tracking-tight text-[#111111]">
                       No Resume Uploaded Yet
                     </h2>
-                    <p className="text-sm text-[#777777]">
+                    <p className="text-sm text-[#777777] leading-relaxed">
                       Upload your resume once to unlock your personalized Career Outlook, verified strengths, and real-time opportunity discovery.
                     </p>
                     <button
                       type="button"
                       onClick={() => setOnboardingStep("UPLOAD")}
-                      className="neo-btn-primary mt-2 inline-flex items-center gap-2 px-6 py-3 text-sm cursor-pointer"
+                      className="ws-btn-primary mt-2 inline-flex items-center gap-2 px-6 py-3 text-sm cursor-pointer"
                     >
                       <Upload className="h-4 w-4" />
                       <span>Upload Resume Now</span>
@@ -1493,6 +1945,8 @@ export default function HomePage() {
                     setActiveTab("discover");
                     setActiveSidebarKey("discover");
                   }}
+                  onGeneratePlan={handleGeneratePlan}
+                  onUploadResume={() => setOnboardingStep("UPLOAD")}
                   initialStudioTab={prepFocusTab}
                 />
               )}
@@ -1546,7 +2000,7 @@ export default function HomePage() {
         </main>
 
         {/* Footer */}
-        <footer className="mt-auto border-t-2 border-[#080808] bg-[#FDF9F3] py-4 text-xs text-[#777777]">
+        <footer className="mt-auto border-t border-[#E9E6DF] bg-[#F8F6F1]/90 py-4 text-xs text-[#777777]">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 sm:flex-row sm:px-6 lg:px-8">
             <button
               type="button"
@@ -1558,13 +2012,13 @@ export default function HomePage() {
               }}
               className="flex items-center space-x-2 text-left hover:opacity-80 transition-opacity cursor-pointer"
             >
-              <span className="font-heading font-extrabold text-[#080808]">PROSPECT</span>
+              <span className="font-heading font-bold text-[#111111]">PROSPECT</span>
               <span>—</span>
               <span>Adaptive Career Intelligence Engine</span>
             </button>
 
             <div className="flex items-center space-x-4">
-              <span className="font-bold text-[#080808]">Verified Employer Ingestion Active</span>
+              <span className="font-semibold text-[#111111]">Verified Employer Ingestion Active</span>
               <span>•</span>
               <span>Human In The Loop Verified</span>
             </div>
@@ -1574,7 +2028,8 @@ export default function HomePage() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-20 right-6 z-50 flex items-center space-x-2 rounded-2xl border-2 border-[#080808] bg-[#E0FB66] px-4 py-3 font-heading text-xs font-extrabold text-[#080808] shadow-[4px_4px_0px_#080808] animate-in slide-in-from-bottom-3 duration-200 max-w-md">
+        <div className="fixed bottom-20 right-6 z-50 flex items-center gap-2.5 rounded-2xl border border-white/10 bg-[#101010]/95 backdrop-blur-md px-4 py-3 font-heading text-xs font-semibold text-white shadow-[0_14px_34px_rgba(17,17,17,0.28)] animate-in slide-in-from-bottom-3 duration-200 max-w-md">
+          <span className="h-2 w-2 rounded-full bg-[#DFFF43] shrink-0 shadow-[0_0_8px_#DFFF43]" />
           <span>{toastMessage}</span>
         </div>
       )}

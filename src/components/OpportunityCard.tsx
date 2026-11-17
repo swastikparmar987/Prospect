@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useId } from "react";
 import { Opportunity, EvaluationResult, RecommendationAction } from "@/types";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import {
@@ -34,6 +34,52 @@ interface OpportunityCardProps {
   ) => void;
 }
 
+function MatchScoreRing({ score, title }: { score: number; title?: string }) {
+  const gradId = useId();
+  const pct = Math.max(0, Math.min(100, Math.round(score)));
+  const r = 15;
+  const c = 2 * Math.PI * r;
+  const offset = c - (pct / 100) * c;
+
+  return (
+    <div
+      className="relative inline-flex h-10 w-10 items-center justify-center shrink-0"
+      title={title || `Overall Fit ${pct}%`}
+    >
+      <svg className="h-10 w-10 -rotate-90" viewBox="0 0 38 38" aria-hidden="true">
+        <defs>
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#9CE21B" />
+            <stop offset="100%" stopColor="#65B811" />
+          </linearGradient>
+        </defs>
+        <circle
+          cx="19"
+          cy="19"
+          r={r}
+          fill="none"
+          stroke="#E6E8E2"
+          strokeWidth="3.2"
+        />
+        <circle
+          cx="19"
+          cy="19"
+          r={r}
+          fill="none"
+          stroke={`url(#${gradId})`}
+          strokeWidth="3.2"
+          strokeDasharray={c}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="absolute font-heading text-[10px] font-extrabold text-[#101214] leading-none">
+        {pct}%
+      </span>
+    </div>
+  );
+}
+
 export function OpportunityCard({
   opportunity,
   evaluation,
@@ -46,40 +92,40 @@ export function OpportunityCard({
     switch (action) {
       case "APPLY_NOW":
         return {
-          stripColor: "bg-[#E0FB66]",
+          stripColor: "bg-gradient-to-b from-[#DDFB4B] to-[#9CE21B]",
           buttonBg:
-            "bg-[#E0FB66] hover:bg-[#d5f54e] text-[#080808] border-2 border-[#080808] shadow-[3px_3px_0px_#080808]",
+            "bg-[#E3FC6D] hover:bg-[#D7F54D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)]",
           buttonLabel: "Apply Now",
           icon: Rocket,
-          iconColor: "text-[#080808]",
+          iconColor: "text-[#0E1012]",
         };
       case "PREPARE_FIRST":
         return {
-          stripColor: "bg-[#FEF189]",
+          stripColor: "bg-gradient-to-b from-[#FDE68A] to-[#F59E0B]",
           buttonBg:
-            "bg-[#FEF189] hover:bg-[#fde95e] text-[#080808] border-2 border-[#080808] shadow-[3px_3px_0px_#080808]",
+            "bg-[#FEF9E7] hover:bg-[#FDF2CC] text-[#7A5908] border border-[#F5DFA0]",
           buttonLabel: "Prepare First",
           icon: BookOpen,
-          iconColor: "text-[#080808]",
+          iconColor: "text-[#7A5908]",
         };
       case "KEEP_WATCHING":
         return {
-          stripColor: "bg-[#C4E7FF]",
+          stripColor: "bg-gradient-to-b from-[#BAE0FD] to-[#60A5FA]",
           buttonBg:
-            "bg-white hover:bg-[#FDF9F3] text-[#080808] border-2 border-[#080808] shadow-[3px_3px_0px_#080808]",
+            "bg-white hover:bg-[#F7F7F3] text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)]",
           buttonLabel: "Keep Watching",
           icon: Eye,
-          iconColor: "text-[#080808]",
+          iconColor: "text-[#101214]",
         };
       case "SKIP":
       default:
         return {
-          stripColor: "bg-[#D8D5CE]",
+          stripColor: "bg-[#E5E7EB]",
           buttonBg:
-            "bg-[#FDF9F3] hover:bg-[#D8D5CE]/40 text-[#777777] border-2 border-[#D8D5CE]",
+            "bg-[#F7F7F3] hover:bg-[#ECEEE7] text-[#6B7280] border border-black/[0.07]",
           buttonLabel: "Skip",
           icon: null,
-          iconColor: "text-[#777777]",
+          iconColor: "text-[#6B7280]",
         };
     }
   };
@@ -127,55 +173,55 @@ export function OpportunityCard({
   return (
     <article
       onClick={() => onInspect(opportunity, evaluation, "overview")}
-      className="neo-card-interactive group relative flex flex-col sm:flex-row sm:items-center sm:justify-between px-3.5 py-2.5 sm:px-4 sm:py-3 cursor-pointer overflow-hidden gap-2.5"
+      className="group relative flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 py-3 sm:px-5 sm:py-3.5 cursor-pointer overflow-hidden gap-3 rounded-[22px] bg-white border border-black/[0.07] shadow-[0_8px_30px_rgba(15,23,42,0.045)] hover:shadow-[0_12px_34px_rgba(15,23,42,0.075)] hover:border-black/[0.12] hover:-translate-y-0.5 transition-all"
     >
-      {/* Left semantic colored vertical strip */}
+      {/* Left semantic colored accent strip */}
       <div
-        className={`absolute left-0 top-0 bottom-0 w-1.5 border-r border-[#080808] ${style.stripColor} transition-colors`}
+        className={`absolute left-1.5 top-3 bottom-3 w-1 rounded-full ${style.stripColor} transition-colors`}
       />
 
       {/* Left block: Compact Logo + Title/Company + Inline Metadata Row */}
-      <div className="flex items-center space-x-3 pl-2 min-w-0 flex-1">
+      <div className="flex items-center space-x-3 pl-2.5 min-w-0 flex-1">
         <CompanyLogo
           name={opportunity.organization}
-          size={36}
-          className="h-9 w-9 shrink-0 rounded-lg border border-[#D8D5CE]"
+          size={38}
+          className="h-9.5 w-9.5 shrink-0 rounded-xl border border-black/[0.07]"
         />
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <h3 className="font-heading text-sm sm:text-[15px] font-extrabold text-[#080808] leading-snug group-hover:underline truncate max-w-full">
+            <h3 className="font-heading text-sm sm:text-[15px] font-bold text-[#101214] leading-snug group-hover:text-black truncate max-w-full">
               {opportunity.title}
             </h3>
 
-            <span className="text-xs font-bold text-[#555555] truncate">
+            <span className="text-xs font-medium text-[#6B7280] truncate">
               · {opportunity.organization}
             </span>
 
             {isNew && (
-              <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-1.5 py-0.2 font-heading text-[9px] font-extrabold uppercase text-[#080808]">
+              <span className="rounded-full bg-[#E3FC6D] border border-[#C6E832] px-2 py-0.5 font-heading text-[9.5px] font-semibold uppercase tracking-wide text-[#0E1012]">
                 New
               </span>
             )}
             {isUpdated && (
-              <span className="rounded-full bg-[#FEF189] border border-[#080808] px-1.5 py-0.2 font-heading text-[9px] font-extrabold uppercase text-[#080808]">
+              <span className="rounded-full bg-[#FEF9E7] border border-[#F5DFA0] px-2 py-0.5 font-heading text-[9.5px] font-semibold uppercase tracking-wide text-[#7A5908]">
                 Updated
               </span>
             )}
           </div>
 
           {/* Single Compact Metadata & Skills Row */}
-          <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] text-[#666666]">
+          <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] text-[#6B7280]">
             {opportunity.location && (
               <span className="inline-flex items-center gap-1">
-                <MapPin className="h-3 w-3 text-[#080808] shrink-0" />
+                <MapPin className="h-3 w-3 text-[#6B7280] shrink-0" />
                 <span className="truncate max-w-[180px]">{opportunity.location}</span>
               </span>
             )}
 
             {hasDistance && (
               <span
-                className="inline-flex items-center gap-0.5 rounded-full bg-[#E0FB66]/70 border border-[#080808] px-1.5 py-0.2 text-[10px] font-bold text-[#080808]"
+                className="inline-flex items-center gap-0.5 rounded-full bg-[#F3FCDA]/80 border border-[#C7E938]/50 px-2 py-0.5 text-[10px] font-semibold text-[#101214]"
                 title="Verified Haversine distance from your city"
               >
                 <Navigation className="h-2.5 w-2.5" />
@@ -189,14 +235,14 @@ export function OpportunityCard({
 
             {opportunity.workMode && (
               <span className="inline-flex items-center gap-1">
-                <Laptop className="h-3 w-3 text-[#080808] shrink-0" />
+                <Laptop className="h-3 w-3 text-[#6B7280] shrink-0" />
                 <span>{opportunity.workMode}</span>
               </span>
             )}
 
             {deadlineDisplay && (
               <span className="hidden md:inline-flex items-center gap-1">
-                <Calendar className="h-3 w-3 text-[#080808] shrink-0" />
+                <Calendar className="h-3 w-3 text-[#6B7280] shrink-0" />
                 <span>{deadlineDisplay}</span>
               </span>
             )}
@@ -205,13 +251,13 @@ export function OpportunityCard({
               !opportunity.compensation.toLowerCase().includes("unlisted") &&
               !opportunity.compensation.toLowerCase().includes("see") &&
               opportunity.compensation !== "Unknown" && (
-                <span className="px-1.5 py-0.2 rounded-full bg-[#FEF189] border border-[#080808] text-[10px] font-bold text-[#080808]">
+                <span className="px-2 py-0.5 rounded-full bg-[#FEF9E7] border border-[#F5DFA0] text-[10px] font-semibold text-[#7A5908]">
                   {opportunity.compensation}
                 </span>
               )}
 
             {opportunity.sourceName && (
-              <span className="hidden sm:inline-flex items-center text-[10px] font-semibold text-[#555555]">
+              <span className="hidden sm:inline-flex items-center text-[10px] font-medium text-[#6B7280]">
                 • {opportunity.sourceName.replace("Real-Time Web Index", "Live Web").replace(" (Web Index)", "")}
               </span>
             )}
@@ -219,7 +265,7 @@ export function OpportunityCard({
             {opportunity.requiredSkills.slice(0, 2).map((sk) => (
               <span
                 key={sk}
-                className="hidden lg:inline-flex rounded-full bg-[#FDF9F3] px-1.5 py-0.2 text-[10px] font-semibold text-[#080808] border border-[#D8D5CE]"
+                className="hidden lg:inline-flex rounded-full bg-[#F7F8F4] px-2 py-0.5 text-[10px] font-medium text-[#4B5563] border border-black/[0.06]"
               >
                 {sk}
               </span>
@@ -228,19 +274,17 @@ export function OpportunityCard({
         </div>
       </div>
 
-      {/* Right block: Compact Match Score + Action Pill + Inspect/Feedback/Save */}
-      <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pl-2 sm:pl-3">
-        <div className="flex items-center gap-1.5">
-          <div
-            className="inline-flex items-center rounded-full bg-[#E0FB66] border border-[#080808] px-2.5 py-0.5 font-heading text-[11px] font-extrabold text-[#080808]"
+      {/* Right block: Circular SVG Match Ring + Action Pill + Inspect/Feedback/Save */}
+      <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0 pl-2.5 sm:pl-3">
+        <div className="flex items-center gap-2">
+          <MatchScoreRing
+            score={evaluation.overallScore}
             title={
               semanticPercent > 0
                 ? `Overall Fit ${evaluation.overallScore}% (128-D Semantic: ${semanticPercent}%)`
                 : `Overall Fit ${evaluation.overallScore}%`
             }
-          >
-            <span>{evaluation.overallScore}%</span>
-          </div>
+          />
 
           <button
             type="button"
@@ -248,22 +292,22 @@ export function OpportunityCard({
               e.stopPropagation();
               onInspect(opportunity, evaluation, "why");
             }}
-            className="hidden md:inline-flex items-center gap-1 rounded-full border border-[#080808] bg-white hover:bg-[#FDF9F3] px-2 py-0.5 text-[10px] font-bold text-[#080808] transition cursor-pointer"
+            className="hidden md:inline-flex items-center gap-1 rounded-full border border-black/[0.09] bg-white hover:bg-[#F7F7F3] px-2.5 py-1 text-[11px] font-semibold text-[#101214] shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition cursor-pointer"
             title="Inspect AI match & evidence details"
           >
-            <Sparkles className="h-2.5 w-2.5" />
+            <Sparkles className="h-2.5 w-2.5 text-[#65B811]" />
             <span>Why</span>
           </button>
 
           {onFeedback && (
-            <div className="hidden xl:flex items-center">
+            <div className="hidden xl:flex items-center gap-0.5">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onFeedback(opportunity, "MARK_RELEVANT");
                 }}
-                className="p-1 rounded-full hover:bg-[#E0FB66] text-[#777777] hover:text-[#080808] transition cursor-pointer"
+                className="p-1.5 rounded-full hover:bg-[#F3FCDA] text-[#6B7280] hover:text-[#101214] transition cursor-pointer"
                 title="Mark Relevant"
                 aria-label="Mark relevant"
               >
@@ -275,7 +319,7 @@ export function OpportunityCard({
                   e.stopPropagation();
                   onFeedback(opportunity, "MARK_NOT_RELEVANT");
                 }}
-                className="p-1 rounded-full hover:bg-red-50 text-[#777777] hover:text-red-700 transition cursor-pointer"
+                className="p-1.5 rounded-full hover:bg-rose-50 text-[#6B7280] hover:text-rose-600 transition cursor-pointer"
                 title="Mark Not Relevant"
                 aria-label="Mark not relevant"
               >
@@ -291,7 +335,7 @@ export function OpportunityCard({
             e.stopPropagation();
             onInspect(opportunity, evaluation, "overview");
           }}
-          className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 font-heading text-xs font-bold transition-all shrink-0 cursor-pointer ${style.buttonBg}`}
+          className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-heading text-xs font-semibold transition-all shrink-0 cursor-pointer ${style.buttonBg}`}
         >
           {ActionIcon && <ActionIcon className={`h-3.5 w-3.5 ${style.iconColor}`} />}
           <span>{style.buttonLabel}</span>
@@ -303,13 +347,13 @@ export function OpportunityCard({
             e.stopPropagation();
             onSaveToTracker(opportunity);
           }}
-          className="p-1.5 text-[#080808] hover:bg-[#FDF9F3] rounded-full border border-transparent hover:border-[#080808] transition-colors shrink-0 cursor-pointer"
+          className="p-1.5 text-[#4B5563] hover:text-[#101214] hover:bg-[#F4F5F0] rounded-full border border-transparent hover:border-black/[0.07] transition-colors shrink-0 cursor-pointer"
           title={isSaved ? "Saved in Tracker" : "Save to Tracker"}
           aria-label="Save to tracker"
         >
           <Bookmark
             className={`h-4 w-4 ${
-              isSaved ? "fill-[#080808] text-[#080808]" : "text-[#080808]"
+              isSaved ? "fill-[#101214] text-[#101214]" : "text-[#4B5563]"
             }`}
           />
         </button>

@@ -404,38 +404,38 @@ export function ProfileView({
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-16 text-[#080808]">
+    <div className="space-y-6 max-w-6xl mx-auto pb-16 text-[#101214]">
       {/* ===================================================== */}
       {/* 1. HERO SECTION                                       */}
       {/* ===================================================== */}
-      <section className="neo-card-lg p-6 sm:p-8">
+      <section className="bg-white border border-black/[0.07] rounded-[24px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-[11px] uppercase tracking-[0.14em] font-heading font-extrabold text-[#777777]">
+          <span className="text-[11px] uppercase tracking-[0.14em] font-heading font-bold text-[#6B7280]">
             YOUR PROFILE
           </span>
 
           <div className="flex items-center space-x-3">
-            {/* Connected Sources & Ingestion Modal Button */}
+            {/* Opportunity Sources & Ingestion Modal Button */}
             <button
               type="button"
               onClick={() => setShowSourcesModal(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-2 border-[#080808] bg-[#E0FB66] hover:bg-[#d5f54e] text-[#080808] font-heading text-xs font-extrabold shadow-[2px_2px_0px_#080808] transition-all cursor-pointer"
-              title="Connected Sources & Ingestion Status"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] hover:bg-[#d8f653] text-[#0E1012] font-heading text-xs font-semibold shadow-[0_2px_10px_rgba(205,238,54,0.28)] transition-all cursor-pointer"
+              title="Opportunity Sources & Ingestion Hub"
             >
-              <Radio className="h-3.5 w-3.5 text-[#080808] animate-pulse" />
-              <span>Connected Sources</span>
+              <Radio className="h-3.5 w-3.5 text-[#0E1012] animate-pulse" />
+              <span>Opportunity Sources</span>
             </button>
           </div>
         </div>
 
         {/* Hero Headline & Subtitle */}
         <div className="mt-5 max-w-xl">
-          <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight text-[#080808] leading-[1.08]">
+          <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight text-[#101214] leading-[1.08]">
             Your career{" "}
             <span className="relative inline-block">
               foundation.
               <svg
-                className="absolute -bottom-1.5 left-0 w-full h-3.5 text-[#E0FB66] pointer-events-none"
+                className="absolute -bottom-1.5 left-0 w-full h-3.5 text-[#CBEF3B] pointer-events-none"
                 viewBox="0 0 180 18"
                 fill="none"
                 preserveAspectRatio="none"
@@ -450,7 +450,7 @@ export function ProfileView({
             </span>
           </h1>
 
-          <p className="mt-3 text-sm sm:text-base text-[#777777] font-medium leading-relaxed max-w-lg">
+          <p className="mt-3 text-sm sm:text-base text-[#6B7280] font-medium leading-relaxed max-w-lg">
             Keep your academic details, skills, experience and goals up to date for
             more accurate matching and preparation plans.
           </p>
@@ -459,11 +459,11 @@ export function ProfileView({
 
       {/* Global Feedback Banner */}
       {feedback && (
-        <div className="rounded-2xl border-2 border-[#080808] bg-[#E0FB66] px-4 py-3 text-xs sm:text-sm text-[#080808] font-heading font-bold flex items-center justify-between shadow-[3px_3px_0px_#080808]">
+        <div className="rounded-2xl border border-[#C7E938]/55 bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 px-4 py-3 text-xs sm:text-sm text-[#101214] font-heading font-semibold flex items-center justify-between shadow-[0_6px_20px_rgba(205,238,54,0.18)]">
           <span>{feedback}</span>
           <button
             onClick={() => setFeedback(null)}
-            className="text-[#080808] hover:opacity-70"
+            className="text-[#101214] hover:opacity-70 cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -479,37 +479,37 @@ export function ProfileView({
         {/* =================================================== */}
         <div className="lg:col-span-8 space-y-6">
           {/* Card A: Candidate Header & Profile Completeness */}
-          <section className="neo-card p-6">
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6">
             {/* Top row: Avatar, Info, Edit Button */}
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                {/* Large Black/Volt Avatar Circle */}
-                <div className="w-16 h-16 rounded-full bg-[#E0FB66] border-2 border-[#080808] flex items-center justify-center font-heading text-2xl font-extrabold text-[#080808] shrink-0 select-none shadow-[3px_3px_0px_#080808]">
+                {/* Large Lime Avatar Circle */}
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E3FC6D] to-[#C8F338] border border-[#B0DA1C] flex items-center justify-center font-heading text-2xl font-extrabold text-[#101214] shrink-0 select-none shadow-[0_6px_18px_rgba(205,238,54,0.3)]">
                   {candidateInitial}
                 </div>
 
                 <div className="space-y-1">
-                  <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-[#080808] leading-tight">
+                  <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#101214] leading-tight">
                     {formData.fullName || "Unconfigured Candidate Profile"}
                   </h2>
-                  <p className="text-xs sm:text-sm text-[#777777] font-medium">
+                  <p className="text-xs sm:text-sm text-[#6B7280] font-medium">
                     {formData.degree || formData.major
                       ? `${formData.degree || "Degree"}${formData.major ? `, ${formData.major}` : ""}${formData.graduationYear ? ` • Class of ${formData.graduationYear}` : ""}`
                       : "No academic details added yet — upload your resume or click Edit Profile"}
                   </p>
 
                   {/* Metadata Row */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1.5 text-xs text-[#777777]">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1.5 text-xs text-[#6B7280]">
                     {formData.location && (
                       <span className="flex items-center gap-1.5">
-                        <MapPin className="h-3.5 w-3.5 text-[#080808]" />
+                        <MapPin className="h-3.5 w-3.5 text-[#4B5563]" />
                         <span>{formData.location}</span>
                       </span>
                     )}
 
                     {formData.email && (
                       <span className="flex items-center gap-1.5">
-                        <Mail className="h-3.5 w-3.5 text-[#080808]" />
+                        <Mail className="h-3.5 w-3.5 text-[#4B5563]" />
                         <span>{formData.email}</span>
                       </span>
                     )}
@@ -519,9 +519,9 @@ export function ProfileView({
                         href={linkedInLink.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 hover:text-[#080808] transition-colors"
+                        className="flex items-center gap-1.5 hover:text-[#101214] transition-colors"
                       >
-                        <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-[3px] bg-[#080808] text-[#E0FB66] text-[9px] font-bold leading-none select-none">
+                        <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-[3px] bg-[#101214] text-[#E3FC6D] text-[9px] font-bold leading-none select-none">
                           in
                         </span>
                         <span>
@@ -537,28 +537,28 @@ export function ProfileView({
               <button
                 type="button"
                 onClick={() => openEditTab("general")}
-                className="neo-btn-outline inline-flex items-center gap-1.5 px-4 py-2 text-xs cursor-pointer self-start shrink-0"
+                className="rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold transition-colors cursor-pointer self-start shrink-0"
               >
-                <Pencil className="h-3.5 w-3.5 text-[#080808]" />
+                <Pencil className="h-3.5 w-3.5 text-[#4B5563]" />
                 <span>Edit Profile</span>
               </button>
             </div>
 
             {/* Profile Completeness Divider */}
-            <div className="mt-6 pt-5 border-t border-[#D8D5CE]">
+            <div className="mt-6 pt-5 border-t border-black/[0.06]">
               <div className="flex items-center justify-between mb-2.5">
-                <h3 className="font-heading text-sm sm:text-base font-extrabold text-[#080808]">
+                <h3 className="font-heading text-sm sm:text-base font-bold text-[#101214]">
                   Profile Completeness
                 </h3>
-                <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2.5 py-0.5 font-heading text-xs font-extrabold text-[#080808]">
+                <span className="rounded-full bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 px-2.5 py-0.5 font-heading text-xs font-semibold text-[#101214]">
                   {completenessPct}% Complete
                 </span>
               </div>
 
-              {/* Thick Volt-Lime Progress Bar */}
-              <div className="h-3 w-full bg-[#FDF9F3] border-2 border-[#080808] rounded-full overflow-hidden p-0.5">
+              {/* Smooth Lime Progress Bar */}
+              <div className="h-3 w-full bg-[#EFEFE9] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#E0FB66] rounded-full transition-all duration-500 ease-out"
+                  className="h-full bg-gradient-to-r from-[#84CC16] to-[#CBEF3B] rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${Math.max(4, completenessPct)}%` }}
                 />
               </div>
@@ -571,13 +571,13 @@ export function ProfileView({
                     className="flex items-center gap-1.5"
                   >
                     {check.done ? (
-                      <CheckCircle2 className="h-4 w-4 text-[#080808] fill-[#E0FB66] shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 text-[#4D7C0F] shrink-0" />
                     ) : (
-                      <Circle className="h-4 w-4 text-[#777777] shrink-0" />
+                      <Circle className="h-4 w-4 text-[#9CA3AF] shrink-0" />
                     )}
                     <span
                       className={`font-semibold ${
-                        check.done ? "text-[#080808]" : "text-[#777777]"
+                        check.done ? "text-[#101214]" : "text-[#6B7280]"
                       }`}
                     >
                       {check.label}
@@ -590,52 +590,52 @@ export function ProfileView({
 
           {/* Card B: "My Information" Stack */}
           <section className="space-y-3">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#080808]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#101214]">
               My Information
             </h2>
 
-            <div className="neo-card bg-white divide-y-2 divide-[#080808]/15 overflow-hidden">
+            <div className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] divide-y divide-black/[0.06] overflow-hidden">
               {/* Row 1: Academic Details */}
               <div
                 onClick={() => openEditTab("academic")}
-                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FDF9F3] transition-colors cursor-pointer group"
+                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FAFBF7] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#E0FB66] border-2 border-[#080808] flex items-center justify-center text-[#080808] shrink-0 group-hover:bg-[#FEF189] transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 flex items-center justify-center text-[#101214] shrink-0 group-hover:bg-[#E3FC6D] transition-colors">
                     <GraduationCap className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-[#080808]">
+                    <h3 className="font-semibold text-sm text-[#101214]">
                       Academic Details
                     </h3>
-                    <p className="text-xs text-[#777777]">
+                    <p className="text-xs text-[#6B7280]">
                       Degree, institution, year, CGPA
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs sm:text-sm font-semibold text-[#080808] text-right hidden sm:inline">
+                  <span className="text-xs sm:text-sm font-medium text-[#4B5563] text-right hidden sm:inline">
                     {formData.degree || formData.major
                       ? `${formData.degree || "Not set"}, ${formData.major || "Not set"} • GPA: ${formData.gpa ?? "Not set"}`
                       : "Not configured"}
                   </span>
-                  <ArrowRight className="h-4 w-4 text-[#080808] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  <ArrowRight className="h-4 w-4 text-[#4B5563] group-hover:text-[#101214] group-hover:translate-x-0.5 transition-all shrink-0" />
                 </div>
               </div>
 
               {/* Row 2: Skills */}
               <div
                 onClick={() => openEditTab("skills")}
-                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FDF9F3] transition-colors cursor-pointer group"
+                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FAFBF7] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#E0FB66] border-2 border-[#080808] flex items-center justify-center text-[#080808] shrink-0 group-hover:bg-[#FEF189] transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 flex items-center justify-center text-[#101214] shrink-0 group-hover:bg-[#E3FC6D] transition-colors">
                     <Layers className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-[#080808]">Skills</h3>
-                    <p className="text-xs text-[#777777]">
+                    <h3 className="font-semibold text-sm text-[#101214]">Skills</h3>
+                    <p className="text-xs text-[#6B7280]">
                       Technical and soft skills
                     </p>
                   </div>
@@ -646,88 +646,88 @@ export function ProfileView({
                     {(formData.skills || []).slice(0, 4).map((sk) => (
                       <span
                         key={sk}
-                        className="px-2.5 py-0.5 rounded-md bg-[#E0FB66] border border-[#080808] text-[11px] font-bold text-[#080808]"
+                        className="px-2.5 py-0.5 rounded-full bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 text-[11px] font-semibold text-[#101214]"
                       >
                         {sk}
                       </span>
                     ))}
                     {(formData.skills || []).length > 4 && (
-                      <span className="px-2 py-0.5 rounded-md bg-[#FDF9F3] border border-[#080808] text-[11px] font-bold text-[#080808]">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#F4F5F0] border border-black/[0.06] text-[11px] font-semibold text-[#4B5563]">
                         +{(formData.skills || []).length - 4}
                       </span>
                     )}
                   </div>
-                  <ArrowRight className="h-4 w-4 text-[#080808] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  <ArrowRight className="h-4 w-4 text-[#4B5563] group-hover:text-[#101214] group-hover:translate-x-0.5 transition-all shrink-0" />
                 </div>
               </div>
 
               {/* Row 3: Experience */}
               <div
                 onClick={() => openEditTab("experience")}
-                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FDF9F3] transition-colors cursor-pointer group"
+                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FAFBF7] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#E0FB66] border-2 border-[#080808] flex items-center justify-center text-[#080808] shrink-0 group-hover:bg-[#FEF189] transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 flex items-center justify-center text-[#101214] shrink-0 group-hover:bg-[#E3FC6D] transition-colors">
                     <Briefcase className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-[#080808]">
+                    <h3 className="font-semibold text-sm text-[#101214]">
                       Experience
                     </h3>
-                    <p className="text-xs text-[#777777]">
+                    <p className="text-xs text-[#6B7280]">
                       Internships, research, work experience
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs sm:text-sm font-semibold text-[#080808] text-right hidden sm:inline">
+                  <span className="text-xs sm:text-sm font-medium text-[#4B5563] text-right hidden sm:inline">
                     {internshipCount} {internshipCount === 1 ? "internship" : "internships"} • {researchCount} {researchCount === 1 ? "research role" : "research roles"}
                   </span>
-                  <ArrowRight className="h-4 w-4 text-[#080808] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  <ArrowRight className="h-4 w-4 text-[#4B5563] group-hover:text-[#101214] group-hover:translate-x-0.5 transition-all shrink-0" />
                 </div>
               </div>
 
               {/* Row 4: Projects */}
               <div
                 onClick={() => openEditTab("projects")}
-                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FDF9F3] transition-colors cursor-pointer group"
+                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FAFBF7] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#E0FB66] border-2 border-[#080808] flex items-center justify-center text-[#080808] shrink-0 group-hover:bg-[#FEF189] transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 flex items-center justify-center text-[#101214] shrink-0 group-hover:bg-[#E3FC6D] transition-colors">
                     <Code className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-[#080808]">Projects</h3>
-                    <p className="text-xs text-[#777777]">
+                    <h3 className="font-semibold text-sm text-[#101214]">Projects</h3>
+                    <p className="text-xs text-[#6B7280]">
                       Academic and personal projects
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-xs sm:text-sm font-semibold text-[#080808] text-right hidden sm:inline">
+                  <span className="text-xs sm:text-sm font-medium text-[#4B5563] text-right hidden sm:inline">
                     {projectsList.length} projects •{" "}
                     {projectsWithLinksCount} with links
                   </span>
-                  <ArrowRight className="h-4 w-4 text-[#080808] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  <ArrowRight className="h-4 w-4 text-[#4B5563] group-hover:text-[#101214] group-hover:translate-x-0.5 transition-all shrink-0" />
                 </div>
               </div>
 
               {/* Row 5: Career Preferences */}
               <div
                 onClick={() => openEditTab("preferences")}
-                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FDF9F3] transition-colors cursor-pointer group"
+                className="p-5 flex items-center justify-between gap-4 hover:bg-[#FAFBF7] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#E0FB66] border-2 border-[#080808] flex items-center justify-center text-[#080808] shrink-0 group-hover:bg-[#FEF189] transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 flex items-center justify-center text-[#101214] shrink-0 group-hover:bg-[#E3FC6D] transition-colors">
                     <Target className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-[#080808]">
+                    <h3 className="font-semibold text-sm text-[#101214]">
                       Career Preferences
                     </h3>
-                    <p className="text-xs text-[#777777]">
+                    <p className="text-xs text-[#6B7280]">
                       Roles, work mode, location, fields
                     </p>
                   </div>
@@ -738,7 +738,7 @@ export function ProfileView({
                     {(formData.targetRoles || []).slice(0, 2).map((r) => (
                       <span
                         key={r}
-                        className="px-2.5 py-0.5 rounded-md bg-[#E0FB66] border border-[#080808] text-[11px] font-bold text-[#080808]"
+                        className="px-2.5 py-0.5 rounded-full bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 text-[11px] font-semibold text-[#101214]"
                       >
                         {r}
                       </span>
@@ -746,13 +746,13 @@ export function ProfileView({
                     {(formData.preferredWorkModes || []).slice(0, 1).map((wm) => (
                       <span
                         key={wm}
-                        className="px-2.5 py-0.5 rounded-md bg-[#FDF9F3] border border-[#080808] text-[11px] font-bold text-[#080808]"
+                        className="px-2.5 py-0.5 rounded-full bg-[#F4F5F0] border border-black/[0.06] text-[11px] font-semibold text-[#4B5563]"
                       >
                         {wm}
                       </span>
                     ))}
                   </div>
-                  <ArrowRight className="h-4 w-4 text-[#080808] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  <ArrowRight className="h-4 w-4 text-[#4B5563] group-hover:text-[#101214] group-hover:translate-x-0.5 transition-all shrink-0" />
                 </div>
               </div>
             </div>
@@ -764,22 +764,22 @@ export function ProfileView({
         {/* =================================================== */}
         <div className="lg:col-span-4 space-y-6">
           {/* Card 1: At a Glance */}
-          <section className="neo-card bg-[#FDF9F3] p-5 space-y-4">
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-[#080808]" />
-              <h3 className="text-base font-extrabold text-[#080808]">
+              <Calendar className="h-4 w-4 text-[#4B5563]" />
+              <h3 className="text-base font-bold text-[#101214]">
                 At a Glance
               </h3>
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm">
               <div className="flex items-start gap-3">
-                <Calendar className="h-4 w-4 text-[#080808] mt-0.5 shrink-0" />
+                <Calendar className="h-4 w-4 text-[#4B5563] mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-bold text-[#080808]">
+                  <p className="font-semibold text-[#101214]">
                     {formData.graduationYear ? `Class of ${formData.graduationYear}` : "Graduation Year Not Set"}
                   </p>
-                  <p className="text-xs text-[#777777]">
+                  <p className="text-xs text-[#6B7280]">
                     {formData.degree || formData.major
                       ? `${formData.degree || ""}${formData.major ? `, ${formData.major}` : ""}`
                       : "Academic details not set"}
@@ -788,29 +788,29 @@ export function ProfileView({
               </div>
 
               <div className="flex items-center gap-3">
-                <Award className="h-4 w-4 text-[#080808] shrink-0" />
-                <p className="font-bold text-[#080808]">
+                <Award className="h-4 w-4 text-[#4B5563] shrink-0" />
+                <p className="font-semibold text-[#101214]">
                   {formData.gpa !== null && formData.gpa !== undefined ? `${formData.gpa} GPA` : "GPA Not Set"}
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <Briefcase className="h-4 w-4 text-[#080808] shrink-0" />
-                <p className="font-bold text-[#080808]">
+                <Briefcase className="h-4 w-4 text-[#4B5563] shrink-0" />
+                <p className="font-semibold text-[#101214]">
                   {experiencesList.length} {experiencesList.length === 1 ? "Experience" : "Experiences"}
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <FolderGit2 className="h-4 w-4 text-[#080808] shrink-0" />
-                <p className="font-bold text-[#080808]">
+                <FolderGit2 className="h-4 w-4 text-[#4B5563] shrink-0" />
+                <p className="font-semibold text-[#101214]">
                   {projectsList.length} {projectsList.length === 1 ? "Project" : "Projects"}
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <Code className="h-4 w-4 text-[#080808] shrink-0" />
-                <p className="font-bold text-[#080808]">
+                <Code className="h-4 w-4 text-[#4B5563] shrink-0" />
+                <p className="font-semibold text-[#101214]">
                   {(formData.skills || []).length} Key Skills
                 </p>
               </div>
@@ -820,24 +820,24 @@ export function ProfileView({
           {/* Card 2: Your Goals */}
           <section
             onClick={() => openEditTab("goals")}
-            className="neo-card bg-[#FEF189] p-5 relative overflow-hidden group cursor-pointer"
+            className="rounded-[22px] border border-[#F5DFA0] bg-[#FEF9E7] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-5 relative overflow-hidden group cursor-pointer hover:bg-[#fdf5d6] transition-colors"
           >
             <div className="relative z-10 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Target className="h-4 w-4 text-[#080808]" />
-                  <h3 className="text-base font-extrabold text-[#080808]">
+                  <Target className="h-4 w-4 text-[#715515]" />
+                  <h3 className="text-base font-bold text-[#101214]">
                     Your Goals
                   </h3>
                 </div>
-                <Pencil className="h-3.5 w-3.5 text-[#080808] opacity-60 group-hover:opacity-100 transition-opacity" />
+                <Pencil className="h-3.5 w-3.5 text-[#715515] opacity-70 group-hover:opacity-100 transition-opacity" />
               </div>
 
               <div className="flex items-start gap-2">
-                <span className="text-2xl font-extrabold text-[#080808] leading-none select-none -mt-0.5">
+                <span className="text-2xl font-extrabold text-[#B47818] leading-none select-none -mt-0.5">
                   “
                 </span>
-                <p className="italic text-xs sm:text-sm font-medium text-[#080808] leading-relaxed">
+                <p className="italic text-xs sm:text-sm font-medium text-[#101214] leading-relaxed">
                   {formData.headline ||
                     "No career objective added yet — click to add your career headline and goals."}
                   ”
@@ -847,15 +847,15 @@ export function ProfileView({
           </section>
 
           {/* Card 3: Resume & Documents */}
-          <section className="neo-card bg-white p-5 space-y-4">
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-5 space-y-4">
             <div>
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#080808]" />
-                <h3 className="text-base font-extrabold text-[#080808]">
+                <FileText className="h-4 w-4 text-[#4B5563]" />
+                <h3 className="text-base font-bold text-[#101214]">
                   Resume & Documents
                 </h3>
               </div>
-              <p className="text-xs text-[#777777] mt-1">
+              <p className="text-xs text-[#6B7280] mt-1">
                 Keep your key documents ready for applications.
               </p>
             </div>
@@ -863,14 +863,14 @@ export function ProfileView({
             {/* Document Items List */}
             <div className="space-y-2.5">
               {formData.resumeFilename ? (
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FDF9F3] border-2 border-[#080808] text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAFBF7] border border-black/[0.07] text-xs">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <FileText className="h-4 w-4 text-[#080808] shrink-0" />
+                    <FileText className="h-4 w-4 text-[#4D7C0F] shrink-0" />
                     <div className="truncate">
-                      <p className="font-bold text-[#080808] truncate">
+                      <p className="font-semibold text-[#101214] truncate">
                         {formData.resumeFilename}
                       </p>
-                      <p className="text-[10px] text-[#777777]">
+                      <p className="text-[10px] text-[#6B7280]">
                         {formData.updatedAt
                           ? `Updated: ${new Date(formData.updatedAt).toLocaleDateString()}`
                           : "Extracted from uploaded document"}
@@ -879,7 +879,7 @@ export function ProfileView({
                   </div>
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-[#FDF9F3] border-2 border-dashed border-[#D8D5CE] text-xs text-[#777777]">
+                <div className="p-3 rounded-xl bg-[#FAFBF7] border border-dashed border-black/[0.12] text-xs text-[#6B7280]">
                   No resume document uploaded yet.
                 </div>
               )}
@@ -890,13 +890,13 @@ export function ProfileView({
               <button
                 type="button"
                 onClick={onUploadNewResume}
-                className="neo-btn-outline text-xs py-2.5 flex items-center justify-center gap-2 cursor-pointer w-full"
+                className="rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] text-xs font-semibold py-2.5 flex items-center justify-center gap-2 cursor-pointer w-full transition-colors"
               >
                 <Upload className="h-3.5 w-3.5" />
                 <span>Upload & Extract New Resume</span>
               </button>
             ) : (
-              <label className="neo-btn-outline text-xs py-2.5 flex items-center justify-center gap-2 cursor-pointer w-full">
+              <label className="rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] text-xs font-semibold py-2.5 flex items-center justify-center gap-2 cursor-pointer w-full transition-colors">
                 <Upload className="h-3.5 w-3.5" />
                 <span>
                   {uploading ? "Extracting Facts..." : "Upload Document"}
@@ -921,29 +921,29 @@ export function ProfileView({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#080808]/60 backdrop-blur-xs animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F1113]/55 backdrop-blur-sm animate-in fade-in duration-200"
         >
-          <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl border-2 border-[#080808] shadow-[6px_6px_0px_#080808] flex flex-col overflow-hidden text-[#080808]">
+          <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-[26px] border border-black/[0.08] shadow-[0_24px_60px_rgba(15,23,42,0.16)] flex flex-col overflow-hidden text-[#101214]">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b-2 border-[#080808] flex items-center justify-between bg-[#FDF9F3]">
+            <div className="px-6 py-4 border-b border-black/[0.06] flex items-center justify-between bg-[#FAFBF7]">
               <div>
-                <h3 className="text-lg font-extrabold text-[#080808]">
+                <h3 className="text-lg font-bold text-[#101214]">
                   Edit Profile & Information
                 </h3>
-                <p className="text-xs text-[#777777]">
+                <p className="text-xs text-[#6B7280]">
                   Ground your career foundation with accurate, verified facts.
                 </p>
               </div>
               <button
                 onClick={() => setEditModalOpen(false)}
-                className="rounded-xl border-2 border-[#080808] bg-white p-1.5 text-[#080808] hover:bg-[#FEF189] transition-colors cursor-pointer"
+                className="rounded-full border border-black/[0.08] bg-white p-1.5 text-[#4B5563] hover:text-[#101214] hover:bg-[#F4F5F0] transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Modal Navigation Tabs */}
-            <div className="px-6 border-b-2 border-[#080808] bg-[#FDF9F3] flex items-center gap-2 overflow-x-auto text-xs font-bold py-2.5">
+            <div className="px-6 border-b border-black/[0.06] bg-[#FAFBF7] flex items-center gap-1.5 overflow-x-auto text-xs py-2.5">
               {[
                 { id: "general", label: "General" },
                 { id: "academic", label: "Academic" },
@@ -957,10 +957,10 @@ export function ProfileView({
                   key={t.id}
                   type="button"
                   onClick={() => setActiveEditTab(t.id as EditTab)}
-                  className={`px-3 py-1.5 rounded-full border-2 border-[#080808] transition-colors whitespace-nowrap cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-full transition-colors whitespace-nowrap cursor-pointer ${
                     activeEditTab === t.id
-                      ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
-                      : "bg-white text-[#777777] hover:text-[#080808]"
+                      ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                      : "bg-[#F4F5F0] text-[#4B5563] border border-black/[0.06] hover:bg-[#EAECE4] hover:text-[#101214] font-medium"
                   }`}
                 >
                   {t.label}
@@ -974,53 +974,53 @@ export function ProfileView({
               {activeEditTab === "general" && (
                 <div className="space-y-4 text-xs sm:text-sm">
                   <div>
-                    <label className="block font-bold mb-1">Full Name</label>
+                    <label className="block font-semibold text-[#101214] mb-1">Full Name</label>
                     <input
                       type="text"
                       value={formData.fullName || ""}
                       onChange={(e) => handleChange("fullName", e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] focus:outline-none focus:bg-white text-sm"
+                      className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-bold mb-1">Email Address</label>
+                    <label className="block font-semibold text-[#101214] mb-1">Email Address</label>
                     <input
                       type="email"
                       value={formData.email || ""}
                       onChange={(e) => handleChange("email", e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] focus:outline-none focus:bg-white text-sm"
+                      className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-bold mb-1">Location</label>
+                    <label className="block font-semibold text-[#101214] mb-1">Location</label>
                     <input
                       type="text"
                       value={formData.location || ""}
                       onChange={(e) => handleChange("location", e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] focus:outline-none focus:bg-white text-sm"
+                      className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                     />
                   </div>
 
                   {/* Portfolio / LinkedIn Links */}
                   <div>
-                    <label className="block font-bold mb-1">
+                    <label className="block font-semibold text-[#101214] mb-1">
                       Portfolio & Social Links
                     </label>
                     <div className="space-y-2 mb-2">
                       {(formData.portfolioLinks || []).map((l) => (
                         <div
                           key={l.url}
-                          className="flex items-center justify-between p-2 rounded-lg bg-[#FDF9F3] border border-[#080808] text-xs"
+                          className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAFBF7] border border-black/[0.07] text-xs"
                         >
-                          <span className="font-semibold text-[#080808]">
+                          <span className="font-semibold text-[#101214]">
                             {l.label}: {l.url}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleRemoveLink(l.url)}
-                            className="text-rose-600 hover:text-rose-800"
+                            className="text-rose-600 hover:text-rose-800 cursor-pointer"
                           >
                             <X className="h-3.5 w-3.5" />
                           </button>
@@ -1034,19 +1034,19 @@ export function ProfileView({
                         placeholder="Label (e.g. LinkedIn)"
                         value={linkTitle}
                         onChange={(e) => setLinkTitle(e.target.value)}
-                        className="w-1/3 px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#FDF9F3] text-xs"
+                        className="w-1/3 px-3 py-1.5 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                       <input
                         type="text"
                         placeholder="URL (e.g. https://linkedin.com/in/...)"
                         value={linkUrl}
                         onChange={(e) => setLinkUrl(e.target.value)}
-                        className="flex-1 px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#FDF9F3] text-xs"
+                        className="flex-1 px-3 py-1.5 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                       <button
                         type="button"
                         onClick={handleAddLink}
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#E0FB66] text-[#080808] font-bold text-xs hover:bg-[#FEF189] cursor-pointer"
+                        className="px-3.5 py-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] font-semibold text-xs hover:bg-[#d8f653] cursor-pointer"
                       >
                         Add
                       </button>
@@ -1059,50 +1059,50 @@ export function ProfileView({
               {activeEditTab === "academic" && (
                 <div className="space-y-4 text-xs sm:text-sm">
                   <div>
-                    <label className="block font-bold mb-1">University / College</label>
+                    <label className="block font-semibold text-[#101214] mb-1">University / College</label>
                     <input
                       type="text"
                       value={formData.university || ""}
                       onChange={(e) => handleChange("university", e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm"
+                      className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block font-bold mb-1">Degree</label>
+                      <label className="block font-semibold text-[#101214] mb-1">Degree</label>
                       <input
                         type="text"
                         value={formData.degree || ""}
                         onChange={(e) => handleChange("degree", e.target.value)}
-                        className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm"
+                        className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                       />
                     </div>
                     <div>
-                      <label className="block font-bold mb-1">Major / Branch</label>
+                      <label className="block font-semibold text-[#101214] mb-1">Major / Branch</label>
                       <input
                         type="text"
                         value={formData.major || ""}
                         onChange={(e) => handleChange("major", e.target.value)}
-                        className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm"
+                        className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block font-bold mb-1">Graduation Year</label>
+                      <label className="block font-semibold text-[#101214] mb-1">Graduation Year</label>
                       <input
                         type="number"
                         value={formData.graduationYear || 2026}
                         onChange={(e) =>
                           handleChange("graduationYear", parseInt(e.target.value, 10))
                         }
-                        className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm"
+                        className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                       />
                     </div>
                     <div>
-                      <label className="block font-bold mb-1">GPA / CGPA</label>
+                      <label className="block font-semibold text-[#101214] mb-1">GPA / CGPA</label>
                       <input
                         type="number"
                         step="0.01"
@@ -1110,7 +1110,7 @@ export function ProfileView({
                         onChange={(e) =>
                           handleChange("gpa", parseFloat(e.target.value))
                         }
-                        className="w-full px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm"
+                        className="w-full px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                       />
                     </div>
                   </div>
@@ -1132,12 +1132,12 @@ export function ProfileView({
                           handleAddSkill();
                         }
                       }}
-                      className="flex-1 px-3.5 py-2 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm"
+                      className="flex-1 px-3.5 py-2 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-sm"
                     />
                     <button
                       type="button"
                       onClick={handleAddSkill}
-                      className="px-4 py-2 rounded-xl border-2 border-[#080808] bg-[#E0FB66] text-[#080808] text-xs font-bold hover:bg-[#FEF189] cursor-pointer"
+                      className="px-4 py-2 rounded-full border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] text-xs font-semibold hover:bg-[#d8f653] cursor-pointer"
                     >
                       Add Skill
                     </button>
@@ -1147,7 +1147,7 @@ export function ProfileView({
                     {(formData.skills || []).map((sk) => (
                       <span
                         key={sk}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E0FB66] border border-[#080808] text-xs font-bold text-[#080808]"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 text-xs font-semibold text-[#101214]"
                       >
                         <span>{sk}</span>
                         <button
@@ -1170,15 +1170,15 @@ export function ProfileView({
                     {(formData.experiences || []).map((exp) => (
                       <div
                         key={exp.id}
-                        className="p-3 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] flex items-start justify-between"
+                        className="p-3.5 rounded-xl border border-black/[0.07] bg-[#FAFBF7] flex items-start justify-between"
                       >
                         <div>
-                          <p className="font-bold text-[#080808] text-sm">
+                          <p className="font-semibold text-[#101214] text-sm">
                             {exp.title} • {exp.company}
                           </p>
-                          <p className="text-[#777777] text-xs">{exp.duration}</p>
+                          <p className="text-[#6B7280] text-xs">{exp.duration}</p>
                           {exp.bullets && exp.bullets.length > 0 && (
-                            <ul className="list-disc list-inside mt-1 text-[#080808]/80 space-y-0.5">
+                            <ul className="list-disc list-inside mt-1 text-[#4B5563] space-y-0.5">
                               {exp.bullets.map((b, i) => (
                                 <li key={i}>{b}</li>
                               ))}
@@ -1188,7 +1188,7 @@ export function ProfileView({
                         <button
                           type="button"
                           onClick={() => handleRemoveExperience(exp.id)}
-                          className="text-rose-600 hover:text-rose-800 p-1"
+                          className="text-rose-600 hover:text-rose-800 p-1 cursor-pointer"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -1197,22 +1197,22 @@ export function ProfileView({
                   </div>
 
                   {/* Add Experience Form */}
-                  <div className="p-3.5 rounded-xl border-2 border-[#080808] bg-[#FEF189]/40 space-y-2">
-                    <p className="font-bold text-xs text-[#080808]">Add New Experience</p>
+                  <div className="p-4 rounded-2xl border border-[#F5DFA0] bg-[#FEF9E7] space-y-2.5">
+                    <p className="font-semibold text-xs text-[#101214]">Add New Experience</p>
                     <div className="grid grid-cols-2 gap-2">
                       <input
                         type="text"
                         placeholder="Role / Title"
                         value={expTitle}
                         onChange={(e) => setExpTitle(e.target.value)}
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                        className="px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                       <input
                         type="text"
                         placeholder="Company / Lab"
                         value={expCompany}
                         onChange={(e) => setExpCompany(e.target.value)}
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                        className="px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                     </div>
                     <input
@@ -1220,19 +1220,19 @@ export function ProfileView({
                       placeholder="Duration (e.g. May 2025 - Aug 2025)"
                       value={expDuration}
                       onChange={(e) => setExpDuration(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                      className="w-full px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                     />
                     <textarea
                       placeholder="Bullet points (one per line)"
                       value={expBullets}
                       onChange={(e) => setExpBullets(e.target.value)}
                       rows={2}
-                      className="w-full px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                      className="w-full px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                     />
                     <button
                       type="button"
                       onClick={handleAddExperience}
-                      className="px-3.5 py-1.5 rounded-lg border-2 border-[#080808] bg-[#E0FB66] text-[#080808] font-bold text-xs hover:bg-[#FEF189] cursor-pointer"
+                      className="px-4 py-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] font-semibold text-xs hover:bg-[#d8f653] cursor-pointer"
                     >
                       Save Experience Item
                     </button>
@@ -1247,15 +1247,15 @@ export function ProfileView({
                     {(formData.projects || []).map((proj, idx) => (
                       <div
                         key={proj.id || idx}
-                        className="p-3 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] flex items-start justify-between"
+                        className="p-3.5 rounded-xl border border-black/[0.07] bg-[#FAFBF7] flex items-start justify-between"
                       >
                         <div>
-                          <p className="font-bold text-[#080808] text-sm">
+                          <p className="font-semibold text-[#101214] text-sm">
                             {proj.name}
                           </p>
-                          <p className="text-[#777777] text-xs">{proj.description}</p>
+                          <p className="text-[#6B7280] text-xs">{proj.description}</p>
                           {proj.techStack && (
-                            <p className="text-[#080808] text-[11px] font-semibold mt-1">
+                            <p className="text-[#101214] text-[11px] font-semibold mt-1">
                               Stack:{" "}
                               {Array.isArray(proj.techStack)
                                 ? proj.techStack.join(", ")
@@ -1267,7 +1267,7 @@ export function ProfileView({
                               href={proj.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[11px] text-[#080808] underline flex items-center gap-1 mt-0.5"
+                              className="text-[11px] text-[#101214] underline flex items-center gap-1 mt-0.5"
                             >
                               <span>{proj.link}</span>
                               <ExternalLink className="h-3 w-3" />
@@ -1277,7 +1277,7 @@ export function ProfileView({
                         <button
                           type="button"
                           onClick={() => handleRemoveProject(proj.id, proj.name)}
-                          className="text-rose-600 hover:text-rose-800 p-1"
+                          className="text-rose-600 hover:text-rose-800 p-1 cursor-pointer"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -1286,21 +1286,21 @@ export function ProfileView({
                   </div>
 
                   {/* Add Project Form */}
-                  <div className="p-3.5 rounded-xl border-2 border-[#080808] bg-[#FEF189]/40 space-y-2">
-                    <p className="font-bold text-xs text-[#080808]">Add Technical Project</p>
+                  <div className="p-4 rounded-2xl border border-[#F5DFA0] bg-[#FEF9E7] space-y-2.5">
+                    <p className="font-semibold text-xs text-[#101214]">Add Technical Project</p>
                     <input
                       type="text"
                       placeholder="Project Name"
                       value={projName}
                       onChange={(e) => setProjName(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                      className="w-full px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                     />
                     <textarea
                       placeholder="Description & impact"
                       value={projDesc}
                       onChange={(e) => setProjDesc(e.target.value)}
                       rows={2}
-                      className="w-full px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                      className="w-full px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                     />
                     <div className="grid grid-cols-2 gap-2">
                       <input
@@ -1308,20 +1308,20 @@ export function ProfileView({
                         placeholder="Tech Stack (e.g. Next.js, SQLite)"
                         value={projTech}
                         onChange={(e) => setProjTech(e.target.value)}
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                        className="px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                       <input
                         type="text"
                         placeholder="GitHub / Live Link"
                         value={projLink}
                         onChange={(e) => setProjLink(e.target.value)}
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-white text-xs"
+                        className="px-3 py-1.5 rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={handleAddProject}
-                      className="px-3.5 py-1.5 rounded-lg border-2 border-[#080808] bg-[#E0FB66] text-[#080808] font-bold text-xs hover:bg-[#FEF189] cursor-pointer"
+                      className="px-4 py-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] font-semibold text-xs hover:bg-[#d8f653] cursor-pointer"
                     >
                       Save Project Item
                     </button>
@@ -1334,7 +1334,7 @@ export function ProfileView({
                 <div className="space-y-4 text-xs sm:text-sm">
                   {/* Target Roles */}
                   <div>
-                    <label className="block font-bold mb-1">Target Roles</label>
+                    <label className="block font-semibold text-[#101214] mb-1">Target Roles</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
@@ -1347,12 +1347,12 @@ export function ProfileView({
                             handleAddRole();
                           }
                         }}
-                        className="flex-1 px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#FDF9F3] text-xs"
+                        className="flex-1 px-3 py-1.5 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                       <button
                         type="button"
                         onClick={handleAddRole}
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#E0FB66] text-[#080808] text-xs font-bold cursor-pointer"
+                        className="px-3.5 py-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] text-xs font-semibold hover:bg-[#d8f653] cursor-pointer"
                       >
                         Add Role
                       </button>
@@ -1362,7 +1362,7 @@ export function ProfileView({
                       {(formData.targetRoles || []).map((r) => (
                         <span
                           key={r}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[#080808] bg-[#E0FB66] text-[#080808] text-xs font-bold"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-[#C7E938]/55 bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 text-[#101214] text-xs font-semibold"
                         >
                           <span>{r}</span>
                           <button
@@ -1379,7 +1379,7 @@ export function ProfileView({
 
                   {/* Preferred Locations */}
                   <div>
-                    <label className="block font-bold mb-1">Preferred Locations</label>
+                    <label className="block font-semibold text-[#101214] mb-1">Preferred Locations</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
@@ -1392,12 +1392,12 @@ export function ProfileView({
                             handleAddLocation();
                           }
                         }}
-                        className="flex-1 px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#FDF9F3] text-xs"
+                        className="flex-1 px-3 py-1.5 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all focus:outline-none text-xs"
                       />
                       <button
                         type="button"
                         onClick={handleAddLocation}
-                        className="px-3 py-1.5 rounded-lg border-2 border-[#080808] bg-[#E0FB66] text-[#080808] text-xs font-bold cursor-pointer"
+                        className="px-3.5 py-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] text-xs font-semibold hover:bg-[#d8f653] cursor-pointer"
                       >
                         Add Location
                       </button>
@@ -1407,7 +1407,7 @@ export function ProfileView({
                       {(formData.preferredLocations || []).map((loc) => (
                         <span
                           key={loc}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[#080808] bg-[#FEF189] text-[#080808] text-xs font-bold"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-[#F5DFA0] bg-[#FEF9E7] text-[#715515] text-xs font-semibold"
                         >
                           <span>{loc}</span>
                           <button
@@ -1424,14 +1424,14 @@ export function ProfileView({
 
                   {/* Work Modes */}
                   <div>
-                    <label className="block font-bold mb-1">Work Modes</label>
+                    <label className="block font-semibold text-[#101214] mb-1">Work Modes</label>
                     <div className="flex gap-3">
                       {(["Remote", "Hybrid", "On-site"] as WorkMode[]).map((wm) => {
                         const checked = (formData.preferredWorkModes || []).includes(wm);
                         return (
                           <label
                             key={wm}
-                            className="flex items-center gap-2 cursor-pointer text-xs font-semibold"
+                            className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#101214]"
                           >
                             <input
                               type="checkbox"
@@ -1443,7 +1443,7 @@ export function ProfileView({
                                   : current.filter((m) => m !== wm);
                                 handleChange("preferredWorkModes", next);
                               }}
-                              className="rounded border-[#080808] text-[#080808] focus:ring-[#080808]"
+                              className="rounded border-black/20 text-[#101214] focus:ring-[#94D814]"
                             />
                             <span>{wm}</span>
                           </label>
@@ -1458,10 +1458,10 @@ export function ProfileView({
               {activeEditTab === "goals" && (
                 <div className="space-y-4 text-xs sm:text-sm">
                   <div>
-                    <label className="block font-bold mb-1">
+                    <label className="block font-semibold text-[#101214] mb-1">
                       Career Mission & Statement
                     </label>
-                    <p className="text-xs text-[#777777] mb-2">
+                    <p className="text-xs text-[#6B7280] mb-2">
                       This statement personalizes the &ldquo;Your Goals&rdquo; card and guides the role expansion engine.
                     </p>
                     <textarea
@@ -1469,7 +1469,7 @@ export function ProfileView({
                       value={formData.headline || ""}
                       onChange={(e) => handleChange("headline", e.target.value)}
                       placeholder="Gain industry experience in software development and work on impactful, real-world projects."
-                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] text-sm focus:outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all text-sm focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1477,11 +1477,11 @@ export function ProfileView({
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 border-t-2 border-[#080808] bg-[#FDF9F3] flex items-center justify-between">
+            <div className="px-6 py-4 border-t border-black/[0.06] bg-[#FAFBF7] flex items-center justify-between">
               <button
                 type="button"
                 onClick={onDeleteProfile}
-                className="text-xs font-bold text-rose-700 hover:text-rose-900 flex items-center gap-1.5 cursor-pointer"
+                className="text-xs font-semibold text-rose-700 hover:text-rose-900 flex items-center gap-1.5 cursor-pointer"
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 <span>Delete Profile Data</span>
@@ -1491,7 +1491,7 @@ export function ProfileView({
                 <button
                   type="button"
                   onClick={() => setEditModalOpen(false)}
-                  className="neo-btn-outline px-4 py-2 text-xs cursor-pointer"
+                  className="rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] px-4 py-2 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1499,9 +1499,9 @@ export function ProfileView({
                   type="button"
                   onClick={handleSave}
                   disabled={saving}
-                  className="neo-btn-primary px-5 py-2 text-xs transition-colors disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
+                  className="rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 transition-all px-5 py-2 text-xs disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Save className="h-3.5 w-3.5 text-[#E0FB66]" />
+                  <Save className="h-3.5 w-3.5 text-[#E3FC6D]" />
                   <span>{saving ? "Saving..." : "Save Changes"}</span>
                 </button>
               </div>

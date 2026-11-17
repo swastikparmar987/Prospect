@@ -450,13 +450,13 @@ export function UpskillView({
       {/* ========================================================= */}
       {/* EDITORIAL HERO BANNER                                     */}
       {/* ========================================================= */}
-      <div className="neo-card-lg p-6 sm:p-8 flex flex-col justify-between">
+      <div className="bg-white border border-black/[0.07] rounded-[24px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6 sm:p-8 flex flex-col justify-between">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="inline-flex items-center gap-2">
-            <span className="text-[11px] font-heading font-extrabold tracking-[0.16em] text-[#777777] uppercase">
+            <span className="text-[11px] font-heading font-bold tracking-[0.14em] text-[#6B7280] uppercase">
               ENGINEERING UPSKILL & SKILL ACCELERATOR
             </span>
-            <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2.5 py-0.5 font-heading text-[10px] font-extrabold text-[#080808]">
+            <span className="rounded-full bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 px-2.5 py-0.5 font-heading text-[10px] font-semibold text-[#101214]">
               Verified Labs
             </span>
           </div>
@@ -465,7 +465,7 @@ export function UpskillView({
             {onOpenProjectLab && (
               <button
                 onClick={onOpenProjectLab}
-                className="neo-btn-primary inline-flex items-center space-x-1.5 px-4 py-2 text-xs cursor-pointer"
+                className="rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 transition-all inline-flex items-center space-x-1.5 px-4 py-2 text-xs cursor-pointer"
               >
                 <FolderGit2 className="h-3.5 w-3.5" />
                 <span>Open Project Evaluator</span>
@@ -475,12 +475,12 @@ export function UpskillView({
         </div>
 
         <div className="mt-5 max-w-2xl">
-          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#080808] leading-[1.08]">
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#101214] leading-[1.08]">
             Close your{" "}
             <span className="relative inline-block">
               skill gaps.
               <svg
-                className="absolute -bottom-1.5 left-0 w-full h-3.5 text-[#E0FB66] pointer-events-none"
+                className="absolute -bottom-1.5 left-0 w-full h-3.5 text-[#CBEF3B] pointer-events-none"
                 viewBox="0 0 180 18"
                 fill="none"
                 preserveAspectRatio="none"
@@ -494,34 +494,34 @@ export function UpskillView({
               </svg>
             </span>
           </h1>
-          <p className="mt-2.5 text-xs sm:text-sm text-[#777777] font-medium leading-relaxed">
+          <p className="mt-2.5 text-xs sm:text-sm text-[#6B7280] font-medium leading-relaxed">
             Turn missing job requirements into demonstrable engineering proof. Master production systems, clone verified starter challenge repos, and build production-grade projects.
           </p>
         </div>
 
         {/* Quick Stats Bar */}
-        <div className="mt-6 pt-5 border-t-2 border-[#080808]/10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="rounded-xl border-2 border-[#080808] bg-white p-3 shadow-[2px_2px_0px_#080808]">
-            <div className="text-[11px] font-bold text-[#777777]">Target Role</div>
-            <div className="font-heading text-sm font-extrabold text-[#080808] truncate mt-0.5">
+        <div className="mt-6 pt-5 border-t border-black/[0.06] grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-2xl border border-black/[0.07] bg-[#FAFBF7] p-3.5 shadow-[0_2px_10px_rgba(15,23,42,0.03)]">
+            <div className="text-[11px] font-medium text-[#6B7280]">Target Role</div>
+            <div className="font-heading text-sm font-bold text-[#101214] truncate mt-0.5">
               {selectedRole}
             </div>
           </div>
-          <div className="rounded-xl border-2 border-[#080808] bg-[#FEF189] p-3 shadow-[2px_2px_0px_#080808]">
-            <div className="text-[11px] font-bold text-[#080808]/80">Verified Profile Skills</div>
-            <div className="font-heading text-base font-extrabold text-[#080808] mt-0.5">
+          <div className="rounded-2xl border border-[#F5DFA0] bg-[#FEF9E7] p-3.5">
+            <div className="text-[11px] font-medium text-[#715515]">Verified Profile Skills</div>
+            <div className="font-heading text-base font-bold text-[#101214] mt-0.5">
               {userProfile?.skills?.length || 8} Active
             </div>
           </div>
-          <div className="rounded-xl border-2 border-[#080808] bg-[#E0FB66] p-3 shadow-[2px_2px_0px_#080808]">
-            <div className="text-[11px] font-bold text-[#080808]/80">Milestones Completed</div>
-            <div className="font-heading text-base font-extrabold text-[#080808] mt-0.5">
+          <div className="rounded-2xl border border-[#C7E938]/55 bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 p-3.5">
+            <div className="text-[11px] font-medium text-[#3F6212]">Milestones Completed</div>
+            <div className="font-heading text-base font-bold text-[#101214] mt-0.5">
               {totalChecked} / {totalTasks} ({progressPercent}%)
             </div>
           </div>
-          <div className="rounded-xl border-2 border-[#080808] bg-white p-3 shadow-[2px_2px_0px_#080808]">
-            <div className="text-[11px] font-bold text-[#777777]">Verified Lab Starters</div>
-            <div className="font-heading text-base font-extrabold text-[#080808] mt-0.5">
+          <div className="rounded-2xl border border-black/[0.07] bg-[#FAFBF7] p-3.5 shadow-[0_2px_10px_rgba(15,23,42,0.03)]">
+            <div className="text-[11px] font-medium text-[#6B7280]">Verified Lab Starters</div>
+            <div className="font-heading text-base font-bold text-[#101214] mt-0.5">
               {codingLabs.length} Available
             </div>
           </div>
@@ -531,15 +531,15 @@ export function UpskillView({
       {/* ========================================================= */}
       {/* SECTION NAVIGATION TABS                                   */}
       {/* ========================================================= */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#080808]/10 pb-2">
-        <div className="inline-flex items-center rounded-2xl border-2 border-[#080808] bg-white p-1 shadow-[3px_3px_0px_#080808]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.06] pb-3">
+        <div className="inline-flex flex-wrap items-center gap-1.5 rounded-full border border-black/[0.06] bg-[#F4F5F0] p-1">
           <button
             type="button"
             onClick={() => setActiveTab("roadmaps")}
-            className={`rounded-xl px-4 py-2 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`rounded-full px-4 py-2 font-heading text-xs transition-all cursor-pointer ${
               activeTab === "roadmaps"
-                ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                : "text-[#777777] hover:text-[#080808]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "text-[#4B5563] border border-transparent hover:bg-[#EAECE4] hover:text-[#101214] font-medium"
             }`}
           >
             Skill-Gap Roadmaps
@@ -547,10 +547,10 @@ export function UpskillView({
           <button
             type="button"
             onClick={() => setActiveTab("labs")}
-            className={`rounded-xl px-4 py-2 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`rounded-full px-4 py-2 font-heading text-xs transition-all cursor-pointer ${
               activeTab === "labs"
-                ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                : "text-[#777777] hover:text-[#080808]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "text-[#4B5563] border border-transparent hover:bg-[#EAECE4] hover:text-[#101214] font-medium"
             }`}
           >
             Coding Challenge Starter Labs ({codingLabs.length})
@@ -558,10 +558,10 @@ export function UpskillView({
           <button
             type="button"
             onClick={() => setActiveTab("system_design")}
-            className={`rounded-xl px-4 py-2 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`rounded-full px-4 py-2 font-heading text-xs transition-all cursor-pointer ${
               activeTab === "system_design"
-                ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                : "text-[#777777] hover:text-[#080808]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "text-[#4B5563] border border-transparent hover:bg-[#EAECE4] hover:text-[#101214] font-medium"
             }`}
           >
             System Design Accelerators
@@ -569,10 +569,10 @@ export function UpskillView({
           <button
             type="button"
             onClick={() => setActiveTab("assessment")}
-            className={`rounded-xl px-4 py-2 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`rounded-full px-4 py-2 font-heading text-xs transition-all cursor-pointer ${
               activeTab === "assessment"
-                ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                : "text-[#777777] hover:text-[#080808]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "text-[#4B5563] border border-transparent hover:bg-[#EAECE4] hover:text-[#101214] font-medium"
             }`}
           >
             Self-Assessment Checklist
@@ -581,11 +581,11 @@ export function UpskillView({
 
         {/* Role Switcher Pill */}
         <div className="flex items-center gap-2">
-          <span className="text-xs font-extrabold text-[#777777]">Target:</span>
+          <span className="text-xs font-semibold text-[#6B7280]">Target:</span>
           <select
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
-            className="rounded-xl border-2 border-[#080808] bg-white px-3 py-1.5 text-xs font-extrabold text-[#080808] shadow-[2px_2px_0px_#080808] cursor-pointer focus:outline-none"
+            className="rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 transition-all px-3 py-1.5 text-xs font-semibold text-[#101214] cursor-pointer focus:outline-none"
           >
             {defaultRoles.map((role) => (
               <option key={role} value={role}>
@@ -601,21 +601,23 @@ export function UpskillView({
       {/* ========================================================= */}
       {activeTab === "roadmaps" && (
         <div className="space-y-6">
-          <div className="rounded-2xl border-2 border-[#080808] bg-[#FEF189]/40 p-4 shadow-[3px_3px_0px_#080808] flex items-center justify-between">
+          <div className="rounded-[22px] border border-[#F5DFA0] bg-[#FEF9E7] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.045)] flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Compass className="h-5 w-5 text-[#080808] shrink-0" />
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-[#F5DFA0] text-[#101214]">
+                <Compass className="h-4.5 w-4.5" />
+              </div>
               <div>
-                <h3 className="font-heading text-sm font-extrabold text-[#080808]">
+                <h3 className="font-heading text-sm font-bold text-[#101214]">
                   Curated Roadmap for {selectedRole}
                 </h3>
-                <p className="text-xs text-[#080808]/80 font-medium">
+                <p className="text-xs text-[#4B5563] font-medium">
                   Sequenced technical stages based on real job requirements from top engineering employers. Check off milestones as you build proof.
                 </p>
               </div>
             </div>
-            <div className="hidden sm:block text-right">
-              <span className="text-xs font-bold text-[#080808]">Estimated Journey:</span>
-              <div className="font-heading text-sm font-extrabold text-[#080808]">
+            <div className="hidden sm:block text-right shrink-0">
+              <span className="text-xs font-medium text-[#715515]">Estimated Journey:</span>
+              <div className="font-heading text-sm font-bold text-[#101214]">
                 {activeRoadmap.reduce((acc, s) => acc + s.estimatedHours, 0)} Total Hours
               </div>
             </div>
@@ -625,34 +627,34 @@ export function UpskillView({
             {activeRoadmap.map((stage, idx) => (
               <div
                 key={stage.title}
-                className="neo-card p-5 sm:p-6 transition-all hover:translate-x-0.5"
+                className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-5 sm:p-6 transition-all"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#080808]/10 pb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/[0.06] pb-3.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#080808] text-[#E0FB66] font-heading font-extrabold text-xs">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#101214] text-[#E3FC6D] font-heading font-bold text-xs">
                       0{idx + 1}
                     </span>
-                    <h3 className="font-heading text-base sm:text-lg font-extrabold text-[#080808]">
+                    <h3 className="font-heading text-base sm:text-lg font-bold text-[#101214]">
                       {stage.title}
                     </h3>
                   </div>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-[#F4EFE6] border border-[#080808] px-2.5 py-0.5 text-xs font-bold text-[#080808]">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#F4F5F0] border border-black/[0.06] px-2.5 py-0.5 text-xs font-semibold text-[#101214]">
                     <Zap className="h-3 w-3 text-amber-500" />
                     ~{stage.estimatedHours} hrs
                   </span>
                 </div>
 
-                <p className="mt-3 text-xs sm:text-sm font-medium text-[#777777]">
+                <p className="mt-3 text-xs sm:text-sm font-medium text-[#4B5563]">
                   {stage.focus}
                 </p>
 
                 {/* Skills Chips */}
                 <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                  <span className="text-[11px] font-bold text-[#080808]">Key Competencies:</span>
+                  <span className="text-[11px] font-semibold text-[#6B7280]">Key Competencies:</span>
                   {stage.skills.map((skill) => (
                     <span
                       key={skill}
-                      className="rounded-lg border border-[#080808] bg-white px-2 py-0.5 text-[11px] font-bold text-[#080808]"
+                      className="rounded-lg border border-black/[0.08] bg-[#FAFBF7] px-2.5 py-0.5 text-[11px] font-semibold text-[#101214]"
                     >
                       {skill}
                     </span>
@@ -660,40 +662,40 @@ export function UpskillView({
                 </div>
 
                 {/* Checkable Tasks */}
-                <div className="mt-4 space-y-2 pt-3 border-t border-[#080808]/10">
+                <div className="mt-4 space-y-2 pt-3 border-t border-black/[0.06]">
                   {stage.tasks.map((task) => {
                     const isDone = Boolean(completedMilestones[task.id]);
                     return (
                       <div
                         key={task.id}
                         onClick={() => toggleMilestone(task.id)}
-                        className={`flex items-start gap-3 rounded-xl border-2 p-3 transition-all cursor-pointer ${
+                        className={`flex items-start gap-3 rounded-xl border p-3 transition-all cursor-pointer ${
                           isDone
-                            ? "border-[#080808] bg-[#E0FB66]/40 shadow-[2px_2px_0px_#080808]"
-                            : "border-[#080808]/20 bg-white hover:border-[#080808] hover:bg-[#FDF9F3]"
+                            ? "border-[#C7E938]/55 bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70"
+                            : "border-black/[0.07] bg-[#FAFBF7] hover:bg-white hover:border-black/[0.14]"
                         }`}
                       >
                         <button
                           type="button"
-                          className="mt-0.5 shrink-0 text-[#080808]"
+                          className="mt-0.5 shrink-0 text-[#101214]"
                           aria-label={isDone ? "Mark incomplete" : "Mark complete"}
                         >
                           {isDone ? (
-                            <CheckSquare className="h-4 w-4 text-[#080808]" />
+                            <CheckSquare className="h-4 w-4 text-[#4D7C0F]" />
                           ) : (
-                            <Square className="h-4 w-4 text-[#777777]" />
+                            <Square className="h-4 w-4 text-[#9CA3AF]" />
                           )}
                         </button>
                         <div className="flex-1 min-w-0">
                           <p
-                            className={`text-xs sm:text-sm font-bold ${
-                              isDone ? "line-through text-[#080808]/60" : "text-[#080808]"
+                            className={`text-xs sm:text-sm font-semibold ${
+                              isDone ? "line-through text-[#6B7280]" : "text-[#101214]"
                             }`}
                           >
                             {task.label}
                           </p>
                         </div>
-                        <span className="shrink-0 text-[10px] font-extrabold uppercase tracking-wider rounded-md bg-white border border-[#080808] px-1.5 py-0.5 text-[#080808]">
+                        <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider rounded-full bg-white border border-black/[0.08] px-2 py-0.5 text-[#4B5563]">
                           {task.type}
                         </span>
                       </div>
@@ -718,10 +720,10 @@ export function UpskillView({
                 <button
                   key={cat}
                   onClick={() => setSelectedLabCategory(cat)}
-                  className={`rounded-xl border-2 border-[#080808] px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
+                  className={`rounded-full px-3.5 py-1.5 text-xs transition-all cursor-pointer ${
                     selectedLabCategory === cat
-                      ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808]"
-                      : "bg-white text-[#777777] hover:bg-[#FDF9F3] hover:text-[#080808]"
+                      ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                      : "bg-[#F4F5F0] text-[#4B5563] border border-black/[0.06] hover:bg-[#EAECE4] hover:text-[#101214] font-medium"
                   }`}
                 >
                   {cat}
@@ -734,23 +736,23 @@ export function UpskillView({
             {filteredLabs.map((lab) => (
               <div
                 key={lab.id}
-                className="neo-card p-5 sm:p-6 flex flex-col justify-between space-y-4"
+                className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-5 sm:p-6 flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2.5 py-0.5 text-[10px] font-extrabold text-[#080808]">
+                    <span className="rounded-full bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 px-2.5 py-0.5 text-[10px] font-semibold text-[#101214]">
                       {lab.category}
                     </span>
-                    <span className="text-[11px] font-bold text-[#777777]">
+                    <span className="text-[11px] font-medium text-[#6B7280]">
                       Est: {lab.estimatedTime}
                     </span>
                   </div>
 
-                  <h3 className="mt-2.5 font-heading text-lg font-extrabold text-[#080808] leading-snug">
+                  <h3 className="mt-2.5 font-heading text-lg font-bold text-[#101214] leading-snug">
                     {lab.title}
                   </h3>
 
-                  <p className="mt-2 text-xs text-[#777777] font-medium leading-relaxed">
+                  <p className="mt-2 text-xs text-[#4B5563] font-medium leading-relaxed">
                     {lab.description}
                   </p>
 
@@ -759,7 +761,7 @@ export function UpskillView({
                     {lab.tags.map((t) => (
                       <span
                         key={t}
-                        className="rounded-lg border border-[#080808] bg-[#FDF9F3] px-2 py-0.5 text-[10px] font-extrabold text-[#080808]"
+                        className="rounded-lg border border-black/[0.08] bg-[#FAFBF7] px-2.5 py-0.5 text-[10px] font-semibold text-[#101214]"
                       >
                         {t}
                       </span>
@@ -767,13 +769,13 @@ export function UpskillView({
                   </div>
 
                   {/* Engineering Verification Criteria */}
-                  <div className="mt-4 rounded-xl border border-[#080808] bg-white p-3 space-y-1.5">
-                    <span className="text-[10px] font-heading font-extrabold uppercase tracking-wider text-[#080808] flex items-center gap-1">
-                      <Shield className="h-3 w-3 text-emerald-600" />
+                  <div className="mt-4 rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3.5 space-y-1.5">
+                    <span className="text-[10px] font-heading font-bold uppercase tracking-wider text-[#101214] flex items-center gap-1.5">
+                      <Shield className="h-3.5 w-3.5 text-emerald-600" />
                       Verification Benchmark Criteria:
                     </span>
                     {lab.engineeringVerification.map((crit, cIdx) => (
-                      <div key={cIdx} className="flex items-start gap-1.5 text-xs text-[#080808]/85">
+                      <div key={cIdx} className="flex items-start gap-1.5 text-xs text-[#4B5563]">
                         <span className="text-emerald-600 font-bold">✓</span>
                         <span>{crit}</span>
                       </div>
@@ -782,13 +784,13 @@ export function UpskillView({
                 </div>
 
                 {/* 1-Click Starter Repo Clone Command */}
-                <div className="pt-2 border-t border-[#080808]/10 space-y-2">
-                  <div className="text-[11px] font-bold text-[#777777]">
+                <div className="pt-3 border-t border-black/[0.06] space-y-2">
+                  <div className="text-[11px] font-semibold text-[#6B7280]">
                     Starter Template Repo:
                   </div>
-                  <div className="flex items-center gap-2 rounded-xl border-2 border-[#080808] bg-[#080808] p-2 text-white">
-                    <Terminal className="h-3.5 w-3.5 text-[#E0FB66] shrink-0" />
-                    <code className="flex-1 text-[11px] font-mono truncate text-[#E0FB66]">
+                  <div className="flex items-center gap-2 rounded-xl border border-black/[0.08] bg-[#101214] px-3 py-2 text-white shadow-[0_4px_12px_rgba(16,18,20,0.12)]">
+                    <Terminal className="h-3.5 w-3.5 text-[#E3FC6D] shrink-0" />
+                    <code className="flex-1 text-[11px] font-mono truncate text-[#E3FC6D]">
                       {lab.starterRepoCmd}
                     </code>
                     <button
@@ -798,7 +800,7 @@ export function UpskillView({
                       title="Copy clone command"
                     >
                       {copiedCmdId === lab.id ? (
-                        <Check className="h-3.5 w-3.5 text-[#E0FB66]" />
+                        <Check className="h-3.5 w-3.5 text-[#E3FC6D]" />
                       ) : (
                         <Copy className="h-3.5 w-3.5 text-white" />
                       )}
@@ -818,22 +820,22 @@ export function UpskillView({
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-5">
             {systemDesignPaths.map((path) => (
-              <div key={path.id} className="neo-card p-6 space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#080808]/10 pb-3">
+              <div key={path.id} className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/[0.06] pb-3.5">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#080808] text-white">
-                      <Cpu className="h-4 w-4 text-[#E0FB66]" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#101214] text-white">
+                      <Cpu className="h-4 w-4 text-[#E3FC6D]" />
                     </div>
-                    <h3 className="font-heading text-lg font-extrabold text-[#080808]">
+                    <h3 className="font-heading text-lg font-bold text-[#101214]">
                       {path.title}
                     </h3>
                   </div>
-                  <span className="rounded-full bg-[#FEF189] border border-[#080808] px-2.5 py-0.5 text-xs font-bold text-[#080808]">
+                  <span className="rounded-full bg-[#FEF9E7] border border-[#F5DFA0] px-2.5 py-0.5 text-xs font-semibold text-[#715515]">
                     {path.complexity}
                   </span>
                 </div>
 
-                <p className="text-xs sm:text-sm text-[#080808]/85 font-medium leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#4B5563] font-medium leading-relaxed">
                   {path.summary}
                 </p>
 
@@ -842,7 +844,7 @@ export function UpskillView({
                   {path.architectureTags.map((t) => (
                     <span
                       key={t}
-                      className="rounded-lg border border-[#080808] bg-white px-2 py-0.5 text-xs font-extrabold text-[#080808]"
+                      className="rounded-lg border border-black/[0.08] bg-[#FAFBF7] px-2.5 py-0.5 text-xs font-semibold text-[#101214]"
                     >
                       {t}
                     </span>
@@ -850,21 +852,21 @@ export function UpskillView({
                 </div>
 
                 {/* Core Trade-offs Callout */}
-                <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-4 space-y-2">
-                  <div className="font-heading text-xs font-extrabold uppercase tracking-wider text-[#080808]">
+                <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-4 space-y-2">
+                  <div className="font-heading text-xs font-bold uppercase tracking-wider text-[#101214]">
                     Key Architectural Trade-offs & Decisions:
                   </div>
                   {path.tradeoffs.map((item, tIdx) => (
-                    <div key={tIdx} className="flex items-start gap-2 text-xs text-[#080808]/85">
-                      <span className="font-bold text-[#080808]">▪</span>
+                    <div key={tIdx} className="flex items-start gap-2 text-xs text-[#4B5563]">
+                      <span className="font-bold text-[#84CC16]">•</span>
                       <span>{item}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* Recommended Reading */}
-                <div className="pt-2 border-t border-[#080808]/10 flex flex-wrap items-center justify-between gap-3 text-xs">
-                  <span className="font-bold text-[#777777]">Essential Deep Dives:</span>
+                <div className="pt-3 border-t border-black/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <span className="font-semibold text-[#6B7280]">Essential Deep Dives:</span>
                   <div className="flex flex-wrap items-center gap-3">
                     {path.recommendedReading.map((read, rIdx) => (
                       <a
@@ -872,7 +874,7 @@ export function UpskillView({
                         href={read.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 font-bold text-[#080808] hover:text-emerald-700 hover:underline"
+                        className="inline-flex items-center gap-1.5 font-semibold text-[#101214] hover:text-emerald-700 hover:underline"
                       >
                         <span>{read.title}</span>
                         <ExternalLink className="h-3 w-3" />
@@ -891,17 +893,17 @@ export function UpskillView({
       {/* ========================================================= */}
       {activeTab === "assessment" && (
         <div className="space-y-6">
-          <div className="rounded-2xl border-2 border-[#080808] bg-white p-5 shadow-[3px_3px_0px_#080808]">
-            <div className="flex items-center justify-between">
+          <div className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-5">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <h3 className="font-heading text-base font-extrabold text-[#080808]">
+                <h3 className="font-heading text-base font-bold text-[#101214]">
                   Production Readiness Checklist
                 </h3>
-                <p className="text-xs text-[#777777] font-medium">
+                <p className="text-xs text-[#6B7280] font-medium">
                   High-frequency technical questions you will be evaluated on in senior engineering rounds.
                 </p>
               </div>
-              <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-3 py-1 font-heading text-xs font-extrabold text-[#080808]">
+              <span className="shrink-0 rounded-full bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 px-3 py-1 font-heading text-xs font-semibold text-[#101214]">
                 {assessmentQuestions.filter((q) => completedMilestones[q.id]).length} / {assessmentQuestions.length} Mastered
               </span>
             </div>
@@ -914,36 +916,36 @@ export function UpskillView({
                 <div
                   key={q.id}
                   onClick={() => toggleMilestone(q.id)}
-                  className={`rounded-2xl border-2 p-4 transition-all cursor-pointer ${
+                  className={`rounded-[20px] border p-4 transition-all cursor-pointer shadow-[0_4px_16px_rgba(15,23,42,0.03)] ${
                     isChecked
-                      ? "border-[#080808] bg-[#E0FB66]/30 shadow-[2px_2px_0px_#080808]"
-                      : "border-[#080808] bg-white hover:bg-[#FDF9F3]"
+                      ? "border-[#C7E938]/55 bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70"
+                      : "border-black/[0.07] bg-white hover:bg-[#FAFBF7] hover:border-black/[0.12]"
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <button
                       type="button"
-                      className="mt-0.5 text-[#080808]"
+                      className="mt-0.5 text-[#101214]"
                       aria-label={isChecked ? "Uncheck" : "Check"}
                     >
                       {isChecked ? (
-                        <CheckSquare className="h-4 w-4 text-[#080808]" />
+                        <CheckSquare className="h-4 w-4 text-[#4D7C0F]" />
                       ) : (
-                        <Square className="h-4 w-4 text-[#777777]" />
+                        <Square className="h-4 w-4 text-[#9CA3AF]" />
                       )}
                     </button>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider rounded-md bg-[#080808] text-white px-2 py-0.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-[#101214] text-white px-2.5 py-0.5">
                           {q.domain}
                         </span>
-                        <span className="text-[11px] font-bold text-emerald-800">
+                        <span className="text-[11px] font-semibold text-emerald-700">
                           {q.impact}
                         </span>
                       </div>
                       <p
-                        className={`mt-2 text-xs sm:text-sm font-bold ${
-                          isChecked ? "text-[#080808]/70" : "text-[#080808]"
+                        className={`mt-2 text-xs sm:text-sm font-semibold ${
+                          isChecked ? "text-[#4B5563]" : "text-[#101214]"
                         }`}
                       >
                         {q.question}

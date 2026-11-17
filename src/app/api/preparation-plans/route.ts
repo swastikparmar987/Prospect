@@ -9,6 +9,27 @@ import { Opportunity, UserProfile, PreparationPlanItem } from "@/types";
 export async function GET(req: Request) {
   try {
     const user = resolveAuthenticatedUser(req);
+    const { searchParams } = new URL(req.url);
+    const requireProfile = searchParams.get("requireProfile") === "1";
+
+    if (requireProfile) {
+      const profile = await prisma.userProfile.findFirst({
+        where: { userId: user.userId },
+        select: { id: true, skills: true, fullName: true },
+      });
+      const parsedSkills = (() => {
+        try {
+          const arr = JSON.parse(profile?.skills || "[]");
+          return Array.isArray(arr) ? arr : [];
+        } catch {
+          return [];
+        }
+      })();
+      if (!profile || (!profile.fullName && parsedSkills.length === 0)) {
+        return NextResponse.json({ plans: [] });
+      }
+    }
+
     const rawPlans = await prisma.preparationPlan.findMany({
       where: {
         userId: user.userId,

@@ -127,30 +127,30 @@ export function AiIntelligencePanel({
   return (
     <section
       aria-label="AI Intelligence and Semantic Ranking Panel"
-      className="neo-card-lg overflow-hidden"
+      className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] overflow-hidden"
     >
       {/* Top Banner Header */}
-      <div className="bg-[#080808] text-white px-5 py-4 flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#080808]">
+      <div className="bg-[#101214] text-white px-5 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08]">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-[#E0FB66] border-2 border-white flex items-center justify-center shrink-0">
-            <Brain className="h-5 w-5 text-[#080808]" />
+          <div className="h-10 w-10 rounded-2xl bg-[#E3FC6D] border border-[#C6E832] shadow-[0_4px_14px_rgba(227,252,109,0.25)] flex items-center justify-center shrink-0">
+            <Brain className="h-5 w-5 text-[#0E1012]" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-heading text-lg sm:text-xl font-extrabold text-white">
+              <h2 className="font-heading text-lg sm:text-xl font-bold text-white">
                 AI Career Intelligence & Semantic Ranking Lab
               </h2>
               <span
-                className={`text-[10px] font-heading font-extrabold px-2.5 py-0.5 rounded-full border ${
+                className={`text-[10px] font-heading font-semibold px-2.5 py-0.5 rounded-full border ${
                   isAiConfigured
-                    ? "bg-[#E0FB66] text-[#080808] border-[#E0FB66]"
-                    : "bg-[#FEF189] text-[#080808] border-[#FEF189]"
+                    ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832]"
+                    : "bg-[#FEF9E7] text-[#7A5908] border-[#F5DFA0]"
                 }`}
               >
                 {isAiConfigured ? `LIVE AI: ${providerName}` : "AI KEY UNAVAILABLE"}
               </span>
             </div>
-            <p className="text-xs text-[#D8D5CE] mt-0.5">
+            <p className="text-xs text-white/65 mt-0.5">
               128-D L2-normalized semantic embeddings (`prospect-semantic-embed-v1-128d`) +
               evidence-grounded LLM matching & skill gap synthesis
             </p>
@@ -162,7 +162,7 @@ export function AiIntelligencePanel({
             type="button"
             onClick={fetchAiIntelligence}
             disabled={loadingAi}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white hover:bg-[#E0FB66] px-3.5 py-1.5 font-heading text-xs font-extrabold text-[#080808] transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white hover:bg-[#E3FC6D] px-3.5 py-1.5 font-heading text-xs font-semibold text-[#101214] shadow-sm transition cursor-pointer"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loadingAi ? "animate-spin" : ""}`} />
             <span>Recompute</span>
@@ -170,7 +170,7 @@ export function AiIntelligencePanel({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white transition cursor-pointer"
+            className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
             aria-label="Close AI Intelligence Panel"
           >
             <X className="h-4 w-4" />
@@ -180,14 +180,14 @@ export function AiIntelligencePanel({
 
       {/* Unavailable AI Key Warning if missing */}
       {!isAiConfigured && aiUnavailableReason && (
-        <div className="bg-[#FEF189] border-b-2 border-[#080808] px-5 py-2.5 text-xs font-medium text-[#080808] flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-[#080808] shrink-0" />
+        <div className="bg-[#FEF9E7] border-b border-[#F5DFA0] px-5 py-2.5 text-xs font-medium text-[#7A5908] flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 text-[#7A5908] shrink-0" />
           <span>{aiUnavailableReason}</span>
         </div>
       )}
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 bg-[#FDF9F3] px-5 py-2.5 border-b-2 border-[#080808] text-xs font-heading font-bold">
+      <div className="flex flex-wrap items-center gap-1.5 bg-[#FAFBF7] px-5 py-3 border-b border-black/[0.06] text-xs font-heading">
         {[
           { id: "overview", label: "Candidate Skill Map & AI Resume", icon: Cpu },
           {
@@ -217,8 +217,8 @@ export function AiIntelligencePanel({
               onClick={() => setActiveSection(tab.id as any)}
               className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 transition cursor-pointer ${
                 activeSection === tab.id
-                  ? "bg-[#E0FB66] text-[#080808] border-2 border-[#080808] shadow-[2px_2px_0px_#080808]"
-                  : "bg-white text-[#080808] border border-[#D8D5CE] hover:border-[#080808]"
+                  ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                  : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
               }`}
             >
               <Icon className="h-3.5 w-3.5" />
@@ -229,18 +229,18 @@ export function AiIntelligencePanel({
       </div>
 
       {/* Panel Content Body */}
-      <div className="p-5 space-y-5">
+      <div className="p-5 sm:p-6 space-y-5">
         {/* 1. CANDIDATE SKILL MAP & AI RESUME INSIGHTS */}
         {activeSection === "overview" && (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Direct Skills */}
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-4 shadow-[3px_3px_0px_#080808]">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#080808]">
+              <div className="rounded-[20px] border border-black/[0.06] bg-[#FAFBF7] p-4">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#4B5563]">
                     Demonstrated Direct Skills
                   </span>
-                  <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2 py-0.5 text-[11px] font-bold text-[#080808]">
+                  <span className="rounded-full bg-[#E3FC6D] border border-[#C6E832] px-2.5 py-0.5 text-[11px] font-semibold text-[#0E1012]">
                     {capabilityMap?.demonstratedCapabilities?.length ||
                       userProfile?.skills?.length ||
                       0}{" "}
@@ -260,13 +260,13 @@ export function AiIntelligencePanel({
                     ).map((skill: string) => (
                       <span
                         key={skill}
-                        className="rounded-lg bg-white border-2 border-[#080808] px-2.5 py-1 text-xs font-bold text-[#080808]"
+                        className="rounded-full bg-white border border-black/[0.07] px-2.5 py-1 text-xs font-medium text-[#101214]"
                       >
                         ✓ {skill}
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs text-[#777777] italic">
+                    <span className="text-xs text-[#6B7280] italic">
                       No direct skills recorded yet — upload your resume or add skills in Profile.
                     </span>
                   )}
@@ -274,12 +274,12 @@ export function AiIntelligencePanel({
               </div>
 
               {/* Inferred Adjacent Capabilities */}
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-4 shadow-[3px_3px_0px_#080808]">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#080808]">
+              <div className="rounded-[20px] border border-black/[0.06] bg-[#FAFBF7] p-4">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#4B5563]">
                     Inferred Adjacent Skills
                   </span>
-                  <span className="text-[11px] font-bold text-[#777777]">
+                  <span className="text-[11px] font-medium text-[#6B7280]">
                     Transferable Graph
                   </span>
                 </div>
@@ -288,14 +288,14 @@ export function AiIntelligencePanel({
                     capabilityMap?.inferredAdjacentCapabilities.map((adj) => (
                       <span
                         key={adj.id || adj.capability}
-                        className="rounded-lg bg-[#E0FB66]/55 border border-[#080808] px-2.5 py-1 text-xs font-semibold text-[#080808]"
+                        className="rounded-full bg-[#F3FCDA]/80 border border-[#C7E938]/50 px-2.5 py-1 text-xs font-medium text-[#0E1012]"
                         title={adj.description}
                       >
                         + {adj.capability} ({adj.evidenceStrength})
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs text-[#777777]">
+                    <span className="text-xs text-[#6B7280]">
                       Upload or save profile skills to compute adjacent capability graph.
                     </span>
                   )}
@@ -303,32 +303,34 @@ export function AiIntelligencePanel({
               </div>
 
               {/* Career Direction & AI Resume Extraction */}
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-4 shadow-[3px_3px_0px_#080808]">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-[#080808] block mb-2">
-                  AI Career Direction & Vector Status
-                </span>
-                <p className="text-xs text-[#080808] leading-relaxed font-medium">
-                  {(userProfile?.aiInsights?.careerDirections &&
-                  userProfile.aiInsights.careerDirections.length > 0
-                    ? userProfile.aiInsights.careerDirections.join(" • ")
-                    : null) ||
-                    aiData?.candidateSkillMap?.aiInsights
-                      ?.careerDirectionSummary ||
-                    `Focused on ${(
-                      userProfile?.targetRoles || ["Software & AI Engineering"]
-                    ).join(", ")} grounded in ${
-                      userProfile?.major || "Computer Science"
-                    } (${userProfile?.degree || "Student"}).`}
-                </p>
-                <div className="mt-3 pt-2.5 border-t border-[#D8D5CE] flex items-center justify-between text-[11px] text-[#777777]">
+              <div className="rounded-[20px] border border-black/[0.06] bg-[#FAFBF7] p-4 flex flex-col justify-between">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#4B5563] block mb-2.5">
+                    AI Career Direction & Vector Status
+                  </span>
+                  <p className="text-xs text-[#1F2937] leading-relaxed font-medium">
+                    {(userProfile?.aiInsights?.careerDirections &&
+                    userProfile.aiInsights.careerDirections.length > 0
+                      ? userProfile.aiInsights.careerDirections.join(" • ")
+                      : null) ||
+                      aiData?.candidateSkillMap?.aiInsights
+                        ?.careerDirectionSummary ||
+                      `Focused on ${(
+                        userProfile?.targetRoles || ["Software & AI Engineering"]
+                      ).join(", ")} grounded in ${
+                        userProfile?.major || "Computer Science"
+                      } (${userProfile?.degree || "Student"}).`}
+                  </p>
+                </div>
+                <div className="mt-3 pt-2.5 border-t border-black/[0.06] flex items-center justify-between text-[11px] text-[#6B7280]">
                   <span>
                     Embedding Model:{" "}
-                    <strong className="font-mono text-[#080808]">
+                    <strong className="font-mono text-[#101214]">
                       {aiData?.candidateSkillMap?.embeddingModel ||
                         "prospect-semantic-embed-v1-128d"}
                     </strong>
                   </span>
-                  <span className="rounded-md bg-[#E0FB66] border border-[#080808] text-[#080808] px-1.5 py-0.5 font-bold text-[10px]">
+                  <span className="rounded-full bg-[#E3FC6D] border border-[#C6E832] text-[#0E1012] px-2 py-0.5 font-semibold text-[10px]">
                     128-D Active
                   </span>
                 </div>
@@ -336,19 +338,19 @@ export function AiIntelligencePanel({
             </div>
 
             {/* Recommendation Generation Methodology Box */}
-            <div className="rounded-2xl border-2 border-[#080808] bg-[#FEF189] p-4 text-xs text-[#080808] space-y-1.5 shadow-[3px_3px_0px_#080808]">
-              <div className="font-extrabold text-[#080808] flex items-center gap-1.5">
+            <div className="rounded-[20px] border border-[#F5DFA0] bg-[#FEF9E7] p-4 text-xs text-[#101214] space-y-1.5">
+              <div className="font-bold text-[#7A5908] flex items-center gap-1.5">
                 <Sparkles className="h-4 w-4" />
                 <span>How Recommendations & Rankings Are Generated</span>
               </div>
-              <p className="leading-relaxed text-[#080808]/90 font-medium">
+              <p className="leading-relaxed text-[#4B5563] font-medium">
                 Each opportunity is evaluated through a hybrid 100-point pipeline:{" "}
-                <strong>Eligibility Compatibility (0–35 pts)</strong> with hard-blocker override,{" "}
-                <strong>Skill & Experience Overlap (0–30 pts)</strong>,{" "}
-                <strong>128-D Semantic Vector Similarity (0–10 pts)</strong>,{" "}
-                <strong>Source Evidence & Quality (0–15 pts)</strong>,{" "}
-                <strong>Location & Work-Mode Preferences (0–10 pts)</strong>, and{" "}
-                <strong>Deadline Feasibility (0–10 pts)</strong>. No hiring probabilities or unverified claims are ever fabricated.
+                <strong className="text-[#101214]">Eligibility Compatibility (0–35 pts)</strong> with hard-blocker override,{" "}
+                <strong className="text-[#101214]">Skill & Experience Overlap (0–30 pts)</strong>,{" "}
+                <strong className="text-[#101214]">128-D Semantic Vector Similarity (0–10 pts)</strong>,{" "}
+                <strong className="text-[#101214]">Source Evidence & Quality (0–15 pts)</strong>,{" "}
+                <strong className="text-[#101214]">Location & Work-Mode Preferences (0–10 pts)</strong>, and{" "}
+                <strong className="text-[#101214]">Deadline Feasibility (0–10 pts)</strong>. No hiring probabilities or unverified claims are ever fabricated.
               </p>
             </div>
           </div>
@@ -358,7 +360,7 @@ export function AiIntelligencePanel({
         {activeSection === "semantic" && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-medium text-[#777777]">
+              <p className="text-xs font-medium text-[#6B7280]">
                 Inspect semantic vector similarity, eligibility verdict, and evidence-grounded AI matching explanations for discovered opportunities.
               </p>
             </div>
@@ -373,19 +375,19 @@ export function AiIntelligencePanel({
                 return (
                   <div
                     key={opportunity.id}
-                    className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-4 space-y-2.5 shadow-[3px_3px_0px_#080808]"
+                    className="rounded-[20px] border border-black/[0.07] bg-white p-4 space-y-3 shadow-[0_4px_18px_rgba(15,23,42,0.03)]"
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-sm sm:text-base text-[#080808]">
+                          <h4 className="font-bold text-sm sm:text-base text-[#101214]">
                             {opportunity.title}
                           </h4>
-                          <span className="text-xs font-semibold text-[#777777]">
+                          <span className="text-xs font-medium text-[#6B7280]">
                             • {opportunity.organization}
                           </span>
                         </div>
-                        <p className="text-xs text-[#777777] mt-0.5">
+                        <p className="text-xs text-[#6B7280] mt-0.5">
                           {opportunity.location} ({opportunity.workMode})
                           {typeof opportunity.distanceKm === "number"
                             ? ` • ${opportunity.distanceKm} km away`
@@ -394,19 +396,19 @@ export function AiIntelligencePanel({
                       </div>
 
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2.5 py-1 text-xs font-bold text-[#080808]">
+                        <span className="rounded-full bg-[#F3FCDA]/80 border border-[#C7E938]/50 px-2.5 py-1 text-xs font-semibold text-[#0E1012]">
                           Semantic: {Math.round(rawCosine * 100)}% ({semanticPts}/10 pts)
                         </span>
-                        <span className="rounded-full bg-[#080808] px-2.5 py-1 text-xs font-bold text-white">
+                        <span className="rounded-full bg-[#101214] px-2.5 py-1 text-xs font-semibold text-white">
                           Hybrid Fit: {evaluation.overallScore}%
                         </span>
                         <button
                           type="button"
                           onClick={() => handleRunDeepAiAnalysis(opportunity.id)}
                           disabled={deepAnalyzingId === opportunity.id}
-                          className="inline-flex items-center gap-1 rounded-full border-2 border-[#080808] bg-white hover:bg-[#E0FB66] px-2.5 py-1 text-[11px] font-bold text-[#080808] transition cursor-pointer disabled:opacity-50"
+                          className="inline-flex items-center gap-1 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] px-3 py-1 text-[11px] font-semibold transition cursor-pointer disabled:opacity-50"
                         >
-                          <Sparkles className="h-3 w-3" />
+                          <Sparkles className="h-3 w-3 text-[#65B811]" />
                           <span>
                             {deepAnalyzingId === opportunity.id
                               ? "Running LLM..."
@@ -418,7 +420,7 @@ export function AiIntelligencePanel({
                           onClick={() =>
                             onInspectOpportunity(opportunity, evaluation)
                           }
-                          className="inline-flex items-center gap-1 rounded-full bg-[#FEF189] border-2 border-[#080808] hover:bg-[#E0FB66] px-2.5 py-1 text-[11px] font-bold text-[#080808] transition cursor-pointer"
+                          className="inline-flex items-center gap-1 rounded-full bg-[#E3FC6D] border border-[#C6E832] hover:bg-[#D7F54D] px-3 py-1 text-[11px] font-semibold text-[#0E1012] transition cursor-pointer"
                         >
                           <span>Inspect</span>
                           <ArrowUpRight className="h-3 w-3" />
@@ -428,59 +430,59 @@ export function AiIntelligencePanel({
 
                     {/* Score Component Debug Strip */}
                     <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 text-[11px]">
-                      <div className="rounded-lg bg-white border-2 border-[#080808] px-2 py-1">
-                        <span className="text-[#777777] block text-[10px] font-semibold">
+                      <div className="rounded-xl bg-[#FAFBF7] border border-black/[0.06] px-2.5 py-1.5">
+                        <span className="text-[#6B7280] block text-[10px] font-medium">
                           Eligibility
                         </span>
-                        <strong className="text-[#080808]">
+                        <strong className="text-[#101214]">
                           {evaluation.scoreBreakdown.eligibility}/35
                         </strong>
                       </div>
-                      <div className="rounded-lg bg-white border-2 border-[#080808] px-2 py-1">
-                        <span className="text-[#777777] block text-[10px] font-semibold">
+                      <div className="rounded-xl bg-[#FAFBF7] border border-black/[0.06] px-2.5 py-1.5">
+                        <span className="text-[#6B7280] block text-[10px] font-medium">
                           Skills
                         </span>
-                        <strong className="text-[#080808]">
+                        <strong className="text-[#101214]">
                           {evaluation.scoreBreakdown.skills}/30
                         </strong>
                       </div>
-                      <div className="rounded-lg bg-[#E0FB66] border-2 border-[#080808] px-2 py-1">
-                        <span className="text-[#080808] block text-[10px] font-bold">
+                      <div className="rounded-xl bg-[#F3FCDA]/80 border border-[#C7E938]/50 px-2.5 py-1.5">
+                        <span className="text-[#0E1012] block text-[10px] font-semibold">
                           Semantic Vec
                         </span>
-                        <strong className="text-[#080808]">
+                        <strong className="text-[#0E1012]">
                           {semanticPts}/10
                         </strong>
                       </div>
-                      <div className="rounded-lg bg-white border-2 border-[#080808] px-2 py-1">
-                        <span className="text-[#777777] block text-[10px] font-semibold">
+                      <div className="rounded-xl bg-[#FAFBF7] border border-black/[0.06] px-2.5 py-1.5">
+                        <span className="text-[#6B7280] block text-[10px] font-medium">
                           Quality
                         </span>
-                        <strong className="text-[#080808]">
+                        <strong className="text-[#101214]">
                           {evaluation.scoreBreakdown.quality}/15
                         </strong>
                       </div>
-                      <div className="rounded-lg bg-white border-2 border-[#080808] px-2 py-1">
-                        <span className="text-[#777777] block text-[10px] font-semibold">
+                      <div className="rounded-xl bg-[#FAFBF7] border border-black/[0.06] px-2.5 py-1.5">
+                        <span className="text-[#6B7280] block text-[10px] font-medium">
                           Location/Pref
                         </span>
-                        <strong className="text-[#080808]">
+                        <strong className="text-[#101214]">
                           {evaluation.scoreBreakdown.preferences}/10
                         </strong>
                       </div>
-                      <div className="rounded-lg bg-white border-2 border-[#080808] px-2 py-1">
-                        <span className="text-[#777777] block text-[10px] font-semibold">
+                      <div className="rounded-xl bg-[#FAFBF7] border border-black/[0.06] px-2.5 py-1.5">
+                        <span className="text-[#6B7280] block text-[10px] font-medium">
                           Freshness/DL
                         </span>
-                        <strong className="text-[#080808]">
+                        <strong className="text-[#101214]">
                           {evaluation.scoreBreakdown.deadline}/10
                         </strong>
                       </div>
                     </div>
 
                     {/* AI Match Explanation */}
-                    <p className="text-xs text-[#080808] leading-relaxed bg-white rounded-xl border border-[#D8D5CE] p-2.5">
-                      <strong className="text-[#080808]">
+                    <p className="text-xs text-[#1F2937] leading-relaxed bg-[#FAFBF7] rounded-xl border border-black/[0.06] p-3">
+                      <strong className="text-[#101214]">
                         AI Matching Explanation:{" "}
                       </strong>
                       {deepData?.matchIntelligence?.whyCandidateMatches ||
@@ -490,8 +492,8 @@ export function AiIntelligencePanel({
 
                     {/* Deep LLM Structured Output (if triggered) */}
                     {deepData && (
-                      <div className="rounded-xl border-2 border-[#080808] bg-[#E0FB66]/45 p-3 text-xs space-y-1.5">
-                        <div className="flex items-center justify-between font-bold text-[#080808]">
+                      <div className="rounded-xl border border-[#C7E938]/60 bg-[#F3FCDA]/80 p-3 text-xs space-y-1.5">
+                        <div className="flex items-center justify-between font-semibold text-[#0E1012]">
                           <span>
                             Live LLM Structured Extraction (
                             {deepData.aiStatus?.modelUsed || "Groq LLM"})
@@ -502,7 +504,7 @@ export function AiIntelligencePanel({
                               "ELIGIBLE"}
                           </span>
                         </div>
-                        <p className="text-[#080808]">
+                        <p className="text-[#101214]">
                           <strong>Preparation Needed:</strong>{" "}
                           {deepData.matchIntelligence?.preparationNeeded}
                         </p>
@@ -518,35 +520,35 @@ export function AiIntelligencePanel({
         {/* 3. SKILL GAP INTELLIGENCE */}
         {activeSection === "gaps" && (
           <div className="space-y-3">
-            <p className="text-xs font-medium text-[#777777]">
+            <p className="text-xs font-medium text-[#6B7280]">
               Missing skills identified across your matched opportunities, why they matter for those roles, and concrete preparation paths with learning resources.
             </p>
             {aggregatedGaps.length === 0 ? (
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-6 text-center text-xs text-[#080808]">
-                <CheckCircle2 className="h-6 w-6 mx-auto mb-2 text-[#080808]" />
+              <div className="rounded-[20px] border border-black/[0.07] bg-[#FAFBF7] p-6 text-center text-xs text-[#101214]">
+                <CheckCircle2 className="h-6 w-6 mx-auto mb-2 text-[#4D7C0F]" />
                 <strong>Strong Skill Coverage!</strong> Your demonstrated profile skills cover the core requirements of the currently displayed opportunities.
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 {aggregatedGaps.map((gap: any, idx: number) => (
                   <div
                     key={idx}
-                    className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-4 space-y-2 text-xs shadow-[3px_3px_0px_#080808]"
+                    className="rounded-[20px] border border-black/[0.07] bg-white p-4 space-y-2.5 text-xs shadow-[0_4px_18px_rgba(15,23,42,0.03)]"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-base font-extrabold text-[#080808]">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-base font-bold text-[#101214]">
                         Missing Skill: {gap.skill}
                       </span>
-                      <span className="rounded-full bg-[#FEF189] border border-[#080808] px-2.5 py-0.5 text-[10px] font-bold text-[#080808]">
+                      <span className="rounded-full bg-[#FEF9E7] border border-[#F5DFA0] px-2.5 py-0.5 text-[10px] font-semibold text-[#7A5908] shrink-0">
                         {gap.estimatedEffort || "1–2 weeks"}
                       </span>
                     </div>
-                    <p className="text-[#080808]/85">
-                      <strong className="text-[#080808]">Why it matters: </strong>
+                    <p className="text-[#4B5563]">
+                      <strong className="text-[#101214]">Why it matters: </strong>
                       {gap.whyItMatters}
                     </p>
-                    <p className="text-[#080808]/85">
-                      <strong className="text-[#080808]">
+                    <p className="text-[#4B5563]">
+                      <strong className="text-[#101214]">
                         Practical Preparation Path:{" "}
                       </strong>
                       {gap.preparationPath}
@@ -560,7 +562,7 @@ export function AiIntelligencePanel({
                               href={res.url}
                               target="_blank"
                               rel="noreferrer noopener"
-                              className="inline-flex items-center gap-1 rounded-lg bg-white border-2 border-[#080808] px-2.5 py-1 text-[11px] font-bold text-[#080808] hover:bg-[#E0FB66]"
+                              className="inline-flex items-center gap-1 rounded-full bg-[#FAFBF7] border border-black/[0.08] px-3 py-1 text-[11px] font-semibold text-[#101214] hover:bg-[#F3FCDA] hover:border-[#C7E938]/60 transition"
                             >
                               <span>{res.title}</span>
                               <ExternalLink className="h-3 w-3" />
@@ -578,42 +580,42 @@ export function AiIntelligencePanel({
         {/* 4. CAPABILITY & ROLE EXPANSION */}
         {activeSection === "roles" && (
           <div className="space-y-3">
-            <p className="text-xs font-medium text-[#777777]">
+            <p className="text-xs font-medium text-[#6B7280]">
               Adjacent role families inferred from your demonstrated capabilities and transferable skills — avoiding unrelated roles.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {expandedRoles
                 .filter((r) => !r.excludedByUser)
                 .map((role) => (
                   <div
                     key={role.id || role.title}
-                    className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-3.5 text-xs flex flex-col justify-between gap-2 shadow-[3px_3px_0px_#080808]"
+                    className="rounded-[20px] border border-black/[0.07] bg-white p-4 text-xs flex flex-col justify-between gap-2.5 shadow-[0_4px_18px_rgba(15,23,42,0.03)]"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-extrabold text-sm text-[#080808]">
+                        <span className="font-bold text-sm text-[#101214]">
                           {role.title}
                         </span>
-                        <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-2 py-0.5 text-[10px] font-bold text-[#080808]">
+                        <span className="rounded-full bg-[#E3FC6D] border border-[#C6E832] px-2.5 py-0.5 text-[10px] font-semibold text-[#0E1012] shrink-0">
                           {role.relevanceEstimate || Math.round(role.confidence * 100)}% match
                         </span>
                       </div>
-                      <span className="inline-block mt-1 text-[10px] font-mono uppercase text-[#777777]">
+                      <span className="inline-block mt-1 text-[10px] font-mono uppercase text-[#6B7280]">
                         {role.familyLabel || role.roleFamily.replace(/_/g, " ")}
                       </span>
-                      <p className="mt-1.5 text-[#080808]/85 leading-relaxed">
+                      <p className="mt-1.5 text-[#4B5563] leading-relaxed">
                         {role.expansionRationale}
                       </p>
                     </div>
-                    <div className="flex items-center justify-between pt-2 border-t border-[#D8D5CE]">
-                      <span className="text-[10px] text-[#777777] truncate">
+                    <div className="flex items-center justify-between pt-2.5 border-t border-black/[0.06]">
+                      <span className="text-[10px] text-[#6B7280] truncate">
                         Evidence: {role.supportingEvidence.slice(0, 3).join(", ")}
                       </span>
                       {onDismissRoleFamily && (
                         <button
                           type="button"
                           onClick={() => onDismissRoleFamily(role.title)}
-                          className="text-[10px] font-bold text-[#080808] underline hover:opacity-75 shrink-0 cursor-pointer"
+                          className="text-[10px] font-semibold text-[#4B5563] hover:text-[#101214] underline shrink-0 cursor-pointer"
                         >
                           Dismiss
                         </button>
@@ -629,61 +631,61 @@ export function AiIntelligencePanel({
         {activeSection === "ranking" && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-3 shadow-[3px_3px_0px_#080808]">
-                <span className="text-[10px] font-bold uppercase text-[#777777] block">
+              <div className="rounded-[20px] border border-black/[0.07] bg-[#FAFBF7] p-3.5">
+                <span className="text-[10px] font-semibold uppercase text-[#6B7280] block">
                   Precision@5
                 </span>
-                <span className="text-xl font-extrabold text-[#080808]">
+                <span className="text-xl font-extrabold text-[#101214] mt-0.5 block">
                   {metrics?.precisionAtK?.[5] !== undefined
                     ? `${Math.round(metrics.precisionAtK[5] * 100)}%`
                     : "—"}
                 </span>
               </div>
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-3 shadow-[3px_3px_0px_#080808]">
-                <span className="text-[10px] font-bold uppercase text-[#777777] block">
+              <div className="rounded-[20px] border border-black/[0.07] bg-[#FAFBF7] p-3.5">
+                <span className="text-[10px] font-semibold uppercase text-[#6B7280] block">
                   Recall@5
                 </span>
-                <span className="text-xl font-extrabold text-[#080808]">
+                <span className="text-xl font-extrabold text-[#101214] mt-0.5 block">
                   {metrics?.recallAtK?.[5] !== undefined
                     ? `${Math.round(metrics.recallAtK[5] * 100)}%`
                     : "—"}
                 </span>
               </div>
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#E0FB66] p-3 shadow-[3px_3px_0px_#080808]">
-                <span className="text-[10px] font-extrabold uppercase text-[#080808] block">
+              <div className="rounded-[20px] border border-[#C7E938]/55 bg-[#F3FCDA]/80 p-3.5">
+                <span className="text-[10px] font-bold uppercase text-[#0E1012] block">
                   NDCG@5
                 </span>
-                <span className="text-xl font-extrabold text-[#080808]">
+                <span className="text-xl font-extrabold text-[#0E1012] mt-0.5 block">
                   {metrics?.ndcgAtK?.[5] !== undefined
                     ? metrics.ndcgAtK[5].toFixed(3)
                     : "—"}
                 </span>
               </div>
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-3 shadow-[3px_3px_0px_#080808]">
-                <span className="text-[10px] font-bold uppercase text-[#777777] block">
+              <div className="rounded-[20px] border border-black/[0.07] bg-[#FAFBF7] p-3.5">
+                <span className="text-[10px] font-semibold uppercase text-[#6B7280] block">
                   Precision@10
                 </span>
-                <span className="text-xl font-extrabold text-[#080808]">
+                <span className="text-xl font-extrabold text-[#101214] mt-0.5 block">
                   {metrics?.precisionAtK?.[10] !== undefined
                     ? `${Math.round(metrics.precisionAtK[10] * 100)}%`
                     : "—"}
                 </span>
               </div>
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-3 shadow-[3px_3px_0px_#080808]">
-                <span className="text-[10px] font-bold uppercase text-[#777777] block">
+              <div className="rounded-[20px] border border-black/[0.07] bg-[#FAFBF7] p-3.5">
+                <span className="text-[10px] font-semibold uppercase text-[#6B7280] block">
                   Recall@10
                 </span>
-                <span className="text-xl font-extrabold text-[#080808]">
+                <span className="text-xl font-extrabold text-[#101214] mt-0.5 block">
                   {metrics?.recallAtK?.[10] !== undefined
                     ? `${Math.round(metrics.recallAtK[10] * 100)}%`
                     : "—"}
                 </span>
               </div>
-              <div className="rounded-2xl border-2 border-[#080808] bg-[#FEF189] p-3 shadow-[3px_3px_0px_#080808]">
-                <span className="text-[10px] font-extrabold uppercase text-[#080808] block">
+              <div className="rounded-[20px] border border-[#F5DFA0] bg-[#FEF9E7] p-3.5">
+                <span className="text-[10px] font-bold uppercase text-[#7A5908] block">
                   NDCG@10
                 </span>
-                <span className="text-xl font-extrabold text-[#080808]">
+                <span className="text-xl font-extrabold text-[#7A5908] mt-0.5 block">
                   {metrics?.ndcgAtK?.[10] !== undefined
                     ? metrics.ndcgAtK[10].toFixed(3)
                     : "—"}
@@ -691,17 +693,17 @@ export function AiIntelligencePanel({
               </div>
             </div>
 
-            <div className="rounded-2xl border-2 border-[#080808] bg-[#FDF9F3] p-4 text-xs space-y-1.5">
+            <div className="rounded-[20px] border border-black/[0.07] bg-[#FAFBF7] p-4 text-xs space-y-1.5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-extrabold text-[#080808]">
+                <span className="font-bold text-[#101214]">
                   Transparent ML & Ranking Architecture Disclosure
                 </span>
-                <span className="font-mono font-bold text-[11px] text-[#080808]">
+                <span className="font-mono font-semibold text-[11px] text-[#4B5563]">
                   Labels evaluated: {metrics?.labeledFeedbackCount || 0} (
                   {metrics?.evaluationMethod || "HYBRID_RELEVANCE_BENCHMARK"})
                 </span>
               </div>
-              <p className="text-[#777777] leading-relaxed">
+              <p className="text-[#6B7280] leading-relaxed">
                 {metrics?.modelFramingNote ||
                   "Semantic embedding model (prospect-semantic-embed-v1-128d) + hybrid multi-factor scoring. Note: This is an unsupervised semantic embedding & evidence-grounded hybrid ranker, not a supervised classifier trained on historical hiring outcomes. User feedback signals (+Relevant / Not Relevant / Saved / Applied) are persisted in FeedbackSignal to evaluate Precision@K, Recall@K, and NDCG@K."}
               </p>

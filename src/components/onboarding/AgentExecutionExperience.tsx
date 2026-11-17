@@ -146,34 +146,34 @@ export function AgentExecutionExperience({
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       {/* Editorial Header */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-2 rounded-full border-2 border-[#080808] bg-[#E0FB66] px-3.5 py-1 text-xs font-bold text-[#080808] mb-4">
-          <Sparkles className="h-3.5 w-3.5 text-[#080808]" />
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#C6E832] bg-[#E3FC6D] px-3.5 py-1 text-xs font-semibold text-[#0E1012] shadow-[0_2px_10px_rgba(205,238,54,0.28)] mb-4">
+          <Sparkles className="h-3.5 w-3.5 text-[#0E1012]" />
           <span>Opportunity Discovery Agent</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#080808]">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#101214]">
           Finding opportunities for you.
         </h1>
-        <p className="mt-2 text-sm sm:text-base text-[#777777]">
+        <p className="mt-2 text-sm sm:text-base text-[#64748B]">
           Searching across verified career boards and live web sources for{" "}
-          <strong className="text-[#080808]">{targetRoles.slice(0, 3).join(", ")}</strong>.
+          <strong className="text-[#101214]">{targetRoles.slice(0, 3).join(", ")}</strong>.
         </p>
       </div>
 
       {/* Main Execution Card */}
-      <div className="neo-card-lg bg-white p-6 sm:p-8">
+      <div className="bg-white border border-black/[0.07] rounded-[26px] shadow-[0_12px_38px_rgba(15,23,42,0.06)] p-6 sm:p-8">
         {/* Status Bar */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#080808] pb-4 text-xs">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.07] pb-4 text-xs">
           <div className="flex items-center gap-2">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-[#E0FB66] border border-[#080808] animate-pulse" />
-            <span className="font-bold text-[#080808]">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-[#94D814] ring-4 ring-[#E3FC6D]/50 animate-pulse" />
+            <span className="font-semibold text-[#101214]">
               Mode: Live Web Intelligence
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-[#777777]">
-            <span>Sources: {sourcesSearched.length} checked</span>
+          <div className="flex items-center gap-3 text-[#64748B]">
+            <span className="font-medium">Sources: {sourcesSearched.length} checked</span>
             {isCompleted && (
-              <span className="font-bold text-[#080808] rounded-full bg-[#E0FB66] border border-[#080808] px-2.5 py-0.5">
+              <span className="font-semibold text-[#0E1012] rounded-full bg-[#E3FC6D] border border-[#C6E832] shadow-[0_2px_8px_rgba(205,238,54,0.25)] px-3 py-0.5">
                 ✓ {totalOpportunitiesFound} Discovered
               </span>
             )}
@@ -181,56 +181,56 @@ export function AgentExecutionExperience({
         </div>
 
         {/* 10 Real Execution Stages List */}
-        <div className="space-y-3.5">
+        <div className="space-y-3">
           {stages.map((stage, idx) => (
             <div
               key={stage.id}
               className={`flex items-start gap-3.5 rounded-2xl p-3.5 transition-all ${
                 stage.status === "running"
-                  ? "border-2 border-[#080808] bg-[#E0FB66]/45 shadow-[2px_2px_0px_#080808]"
+                  ? "border border-[#C7E938]/70 bg-[#F3FCDA]/80 shadow-[0_4px_16px_rgba(205,238,54,0.18)]"
                   : stage.status === "completed"
-                  ? "border border-[#D8D5CE] bg-[#FDF9F3]"
-                  : "bg-transparent opacity-45"
+                  ? "border border-black/[0.07] bg-[#FAFBF7]"
+                  : "border border-transparent bg-transparent opacity-50"
               }`}
             >
               {/* Status Icon */}
               <div className="mt-0.5 shrink-0">
                 {stage.status === "completed" ? (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#080808] text-[#E0FB66]">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#101214] text-[#E3FC6D]">
                     <Check className="h-3.5 w-3.5" />
                   </div>
                 ) : stage.status === "running" ? (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FEF189] border border-[#080808] text-[#080808]">
-                    <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[#080808] border-t-transparent" />
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#E3FC6D] border border-[#C6E832] text-[#0E1012]">
+                    <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[#0E1012] border-t-transparent" />
                   </div>
                 ) : stage.status === "failed" ? (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-100 text-rose-600">
                     <AlertCircle className="h-3.5 w-3.5" />
                   </div>
                 ) : (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#D8D5CE] text-[#777777]">
-                    <span className="text-[10px] font-bold">{idx + 1}</span>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-black/[0.12] bg-white text-[#64748B]">
+                    <span className="text-[10px] font-semibold">{idx + 1}</span>
                   </div>
                 )}
               </div>
 
               {/* Stage Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <p
-                    className={`text-sm font-bold ${
+                    className={`text-sm font-semibold ${
                       stage.status === "running" || stage.status === "completed"
-                        ? "text-[#080808]"
-                        : "text-[#777777]"
+                        ? "text-[#101214]"
+                        : "text-[#64748B]"
                     }`}
                   >
                     {stage.name}
                   </p>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#777777]">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">
                     {stage.status}
                   </span>
                 </div>
-                <p className="mt-0.5 text-xs text-[#777777] line-clamp-1">{stage.description}</p>
+                <p className="mt-0.5 text-xs text-[#64748B] line-clamp-1">{stage.description}</p>
               </div>
             </div>
           ))}
@@ -238,14 +238,14 @@ export function AgentExecutionExperience({
 
         {/* Error Handling */}
         {error && (
-          <div className="mt-6 flex items-start gap-3 rounded-2xl border-2 border-[#080808] bg-red-50 p-4 text-xs text-red-800">
-            <AlertCircle className="h-5 w-5 shrink-0 text-red-600 mt-0.5" />
+          <div className="mt-6 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50/90 p-4 text-xs text-rose-800">
+            <AlertCircle className="h-5 w-5 shrink-0 text-rose-600 mt-0.5" />
             <div>
               <p className="font-bold">Search encountered an issue</p>
-              <p className="mt-0.5 text-red-700">{error}</p>
+              <p className="mt-0.5 text-rose-700">{error}</p>
               <button
                 onClick={onComplete}
-                className="mt-2 text-xs font-bold underline underline-offset-2 text-red-800 hover:text-red-900"
+                className="mt-2 text-xs font-semibold underline underline-offset-2 text-rose-800 hover:text-rose-900 cursor-pointer"
               >
                 Proceed to results with partial findings →
               </button>
@@ -255,16 +255,16 @@ export function AgentExecutionExperience({
 
         {/* Completed CTA */}
         {isCompleted && !error && (
-          <div className="mt-8 border-t-2 border-[#080808] pt-6 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border-2 border-[#080808] bg-[#FEF189] px-4 py-1.5 text-xs font-bold text-[#080808] mb-4">
-              <CheckCircle2 className="h-4 w-4 text-[#080808]" />
+          <div className="mt-8 border-t border-black/[0.07] pt-6 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#F5DFA0] bg-[#FEF9E7] px-4 py-1.5 text-xs font-semibold text-[#101214] mb-4">
+              <CheckCircle2 className="h-4 w-4 text-[#65B811]" />
               <span>Discovery complete — {totalOpportunitiesFound} opportunities evaluated</span>
             </div>
             <div>
               <button
                 type="button"
                 onClick={onComplete}
-                className="neo-btn-primary inline-flex items-center gap-2 px-8 py-3.5 text-sm cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 transition-all px-8 py-3.5 text-sm cursor-pointer"
               >
                 <span>View Personalized Opportunities</span>
                 <ArrowRight className="h-4 w-4" />

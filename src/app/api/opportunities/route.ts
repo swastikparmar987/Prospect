@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { loadActiveUserProfile, runOpportunityDiscoveryAgent } from "@/lib/agent/orchestrator";
 import { evaluateOpportunity } from "@/lib/scoring-engine";
+import { generatePreparationPlan } from "@/lib/gap-action-engine";
 import { doesOpportunityMatchRequestedDestination, parseSearchIntent } from "@/lib/query-intent-parser";
 import {
   Opportunity,
@@ -85,7 +86,39 @@ export async function GET(req: Request) {
       }
     }
 
+    const requireProfile = searchParams.get("requireProfile") === "1";
+    const freshSinceParam = searchParams.get("freshSince");
+    const freshSinceDate =
+      freshSinceParam && !isNaN(Date.parse(freshSinceParam))
+        ? new Date(freshSinceParam)
+        : null;
+
     const profile = await loadActiveUserProfile(user.userId);
+    const hasConfiguredProfile = Boolean(
+      profile &&
+        ((profile.skills && profile.skills.length > 0) ||
+          (profile.targetRoles && profile.targetRoles.length > 0) ||
+          (profile.projects && profile.projects.length > 0))
+    );
+
+    if (requireProfile && !hasConfiguredProfile) {
+      return NextResponse.json({
+        mode: modeParam,
+        totalCount: 0,
+        opportunities: [],
+        diversityMetrics: computeConcentrationMetrics([]),
+        personalizationSummary:
+          "Upload your resume first to unlock real-time opportunity discovery tailored to your capabilities.",
+        emptyStateMessage:
+          "Upload your resume first to run real-time opportunity discovery tailored to your skills.",
+        profileConfigured: false,
+        rankingMetrics: null,
+        locationPreference: null,
+        lastChecked: new Date().toISOString(),
+        isDemo: false,
+      });
+    }
+
     const rawHidden = Array.isArray(profile?.hiddenEmployers)
       ? profile.hiddenEmployers
       : [];
@@ -93,11 +126,18 @@ export async function GET(req: Request) {
       rawHidden.map((e) => e.trim().toLowerCase())
     );
 
+    const effectiveFreshCutoff =
+      freshSinceDate ||
+      (requireProfile && hasConfiguredProfile && profile?.createdAt
+        ? new Date(new Date(profile.createdAt).getTime() - 10000)
+        : null);
+
     const opportunitiesRaw = await prisma.opportunity.findMany({
       where: {
         isDemo: false,
         ...(category && category !== "ALL" ? { category } : {}),
         ...(workMode && workMode !== "ALL" ? { workMode } : {}),
+        ...(effectiveFreshCutoff ? { lastCheckedAt: { gte: effectiveFreshCutoff } } : {}),
       },
       include: {
         evaluations: {
@@ -413,6 +453,17 @@ export async function GET(req: Request) {
     });
 
     // 8. Multi-Platform & Employer Concentration Re-ranking
+    if (requireProfile && hasConfiguredProfile && !query) {
+      items = items
+        .filter(
+          (x) =>
+            x.evaluation.recommendation !== "SKIP" &&
+            (x.evaluation.overallScore >= 42 ||
+              (x.evaluation.positiveEvidence?.length || 0) > 0)
+        )
+        .slice(0, 120);
+    }
+
     if (sortBy === "fit" || sortBy === "action") {
       items = applyMultiPlatformDiversity(applyEmployerDiversity(items, 3, 10), 2, 4, 12);
     }
@@ -428,9 +479,6 @@ export async function GET(req: Request) {
         x.evaluation.recommendation === "APPLY_NOW" ||
         x.evaluation.overallScore >= 72 ||
         (x.evaluation.semanticScore || 0) >= 0.45
-    );
-    const hasConfiguredProfile = Boolean(
-      profile && ((profile.skills && profile.skills.length > 0) || (profile.targetRoles && profile.targetRoles.length > 0))
     );
     const topDemonstratedSkills = (profile?.skills || []).slice(0, 3);
     const locationPhrase = profile?.locationPreference?.city
@@ -565,6 +613,7 @@ export async function POST(req: Request) {
       location,
       mode,
       maxRounds,
+      userProfile: reqProfile ?? null,
       configOverrides,
       signal: req.signal,
     });
@@ -615,6 +664,38 @@ export async function POST(req: Request) {
       );
     }
 
+    // Automatically synthesize real, resume-grounded preparation plans for top 3 live matches
+    if (reqProfile && filteredOpps.length > 0) {
+      const topForPrep = [...filteredOpps]
+        .filter((x) => x.evaluation.recommendation !== "SKIP")
+        .sort((a, b) => b.evaluation.overallScore - a.evaluation.overallScore)
+        .slice(0, 3);
+
+      for (const item of topForPrep) {
+        try {
+          const generated = generatePreparationPlan(
+            item.opportunity,
+            reqProfile,
+            item.evaluation
+          );
+          await prisma.preparationPlan.deleteMany({
+            where: { opportunityId: item.opportunity.id, userId: reqUser.userId },
+          });
+          await prisma.preparationPlan.create({
+            data: {
+              userId: reqUser.userId,
+              opportunityId: item.opportunity.id,
+              title: generated.title,
+              summary: generated.summary,
+              items: JSON.stringify(generated.items),
+            },
+          });
+        } catch {
+          // Non-fatal if DB write skipped
+        }
+      }
+    }
+
     if (filteredOpps.length > 0) {
       publishRealtimeEvent(
         "OPPORTUNITY_UPSERTED",
@@ -622,12 +703,18 @@ export async function POST(req: Request) {
         {
           count: filteredOpps.length,
           query,
-        }
+        },
+        reqUser.userId
       );
     }
-    publishRealtimeEvent("SEARCH_COMPLETED", `Agent search finished for "${query || "profile matches"}".`, {
-      totalFound: filteredOpps.length,
-    });
+    publishRealtimeEvent(
+      "SEARCH_COMPLETED",
+      `Agent search finished for "${query || "profile matches"}".`,
+      {
+        totalFound: filteredOpps.length,
+      },
+      reqUser.userId
+    );
 
     return NextResponse.json({
       ...result,

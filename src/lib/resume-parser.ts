@@ -427,7 +427,7 @@ export function segmentResumeSections(rawText: string): ParsedSection[] {
     {
       type: "AWARDS_CERTS",
       regex:
-        /^(?:(?:honors\s*(?:&|and)\s*)?(?:awards|achievements|certifications|licenses|extracurricular(?:\s+activities)?))$/i,
+        /^(?:(?:honors\s*(?:&|and)\s*)?(?:awards(?:\s*(?:&|and)\s*achievements)?|achievements|certifications|licenses|extracurricular(?:\s+activities)?))$/i,
     },
   ];
 
@@ -1526,6 +1526,15 @@ export function parseResumeDeterministically(
     targetRoles.push("Computer Vision Intern");
   }
   if (
+    skillSetLower.has("react") ||
+    skillSetLower.has("next.js") ||
+    skillSetLower.has("typescript") ||
+    skillSetLower.has("tailwind css") ||
+    skillSetLower.has("figma")
+  ) {
+    targetRoles.push("Frontend Engineer Intern", "Full-Stack Product Intern");
+  }
+  if (
     skillSetLower.has("python") ||
     skillSetLower.has("javascript") ||
     skillSetLower.has("c++") ||
@@ -1536,7 +1545,10 @@ export function parseResumeDeterministically(
   if (
     skillSetLower.has("fastapi") ||
     skillSetLower.has("docker") ||
-    skillSetLower.has("sql")
+    skillSetLower.has("sql") ||
+    skillSetLower.has("go") ||
+    skillSetLower.has("rust") ||
+    skillSetLower.has("kubernetes")
   ) {
     targetRoles.push("Backend & Distributed Systems Intern");
   }

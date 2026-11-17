@@ -57,14 +57,14 @@ function ConfidenceBadge({
   if (conf.level === "high") {
     return (
       <span
-        className="inline-flex items-center gap-1 rounded-md bg-[#E0FB66] px-2 py-0.5 text-[10px] font-bold text-[#080808] border border-[#080808]"
+        className="inline-flex items-center gap-1 rounded-full bg-[#E3FC6D] px-2.5 py-0.5 text-[10px] font-semibold text-[#0E1012] border border-[#C6E832]"
         title={
           conf.evidenceSnippet
             ? `Source in resume: "${conf.evidenceSnippet}"`
             : "High confidence extraction"
         }
       >
-        <ShieldCheck className="h-3 w-3 text-[#080808]" />
+        <ShieldCheck className="h-3 w-3 text-[#0E1012]" />
         <span>Verified</span>
       </span>
     );
@@ -73,7 +73,7 @@ function ConfidenceBadge({
   if (conf.level === "medium") {
     return (
       <span
-        className="inline-flex items-center gap-1 rounded-md bg-teal-50 px-2 py-0.5 text-[10px] font-semibold text-teal-800 border border-teal-200"
+        className="inline-flex items-center gap-1 rounded-full bg-[#F5F2FF] px-2.5 py-0.5 text-[10px] font-semibold text-[#4C1D95] border border-[#D9CCF8]"
         title={
           conf.evidenceSnippet
             ? `Contextual source: "${conf.evidenceSnippet}"`
@@ -87,10 +87,10 @@ function ConfidenceBadge({
 
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800 border border-amber-200"
+      className="inline-flex items-center gap-1 rounded-full bg-[#FEF9E7] px-2.5 py-0.5 text-[10px] font-semibold text-[#856404] border border-[#F5DFA0]"
       title={conf.reason || "Please review or fill in this field"}
     >
-      <AlertCircle className="h-3 w-3 text-amber-700" />
+      <AlertCircle className="h-3 w-3 text-[#9A7400]" />
       <span>Review Needed</span>
     </span>
   );
@@ -249,18 +249,18 @@ export function ProfileConfirmationView({
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 text-[#101214]">
       {/* Editorial Header */}
-      <div className="mb-6 flex flex-col items-start justify-between gap-4 border-b-2 border-[#080808] pb-6 sm:flex-row sm:items-center">
+      <div className="mb-6 flex flex-col items-start justify-between gap-4 border-b border-black/[0.08] pb-6 sm:flex-row sm:items-center">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#E0FB66] px-3 py-0.5 text-xs font-bold text-[#080808] mb-2">
-            <BadgeCheck className="h-3.5 w-3.5 text-[#080808]" />
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] px-3 py-0.5 text-xs font-semibold text-[#0E1012] shadow-[0_2px_10px_rgba(205,238,54,0.28)] mb-2">
+            <BadgeCheck className="h-3.5 w-3.5 text-[#0E1012]" />
             <span>Extracted from {filename}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#080808]">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#101214]">
             Here&apos;s what we found in your resume.
           </h1>
-          <p className="mt-1 text-sm text-[#777777]">
+          <p className="mt-1 text-sm text-[#64748B]">
             Review, edit any field, and confirm your career targets before we search for opportunities.
           </p>
         </div>
@@ -268,7 +268,7 @@ export function ProfileConfirmationView({
         <button
           onClick={onReupload}
           disabled={isSaving}
-          className="neo-btn-outline inline-flex items-center gap-1.5 px-4 py-2 text-xs cursor-pointer"
+          className="rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium transition cursor-pointer disabled:opacity-50"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Upload Different Resume
@@ -277,11 +277,11 @@ export function ProfileConfirmationView({
 
       {/* Scanned / Low-Text Notice Banner */}
       {isScannedOrLowText && (
-        <div className="mb-6 rounded-2xl border-2 border-[#080808] bg-[#FEF189] p-4 text-xs text-[#080808] shadow-[3px_3px_0px_#080808] flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-[#080808] shrink-0 mt-0.5" />
+        <div className="mb-6 rounded-2xl border border-[#F5DFA0] bg-[#FEF9E7] p-4 text-xs text-[#101214] flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-[#9A7400] shrink-0 mt-0.5" />
           <div>
-            <p className="font-extrabold">Low Text or Scanned Document Detected</p>
-            <p className="mt-0.5 text-[#080808]/85 leading-relaxed">
+            <p className="font-bold">Low Text or Scanned Document Detected</p>
+            <p className="mt-0.5 text-[#423A20] leading-relaxed">
               This document contains little selectable text and may be a scanned image or non-standard format.
               Please review each field below and fill in any missing details before confirming.
             </p>
@@ -293,11 +293,11 @@ export function ProfileConfirmationView({
         {/* Left 2 Columns: Editable Sections */}
         <div className="space-y-6 lg:col-span-2">
           {/* SECTION 1: Personal Details */}
-          <section className="neo-card bg-white p-6">
-            <div className="flex items-center justify-between pb-4 border-b-2 border-[#080808]">
-              <h2 className="text-lg font-extrabold text-[#080808] flex items-center gap-2">
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-black/[0.07]">
+              <h2 className="text-lg font-bold text-[#101214] flex items-center gap-2">
                 <span>Personal Information</span>
-                <span className="rounded-md bg-[#E0FB66] border border-[#080808] px-2 py-0.5 text-[11px] font-bold text-[#080808]">
+                <span className="rounded-full bg-[#E3FC6D] border border-[#C6E832] px-2.5 py-0.5 text-[11px] font-semibold text-[#0E1012]">
                   Resume Extracted
                 </span>
               </h2>
@@ -306,7 +306,7 @@ export function ProfileConfirmationView({
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">Full Name</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">Full Name</label>
                   <ConfidenceBadge field="fullName" conf={fieldConfidences?.fullName} />
                 </div>
                 <input
@@ -314,13 +314,13 @@ export function ProfileConfirmationView({
                   placeholder="e.g. Swastik Parmar"
                   value={profile.fullName || ""}
                   onChange={(e) => updateField("fullName", e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">Headline</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">Headline</label>
                   <ConfidenceBadge field="headline" conf={fieldConfidences?.headline} />
                 </div>
                 <input
@@ -328,13 +328,13 @@ export function ProfileConfirmationView({
                   placeholder="e.g. Machine Learning Engineer | Computer Vision"
                   value={profile.headline || ""}
                   onChange={(e) => updateField("headline", e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">Email Address</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">Email Address</label>
                   <ConfidenceBadge field="email" conf={fieldConfidences?.email} />
                 </div>
                 <input
@@ -342,13 +342,13 @@ export function ProfileConfirmationView({
                   placeholder="e.g. student@college.edu"
                   value={profile.email || ""}
                   onChange={(e) => updateField("email", e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">Phone Number</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">Phone Number</label>
                   <ConfidenceBadge field="phone" conf={fieldConfidences?.phone} />
                 </div>
                 <input
@@ -356,13 +356,13 @@ export function ProfileConfirmationView({
                   placeholder="Optional, e.g. +91 9266581335"
                   value={profile.phone || ""}
                   onChange={(e) => updateField("phone", e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">Location</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">Location</label>
                   <ConfidenceBadge field="location" conf={fieldConfidences?.location} />
                 </div>
                 <input
@@ -373,17 +373,17 @@ export function ProfileConfirmationView({
                     updateField("location", e.target.value);
                     setPreferredLocation(e.target.value);
                   }}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
             </div>
           </section>
 
           {/* SECTION 2: Academic Background */}
-          <section className="neo-card bg-white p-6">
-            <div className="flex items-center justify-between pb-4 border-b-2 border-[#080808]">
-              <h2 className="text-lg font-extrabold text-[#080808] flex items-center gap-2">
-                <GraduationCap className="h-5 w-5 text-[#080808]" />
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-black/[0.07]">
+              <h2 className="text-lg font-bold text-[#101214] flex items-center gap-2">
+                <GraduationCap className="h-5 w-5 text-[#65B811]" />
                 <span>Education</span>
               </h2>
             </div>
@@ -391,7 +391,7 @@ export function ProfileConfirmationView({
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">College or University</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">College or University</label>
                   <ConfidenceBadge field="university" conf={fieldConfidences?.university} />
                 </div>
                 <input
@@ -399,13 +399,13 @@ export function ProfileConfirmationView({
                   placeholder="e.g. SRM University, Haryana"
                   value={profile.university || ""}
                   onChange={(e) => updateField("university", e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">Degree</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">Degree</label>
                   <ConfidenceBadge field="degree" conf={fieldConfidences?.degree} />
                 </div>
                 <input
@@ -413,13 +413,13 @@ export function ProfileConfirmationView({
                   placeholder="e.g. B.Tech or B.S."
                   value={profile.degree || ""}
                   onChange={(e) => updateField("degree", e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">Major / Branch</label>
+                  <label className="block text-xs font-semibold text-[#64748B]">Major / Branch</label>
                   <ConfidenceBadge field="major" conf={fieldConfidences?.major} />
                 </div>
                 <input
@@ -427,14 +427,14 @@ export function ProfileConfirmationView({
                   placeholder="e.g. Computer Science and Engineering"
                   value={profile.major || ""}
                   onChange={(e) => updateField("major", e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">
-                    Graduation Year <span className="text-[#080808]">*</span>
+                  <label className="block text-xs font-semibold text-[#64748B]">
+                    Graduation Year <span className="text-[#101214]">*</span>
                   </label>
                   <ConfidenceBadge field="graduationYear" conf={fieldConfidences?.graduationYear} />
                 </div>
@@ -448,13 +448,13 @@ export function ProfileConfirmationView({
                     const parsed = e.target.value === "" ? null : parseInt(e.target.value, 10);
                     updateField("graduationYear", parsed);
                   }}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm font-bold text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm font-semibold text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-[#777777]">
+                  <label className="block text-xs font-semibold text-[#64748B]">
                     GPA / CGPA (Scale 4.0 or 10.0)
                   </label>
                   <ConfidenceBadge field="gpa" conf={fieldConfidences?.gpa} />
@@ -468,21 +468,21 @@ export function ProfileConfirmationView({
                     const val = e.target.value === "" ? null : parseFloat(e.target.value);
                     updateField("gpa", val);
                   }}
-                  className="w-full rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-2 text-sm text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                  className="w-full rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-sm text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
               </div>
             </div>
           </section>
 
           {/* SECTION 3: Skills & Competencies */}
-          <section className="neo-card bg-white p-6">
-            <div className="flex items-center justify-between pb-4 border-b-2 border-[#080808]">
-              <h2 className="text-lg font-extrabold text-[#080808] flex items-center gap-2">
-                <Code className="h-5 w-5 text-[#080808]" />
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-black/[0.07]">
+              <h2 className="text-lg font-bold text-[#101214] flex items-center gap-2">
+                <Code className="h-5 w-5 text-[#65B811]" />
                 <span>Skills & Competencies ({profile.skills.length})</span>
                 <ConfidenceBadge field="skills" conf={fieldConfidences?.skills} />
               </h2>
-              <span className="text-xs font-medium text-[#777777]">Click &apos;×&apos; to remove</span>
+              <span className="text-xs font-medium text-[#64748B]">Click &apos;×&apos; to remove</span>
             </div>
 
             {/* Current Skills Chips */}
@@ -490,13 +490,13 @@ export function ProfileConfirmationView({
               {profile.skills.map((skill) => (
                 <span
                   key={skill}
-                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#E0FB66] px-3 py-1 text-xs font-bold text-[#080808]"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] px-3 py-1 text-xs font-semibold text-[#0E1012] shadow-[0_2px_8px_rgba(205,238,54,0.2)]"
                 >
                   {skill}
                   <button
                     type="button"
                     onClick={() => handleRemoveSkill(skill)}
-                    className="text-[#080808]/70 hover:text-red-700 transition cursor-pointer"
+                    className="text-[#0E1012]/70 hover:text-rose-700 transition cursor-pointer"
                   >
                     ×
                   </button>
@@ -517,12 +517,12 @@ export function ProfileConfirmationView({
                     handleAddSkill();
                   }
                 }}
-                className="flex-1 rounded-xl border-2 border-[#080808] bg-[#FDF9F3] px-3 py-1.5 text-xs text-[#080808] focus:bg-white focus:outline-none placeholder:text-[#777777]"
+                className="flex-1 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-2 text-xs text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
               />
               <button
                 type="button"
                 onClick={handleAddSkill}
-                className="inline-flex items-center gap-1 rounded-xl border-2 border-[#080808] bg-[#080808] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#080808]/90 transition cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-full bg-[#101214] text-white font-semibold shadow-[0_4px_12px_rgba(16,18,20,0.14)] hover:bg-[#1E2226] px-4 py-2 text-xs transition cursor-pointer"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add
@@ -531,16 +531,16 @@ export function ProfileConfirmationView({
           </section>
 
           {/* SECTION 4: Projects */}
-          <section className="neo-card bg-white p-6">
-            <div className="flex items-center justify-between pb-4 border-b-2 border-[#080808]">
-              <h2 className="text-lg font-extrabold text-[#080808] flex items-center gap-2">
-                <FolderGit2 className="h-5 w-5 text-[#080808]" />
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-black/[0.07]">
+              <h2 className="text-lg font-bold text-[#101214] flex items-center gap-2">
+                <FolderGit2 className="h-5 w-5 text-[#4B5563]" />
                 <span>Projects ({profile.projects.length})</span>
               </h2>
               <button
                 type="button"
                 onClick={handleAddProject}
-                className="inline-flex items-center gap-1 rounded-lg border-2 border-[#080808] bg-[#FDF9F3] px-2.5 py-1 text-xs font-bold text-[#080808] hover:bg-[#E0FB66] transition cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F3FCDA] hover:border-[#C7E938] px-3.5 py-1.5 text-xs font-medium transition cursor-pointer"
               >
                 <Plus className="h-3 w-3" />
                 Add Project
@@ -549,14 +549,14 @@ export function ProfileConfirmationView({
 
             <div className="mt-4 space-y-4">
               {profile.projects.length === 0 ? (
-                <p className="text-xs text-[#777777] italic">
+                <p className="text-xs text-[#64748B] italic">
                   No technical projects extracted from resume. You can add them with the button above.
                 </p>
               ) : (
                 profile.projects.map((proj, idx) => (
                   <div
                     key={proj.id || idx}
-                    className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-4 shadow-[2px_2px_0px_#080808]"
+                    className="rounded-2xl border border-black/[0.07] bg-[#FAFBF7] p-4"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <input
@@ -567,7 +567,7 @@ export function ProfileConfirmationView({
                           updated[idx] = { ...updated[idx], name: e.target.value };
                           updateField("projects", updated);
                         }}
-                        className="font-bold text-sm text-[#080808] bg-transparent border-b border-transparent hover:border-[#080808] focus:border-[#080808] focus:outline-none w-full"
+                        className="font-bold text-sm text-[#101214] bg-transparent border-b border-transparent hover:border-black/[0.15] focus:border-[#94D814] focus:outline-none w-full transition"
                       />
                       <button
                         type="button"
@@ -577,7 +577,7 @@ export function ProfileConfirmationView({
                             profile.projects.filter((_, i) => i !== idx)
                           );
                         }}
-                        className="text-[#777777] hover:text-red-600 transition"
+                        className="text-[#64748B] hover:text-rose-600 transition cursor-pointer"
                         title="Remove project"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -592,14 +592,14 @@ export function ProfileConfirmationView({
                         updated[idx] = { ...updated[idx], description: e.target.value };
                         updateField("projects", updated);
                       }}
-                      className="mt-2 w-full rounded-lg border-2 border-[#080808] bg-white p-2 text-xs text-[#080808] focus:outline-none leading-relaxed"
+                      className="mt-2.5 w-full rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 p-2.5 text-xs text-[#101214] outline-none leading-relaxed transition"
                     />
 
-                    <div className="mt-2 flex flex-wrap gap-1">
+                    <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {proj.techStack?.map((t) => (
                         <span
                           key={t}
-                          className="rounded-md border border-[#080808] bg-white px-2 py-0.5 text-[10px] font-bold text-[#080808]"
+                          className="rounded-full border border-black/[0.08] bg-white px-2.5 py-0.5 text-[10px] font-medium text-[#4B5563]"
                         >
                           {t}
                         </span>
@@ -612,16 +612,16 @@ export function ProfileConfirmationView({
           </section>
 
           {/* SECTION 5: Experience */}
-          <section className="neo-card bg-white p-6">
-            <div className="flex items-center justify-between pb-4 border-b-2 border-[#080808]">
-              <h2 className="text-lg font-extrabold text-[#080808] flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-[#080808]" />
+          <section className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-black/[0.07]">
+              <h2 className="text-lg font-bold text-[#101214] flex items-center gap-2">
+                <Briefcase className="h-5 w-5 text-[#4B5563]" />
                 <span>Experience ({profile.experiences.length})</span>
               </h2>
               <button
                 type="button"
                 onClick={handleAddExperience}
-                className="inline-flex items-center gap-1 rounded-lg border-2 border-[#080808] bg-[#FDF9F3] px-2.5 py-1 text-xs font-bold text-[#080808] hover:bg-[#E0FB66] transition cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F3FCDA] hover:border-[#C7E938] px-3.5 py-1.5 text-xs font-medium transition cursor-pointer"
               >
                 <Plus className="h-3 w-3" />
                 Add Experience
@@ -630,11 +630,11 @@ export function ProfileConfirmationView({
 
             <div className="mt-4 space-y-4">
               {profile.experiences.length === 0 ? (
-                <div className="rounded-xl border-2 border-dashed border-[#D8D5CE] p-4 text-center">
-                  <p className="text-xs font-medium text-[#777777]">
+                <div className="rounded-2xl border border-dashed border-black/[0.12] bg-[#FAFBF7]/60 p-4 text-center">
+                  <p className="text-xs font-medium text-[#64748B]">
                     No corporate work experience extracted. This is completely standard for early-career students.
                   </p>
-                  <p className="mt-1 text-[11px] text-[#777777]">
+                  <p className="mt-1 text-[11px] text-[#64748B]">
                     Your hands-on projects, coursework, and competencies will be used for matching opportunities.
                   </p>
                 </div>
@@ -642,12 +642,12 @@ export function ProfileConfirmationView({
                 profile.experiences.map((exp, idx) => (
                   <div
                     key={exp.id || idx}
-                    className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-4 shadow-[2px_2px_0px_#080808]"
+                    className="rounded-2xl border border-black/[0.07] bg-[#FAFBF7] p-4"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-bold text-sm text-[#080808]">{exp.title}</p>
-                        <p className="text-xs text-[#777777]">
+                        <p className="font-bold text-sm text-[#101214]">{exp.title}</p>
+                        <p className="text-xs text-[#64748B]">
                           {exp.company} • {exp.duration}
                         </p>
                       </div>
@@ -659,14 +659,14 @@ export function ProfileConfirmationView({
                             profile.experiences.filter((_, i) => i !== idx)
                           );
                         }}
-                        className="text-[#777777] hover:text-red-600 transition"
+                        className="text-[#64748B] hover:text-rose-600 transition cursor-pointer"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
 
                     {exp.bullets && exp.bullets.length > 0 && (
-                      <ul className="mt-2 space-y-1 text-xs text-[#080808]/85">
+                      <ul className="mt-2 space-y-1 text-xs text-[#4B5563]">
                         {exp.bullets.map((b, bIdx) => (
                           <li key={bIdx} className="list-disc list-inside">
                             {b}
@@ -683,21 +683,21 @@ export function ProfileConfirmationView({
 
         {/* Right 1 Column: Career Intent & Discovery Trigger (Phase 4) */}
         <div className="space-y-6">
-          <div className="sticky top-6 neo-card-lg bg-[#FDF9F3] p-6">
-            <div className="flex items-center gap-2 pb-4 border-b-2 border-[#080808]">
-              <Compass className="h-5 w-5 text-[#080808]" />
-              <h3 className="text-lg font-extrabold text-[#080808]">
+          <div className="sticky top-6 bg-white border border-black/[0.07] rounded-[24px] shadow-[0_12px_36px_rgba(15,23,42,0.06)] p-6">
+            <div className="flex items-center gap-2 pb-4 border-b border-black/[0.07]">
+              <Compass className="h-5 w-5 text-[#65B811]" />
+              <h3 className="text-lg font-bold text-[#101214]">
                 Career Direction
               </h3>
             </div>
 
-            <p className="mt-3 text-xs text-[#777777] leading-relaxed">
+            <p className="mt-3 text-xs text-[#64748B] leading-relaxed">
               We inferred these opportunity targets based on your skills and projects. Tap to toggle or add new targets:
             </p>
 
             {/* Target Roles */}
             <div className="mt-4">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-[#080808] mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
                 Target Roles ({selectedRoles.length})
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -706,16 +706,16 @@ export function ProfileConfirmationView({
                     key={role}
                     type="button"
                     onClick={() => handleToggleRole(role)}
-                    className="inline-flex items-center gap-1 rounded-full border-2 border-[#080808] bg-[#E0FB66] px-3 py-1 text-xs font-bold text-[#080808] transition hover:bg-[#FEF189] cursor-pointer"
+                    className="inline-flex items-center gap-1 rounded-full border border-[#C6E832] bg-[#E3FC6D] px-3 py-1 text-xs font-semibold text-[#0E1012] shadow-[0_2px_8px_rgba(205,238,54,0.25)] transition hover:bg-[#DDFB4B] cursor-pointer"
                   >
                     <span>{role}</span>
-                    <span className="text-[#080808]/70 hover:text-[#080808]">×</span>
+                    <span className="text-[#0E1012]/70 hover:text-[#0E1012]">×</span>
                   </button>
                 ))}
               </div>
 
               {/* Add Custom Role */}
-              <div className="mt-2 flex gap-1.5">
+              <div className="mt-2.5 flex gap-1.5">
                 <input
                   type="text"
                   placeholder="Add target role..."
@@ -727,12 +727,12 @@ export function ProfileConfirmationView({
                       handleAddCustomRole();
                     }
                   }}
-                  className="flex-1 rounded-xl border-2 border-[#080808] bg-white px-2.5 py-1 text-xs text-[#080808] focus:outline-none placeholder:text-[#777777]"
+                  className="flex-1 rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-1.5 text-xs text-[#101214] outline-none placeholder:text-[#94A3B8] transition"
                 />
                 <button
                   type="button"
                   onClick={handleAddCustomRole}
-                  className="rounded-xl border-2 border-[#080808] bg-[#FEF189] px-2.5 py-1 text-xs font-bold text-[#080808] hover:bg-[#E0FB66] cursor-pointer"
+                  className="rounded-full border border-[#F5DFA0] bg-[#FEF9E7] px-3 py-1.5 text-xs font-semibold text-[#101214] hover:bg-[#E3FC6D] hover:border-[#C6E832] transition cursor-pointer"
                 >
                   Add
                 </button>
@@ -740,8 +740,8 @@ export function ProfileConfirmationView({
             </div>
 
             {/* Opportunity Types */}
-            <div className="mt-5 border-t border-[#D8D5CE] pt-4">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-[#080808] mb-2">
+            <div className="mt-5 border-t border-black/[0.07] pt-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
                 Opportunity Types
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -752,10 +752,10 @@ export function ProfileConfirmationView({
                       key={cat}
                       type="button"
                       onClick={() => handleToggleCategory(cat)}
-                      className={`rounded-full border-2 border-[#080808] px-3 py-1 text-xs transition cursor-pointer ${
+                      className={`rounded-full px-3 py-1 text-xs transition cursor-pointer ${
                         isSelected
-                          ? "bg-[#E0FB66] text-[#080808] font-bold"
-                          : "bg-white text-[#080808] hover:bg-[#FEF189]/40"
+                          ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                          : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                       }`}
                     >
                       {cat}
@@ -766,8 +766,8 @@ export function ProfileConfirmationView({
             </div>
 
             {/* Work Modes */}
-            <div className="mt-5 border-t border-[#D8D5CE] pt-4">
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-[#080808] mb-2">
+            <div className="mt-5 border-t border-black/[0.07] pt-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
                 Work Mode Preference
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -778,10 +778,10 @@ export function ProfileConfirmationView({
                       key={mode}
                       type="button"
                       onClick={() => handleToggleWorkMode(mode)}
-                      className={`rounded-full border-2 border-[#080808] px-3 py-1 text-xs transition cursor-pointer ${
+                      className={`rounded-full px-3 py-1 text-xs transition cursor-pointer ${
                         isSelected
-                          ? "bg-[#E0FB66] text-[#080808] font-bold"
-                          : "bg-white text-[#080808] hover:bg-[#FEF189]/40"
+                          ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                          : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                       }`}
                     >
                       {mode}
@@ -792,24 +792,24 @@ export function ProfileConfirmationView({
             </div>
 
             {/* Search Mode Toggle */}
-            <div className="mt-5 border-t border-[#D8D5CE] pt-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-[#080808]">
+            <div className="mt-5 border-t border-black/[0.07] pt-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#64748B]">
                   Search Provider
                 </span>
-                <span className="rounded-xl border-2 border-[#080808] bg-[#E0FB66] px-3 py-1 text-[11px] font-bold text-[#080808]">
+                <span className="rounded-full border border-[#C7E938]/60 bg-[#F3FCDA]/80 px-3 py-1 text-[11px] font-semibold text-[#101214]">
                   Live Public Feeds &amp; APIs
                 </span>
               </div>
             </div>
 
             {/* Primary Action Button */}
-            <div className="mt-6 border-t-2 border-[#080808] pt-5">
+            <div className="mt-6 border-t border-black/[0.07] pt-5">
               <button
                 type="button"
                 onClick={handleFinalSubmit}
                 disabled={isSaving}
-                className="neo-btn-primary w-full py-3.5 px-4 text-center text-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 transition-all py-3.5 px-4 text-center text-sm disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isSaving ? (
                   <>
@@ -818,13 +818,13 @@ export function ProfileConfirmationView({
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 text-[#E0FB66]" />
-                    <span>Confirm Profile & Find Opportunities</span>
+                    <Sparkles className="h-4 w-4 text-[#E3FC6D]" />
+                    <span>Confirm Profile &amp; Run Live Discovery</span>
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
-              <p className="mt-2 text-center text-[11px] text-[#777777]">
+              <p className="mt-2.5 text-center text-[11px] text-[#64748B]">
                 Saves confirmed profile & starts immediate discovery
               </p>
             </div>

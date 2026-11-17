@@ -177,7 +177,10 @@ export async function runOpportunityDiscoveryAgent(
   );
 
   // STEP 2: Load user profile & feedback signals
-  let profile = options.userProfile || (await loadActiveUserProfile());
+  let profile =
+    options.userProfile !== undefined
+      ? options.userProfile
+      : await loadActiveUserProfile();
   if (profile) {
     recordStep(
       "load_profile",

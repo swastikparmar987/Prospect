@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, useId } from "react";
 import {
   Opportunity,
   EvaluationResult,
@@ -168,8 +168,11 @@ const VERIFIED_CITY_CHOICES = [
   "Remote",
 ];
 
-/** Custom crisp Neo-Brutalist tilted folder vector illustration matching Discover hero. */
+/** Clean soft-card Obsidian & Lime tilted folder vector illustration matching Discover hero. */
 function HeroFolderIllustration() {
+  const shadowId = useId();
+  const limeGradId = useId();
+
   return (
     <svg
       width="136"
@@ -179,68 +182,124 @@ function HeroFolderIllustration() {
       aria-hidden="true"
       className="hidden sm:block shrink-0"
     >
-      {/* Top-left playful comic accent ticks */}
-      <line x1="18" y1="22" x2="10" y2="12" stroke="#080808" strokeWidth="2.4" strokeLinecap="round" />
-      <line x1="28" y1="15" x2="26" y2="4" stroke="#080808" strokeWidth="2.4" strokeLinecap="round" />
-      <line x1="39" y1="17" x2="46" y2="7" stroke="#080808" strokeWidth="2.4" strokeLinecap="round" />
+      <defs>
+        <filter id={shadowId} x="12" y="20" width="120" height="84" filterUnits="userSpaceOnUse">
+          <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#0F172A" floodOpacity="0.08" />
+        </filter>
+        <linearGradient id={limeGradId} x1="24" y1="26" x2="118" y2="90" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#E9FD82" />
+          <stop offset="100%" stopColor="#D5F642" />
+        </linearGradient>
+      </defs>
 
-      {/* Lilac background document tab */}
+      {/* Subtle soft lime ambient ticks */}
+      <line x1="18" y1="22" x2="11" y2="13" stroke="#8AD014" strokeWidth="2.2" strokeLinecap="round" opacity="0.7" />
+      <line x1="28" y1="15" x2="26" y2="5" stroke="#8AD014" strokeWidth="2.2" strokeLinecap="round" opacity="0.55" />
+      <line x1="39" y1="17" x2="45" y2="8" stroke="#8AD014" strokeWidth="2.2" strokeLinecap="round" opacity="0.7" />
+
+      {/* Soft violet background document tab */}
       <g transform="rotate(-6 74 52)">
         <rect
           x="30"
           y="20"
           width="84"
           height="58"
-          rx="10"
-          fill="#EAE2FE"
-          stroke="#080808"
-          strokeWidth="2.2"
+          rx="12"
+          fill="#F5F2FF"
+          stroke="#D9CCF8"
+          strokeWidth="1.5"
         />
       </g>
 
-      {/* Electric Lime folder back flap */}
+      {/* Soft Electric Lime folder back flap */}
       <g transform="rotate(-3 74 58)">
         <path
           d="M24 34C24 29.58 27.58 26 32 26H58L65 34H110C114.42 34 118 37.58 118 42V82C118 86.42 114.42 90 110 90H32C27.58 90 24 86.42 24 82V34Z"
-          fill="#E0FB66"
-          stroke="#080808"
-          strokeWidth="2.2"
+          fill={`url(#${limeGradId})`}
+          stroke="#B5DD23"
+          strokeWidth="1.4"
         />
       </g>
 
-      {/* Offset hard shadow behind cream front folder */}
-      <rect x="29" y="45" width="90" height="47" rx="10" fill="#080808" />
+      {/* Translucent white front pocket with soft drop shadow */}
+      <g filter={`url(#${shadowId})`}>
+        <rect
+          x="24"
+          y="40"
+          width="90"
+          height="48"
+          rx="12"
+          fill="#FFFFFF"
+          stroke="#E5E7EB"
+          strokeWidth="1.4"
+        />
+      </g>
 
-      {/* Warm Cream front pocket */}
-      <rect
-        x="24"
-        y="40"
-        width="90"
-        height="48"
-        rx="10"
-        fill="#FDF9F3"
-        stroke="#080808"
-        strokeWidth="2.2"
-      />
-
-      {/* Minimalist briefcase emblem inside pocket */}
+      {/* Minimalist Obsidian briefcase emblem inside pocket */}
       <rect
         x="58"
         y="57"
         width="22"
         height="16"
-        rx="3"
-        fill="#FFFFFF"
-        stroke="#080808"
-        strokeWidth="2"
+        rx="4"
+        fill="#FAFBF7"
+        stroke="#101214"
+        strokeWidth="1.75"
       />
       <path
         d="M65 57V54C65 52.9 65.9 52 67 52H71C72.1 52 73 52.9 73 54V57"
-        stroke="#080808"
-        strokeWidth="2"
+        stroke="#101214"
+        strokeWidth="1.75"
       />
-      <line x1="58" y1="64" x2="80" y2="64" stroke="#080808" strokeWidth="1.8" />
+      <line x1="58" y1="64" x2="80" y2="64" stroke="#101214" strokeWidth="1.6" />
     </svg>
+  );
+}
+
+/** Compact circular SVG progress ring for split-feed opportunity cards. */
+function CompactMatchRing({ percent }: { percent: number }) {
+  const gradId = useId();
+  const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+  const r = 16;
+  const c = 2 * Math.PI * r;
+  const offset = c - (clamped / 100) * c;
+
+  return (
+    <div
+      className="relative inline-flex h-10 w-10 items-center justify-center shrink-0"
+      title={`${clamped}% Match`}
+    >
+      <svg className="h-10 w-10 -rotate-90" viewBox="0 0 40 40" aria-hidden="true">
+        <defs>
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#9CE21B" />
+            <stop offset="100%" stopColor="#65B811" />
+          </linearGradient>
+        </defs>
+        <circle
+          cx="20"
+          cy="20"
+          r={r}
+          fill="none"
+          stroke="#E6E8E2"
+          strokeWidth="3.2"
+        />
+        <circle
+          cx="20"
+          cy="20"
+          r={r}
+          fill="none"
+          stroke={`url(#${gradId})`}
+          strokeWidth="3.2"
+          strokeDasharray={c}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="absolute font-heading text-[10px] font-extrabold text-[#101214] leading-none">
+        {clamped}%
+      </span>
+    </div>
   );
 }
 
@@ -831,21 +890,17 @@ export function DiscoverView({
       {/* ===================================================== */}
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-stretch">
         {/* Left: Headline + Folder Graphic + 4 Snapshot Cards */}
-        <div className="xl:col-span-8 flex flex-col justify-between gap-4">
+        <div className="xl:col-span-8 flex flex-col justify-between gap-4 rounded-[26px] bg-gradient-to-br from-white via-[#FBFDF7] to-[#EFFAD1]/55 border border-black/[0.06] p-5 sm:p-6 shadow-[0_10px_34px_rgba(15,23,42,0.045)]">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <h1 className="font-heading text-3xl sm:text-4xl lg:text-[42px] font-extrabold tracking-[-0.03em] leading-[1.08] text-[#080808]">
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-[42px] font-extrabold tracking-[-0.03em] leading-[1.08] text-[#101214]">
                 Discover opportunities
                 <br />
-                <span className="relative inline-block">
-                  <span className="relative z-10">that fit you.</span>
-                  <span
-                    className="absolute left-0 right-0 bottom-0.5 h-3.5 bg-[#E0FB66] -z-0"
-                    aria-hidden="true"
-                  />
+                <span className="inline-block rounded-xl bg-[#DCFC4E]/80 px-2.5 py-0.5 mt-1">
+                  that fit you.
                 </span>
               </h1>
-              <p className="mt-2 text-xs sm:text-sm text-[#777777] font-medium">
+              <p className="mt-2.5 text-xs sm:text-sm text-[#6B7280] font-medium">
                 AI-powered search, live from trusted sources, personalized to your profile.
               </p>
             </div>
@@ -856,75 +911,75 @@ export function DiscoverView({
           {/* 4 Snapshot Stat Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {/* 1. Opportunities Found */}
-            <div className="neo-card bg-white p-3 sm:p-3.5">
+            <div className="rounded-[20px] bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 border border-[#C7E938]/55 p-3.5 shadow-[0_6px_20px_rgba(180,235,30,0.10)]">
               <div className="flex items-center justify-between gap-1.5">
                 <div className="flex items-center gap-2">
-                  <Target className="h-4 w-4 text-[#080808] shrink-0" />
-                  <span className="font-heading text-lg sm:text-xl font-extrabold text-[#080808] leading-none">
+                  <Target className="h-4 w-4 text-[#0E1012] shrink-0" />
+                  <span className="font-heading text-lg sm:text-xl font-extrabold text-[#0E1012] leading-none">
                     {opportunities.length.toLocaleString()}
                   </span>
                 </div>
                 {newCount > 0 && (
-                  <span className="rounded-full bg-[#E0FB66] border border-[#080808] px-1.5 py-0.5 font-heading text-[10px] font-extrabold text-[#080808] leading-none">
+                  <span className="rounded-full bg-[#E3FC6D] border border-[#C6E832] px-2 py-0.5 font-heading text-[10px] font-semibold text-[#0E1012] leading-none">
                     +{newCount} new
                   </span>
                 )}
               </div>
-              <div className="mt-1.5 text-[11px] font-semibold text-[#777777]">
+              <div className="mt-1.5 text-[11px] font-semibold text-[#3F6212]">
                 Opportunities Found
               </div>
             </div>
 
             {/* 2. Strong Matches */}
-            <div className="neo-card bg-white p-3 sm:p-3.5">
+            <div className="rounded-[20px] bg-white border border-black/[0.07] p-3.5 shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
               <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-[#080808] shrink-0" />
-                <span className="font-heading text-lg sm:text-xl font-extrabold text-[#080808] leading-none">
+                <Zap className="h-4 w-4 text-[#65B811] shrink-0" />
+                <span className="font-heading text-lg sm:text-xl font-extrabold text-[#101214] leading-none">
                   {strongMatchesCount}
                 </span>
               </div>
-              <div className="mt-1.5 text-[11px] font-semibold text-[#777777]">
+              <div className="mt-1.5 text-[11px] font-medium text-[#6B7280]">
                 Strong Matches
               </div>
             </div>
 
             {/* 3. Profile Fit */}
-            <div className="neo-card bg-white p-3 sm:p-3.5">
+            <div className="rounded-[20px] bg-white border border-black/[0.07] p-3.5 shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
               <div className="flex items-center gap-2">
-                <BarChart2 className="h-4 w-4 text-[#080808] shrink-0" />
-                <span className="font-heading text-lg sm:text-xl font-extrabold text-[#080808] leading-none">
+                <BarChart2 className="h-4 w-4 text-[#101214] shrink-0" />
+                <span className="font-heading text-lg sm:text-xl font-extrabold text-[#101214] leading-none">
                   {profileFitPct}%
                 </span>
               </div>
-              <div className="mt-1.5 text-[11px] font-semibold text-[#777777]">
+              <div className="mt-1.5 text-[11px] font-medium text-[#6B7280]">
                 Profile Fit
               </div>
             </div>
 
             {/* 4. Skill Gaps */}
-            <div className="neo-card bg-white p-3 sm:p-3.5">
+            <div className="rounded-[20px] bg-white border border-black/[0.07] p-3.5 shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
               <div className="flex items-center gap-2">
-                <Layers className="h-4 w-4 text-[#080808] shrink-0" />
-                <span className="font-heading text-lg sm:text-xl font-extrabold text-[#080808] leading-none">
+                <Layers className="h-4 w-4 text-[#7C3AED] shrink-0" />
+                <span className="font-heading text-lg sm:text-xl font-extrabold text-[#101214] leading-none">
                   {skillGapsCount}
                 </span>
               </div>
-              <div className="mt-1.5 text-[11px] font-semibold text-[#777777]">
+              <div className="mt-1.5 text-[11px] font-medium text-[#6B7280]">
                 Skill Gaps
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right: Lilac AI Agent Live Pipeline Card */}
-        <div className="xl:col-span-4 rounded-2xl border-2 border-[#080808] bg-[#EAE2FE] p-4 shadow-[4px_4px_0px_#080808] flex flex-col justify-between">
+        {/* Right: Soft Violet AI Agent Live Pipeline Card */}
+        <div className="xl:col-span-4 rounded-[22px] border border-[#D9CCF8] bg-[#F5F2FF] p-4 sm:p-5 shadow-[0_8px_30px_rgba(109,40,217,0.05)] flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[#080808]/15">
+            <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#D9CCF8]/80">
               <div className="flex items-center gap-2 min-w-0">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#080808] text-white">
-                  <Sparkles className="h-3.5 w-3.5 text-[#E0FB66]" />
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#101214] text-white">
+                  <Sparkles className="h-3.5 w-3.5 text-[#E3FC6D]" />
                 </div>
-                <span className="font-heading text-sm font-extrabold text-[#080808] truncate">
+                <span className="font-heading text-sm font-bold text-[#101214] truncate">
                   AI Agent: Live Pipeline
                 </span>
               </div>
@@ -933,19 +988,19 @@ export function DiscoverView({
                 type="button"
                 onClick={() => setShowPipelinePanel((prev) => !prev)}
                 title="Expand full 12-stage pipeline telemetry & search budgets"
-                className={`inline-flex items-center gap-1.5 rounded-full border border-[#080808] px-2.5 py-0.5 font-heading text-[11px] font-bold transition cursor-pointer shrink-0 ${
+                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-heading text-[11px] font-semibold transition cursor-pointer shrink-0 ${
                   isAgentRunning
-                    ? "bg-[#E0FB66] text-[#080808]"
+                    ? "bg-[#E3FC6D] border-[#C6E832] text-[#0E1012]"
                     : agentError
-                    ? "bg-[#FEF189] text-[#080808]"
-                    : "bg-white text-[#080808] hover:bg-[#E0FB66]"
+                    ? "bg-[#FEF9E7] border-[#F5DFA0] text-[#7A5908]"
+                    : "bg-white border-black/[0.08] text-[#101214] hover:bg-[#F3FCDA]"
                 }`}
               >
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${
                     isAgentRunning
-                      ? "bg-[#080808] animate-ping"
-                      : "bg-[#080808]"
+                      ? "bg-[#101214] animate-ping"
+                      : "bg-[#65B811]"
                   }`}
                 />
                 <span>
@@ -959,31 +1014,31 @@ export function DiscoverView({
             </div>
 
             {/* 5-Stage Clean Checklist */}
-            <ul className="mt-2.5 space-y-1.5">
+            <ul className="mt-3 space-y-1.5">
               {compactPipelineSteps.map((step, idx) => (
                 <li
                   key={idx}
-                  className={`flex items-center justify-between gap-2 rounded-lg px-2 py-1 text-xs font-medium transition-colors ${
+                  className={`flex items-center justify-between gap-2 rounded-xl px-2.5 py-1.5 text-xs font-medium transition-colors ${
                     step.state === "active"
-                      ? "bg-[#E0FB66] border border-[#080808] font-bold text-[#080808]"
+                      ? "bg-[#E3FC6D] border border-[#C6E832] font-semibold text-[#0E1012]"
                       : step.state === "done"
-                      ? "text-[#080808]"
-                      : "text-[#080808]/55"
+                      ? "text-[#101214]"
+                      : "text-[#6B7280]"
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     {step.state === "done" ? (
-                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 fill-[#080808] text-[#EAE2FE]" />
+                      <CheckCircle2 className="h-3.5 w-3.5 shrink-0 fill-[#101214] text-[#F5F2FF]" />
                     ) : step.state === "active" ? (
-                      <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-[#080808]" />
+                      <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-[#0E1012]" />
                     ) : (
-                      <span className="h-3.5 w-3.5 shrink-0 rounded-full border-2 border-[#080808]/35 bg-white/50" />
+                      <span className="h-3.5 w-3.5 shrink-0 rounded-full border border-black/20 bg-white/70" />
                     )}
                     <span className="truncate">{step.label}</span>
                   </div>
 
                   {step.badge && (
-                    <span className="shrink-0 font-heading text-[11px] font-extrabold text-[#080808]">
+                    <span className="shrink-0 font-heading text-[11px] font-bold text-[#101214]">
                       {step.badge}
                     </span>
                   )}
@@ -992,11 +1047,11 @@ export function DiscoverView({
             </ul>
           </div>
 
-          <div className="mt-2.5 pt-2 border-t border-[#080808]/15 flex items-center justify-between text-[11px] font-bold text-[#080808]/80">
+          <div className="mt-3 pt-2.5 border-t border-[#D9CCF8]/80 flex items-center justify-between text-[11px] font-semibold text-[#4B5563]">
             <span className="inline-flex items-center gap-1.5">
               <span
                 className={`h-2 w-2 rounded-full ${
-                  realtimeConnected ? "bg-emerald-600 animate-pulse" : "bg-[#080808]/40"
+                  realtimeConnected ? "bg-emerald-500 animate-pulse" : "bg-black/25"
                 }`}
               />
               {realtimeConnected
@@ -1013,7 +1068,7 @@ export function DiscoverView({
             <button
               type="button"
               onClick={() => setShowPipelinePanel((prev) => !prev)}
-              className="inline-flex items-center gap-1 hover:underline text-[#080808] cursor-pointer"
+              className="inline-flex items-center gap-1 hover:underline text-[#101214] cursor-pointer"
             >
               <Activity className="h-3 w-3" />
               <span>{showPipelinePanel ? "Hide Logs" : "12 Stages & Budgets"}</span>
@@ -1023,26 +1078,26 @@ export function DiscoverView({
       </section>
 
       {/* ===================================================== */}
-      {/* 2. UNIFIED SEARCH BAR WITH LOCATION CHIP & BLACK CTA   */}
+      {/* 2. UNIFIED SEARCH BAR WITH LOCATION CHIP & DARK CTA   */}
       {/* ===================================================== */}
-      <div className="flex flex-col md:flex-row md:items-center gap-2 bg-white rounded-xl border-2 border-[#080808] shadow-[3px_3px_0px_#080808] p-1.5 sm:p-2 focus-within:shadow-[3px_3px_0px_#E0FB66] transition-all">
-        <div className="flex items-center flex-1 px-2">
-          <Search className="h-4 w-4 text-[#080808] stroke-[2.2] mr-2 shrink-0" />
+      <div className="flex flex-col md:flex-row md:items-center gap-2 bg-white rounded-2xl border border-black/[0.08] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-2 focus-within:border-[#94D814] focus-within:ring-2 focus-within:ring-[#DDFB4B]/40 transition-all">
+        <div className="flex items-center flex-1 px-2.5">
+          <Search className="h-4 w-4 text-[#4B5563] stroke-[2] mr-2.5 shrink-0" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Search roles, skills, or companies... (e.g., "ML Intern", "Data Science")'
-            className="w-full bg-transparent text-xs sm:text-sm font-medium text-[#080808] placeholder-[#777777] outline-none py-1"
+            className="w-full bg-transparent text-xs sm:text-sm font-medium text-[#101214] placeholder-[#9CA3AF] outline-none py-1.5"
           />
         </div>
 
-        <div className="flex items-center justify-between md:justify-end gap-2 pt-1.5 md:pt-0 border-t md:border-t-0 md:border-l-2 border-[#080808]/15 md:pl-2">
+        <div className="flex items-center justify-between md:justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-black/[0.07] md:pl-2.5">
           <button
             type="button"
             onClick={() => setShowLocationPanel((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] bg-[#E0FB66] hover:bg-[#FEF189] px-2.5 py-1 sm:py-1.5 font-heading text-xs font-bold text-[#080808] shadow-[2px_2px_0px_#080808] transition cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#C7E938]/60 bg-[#F3FCDA] hover:bg-[#E3FC6D] px-3 py-1.5 font-heading text-xs font-semibold text-[#0E1012] transition cursor-pointer shrink-0"
             title="Configure GPS, City & Work Mode Discovery"
           >
             <MapPin className="h-3.5 w-3.5 shrink-0" />
@@ -1080,10 +1135,10 @@ export function DiscoverView({
               });
             }}
             disabled={isAgentRunning}
-            className="rounded-lg bg-[#080808] hover:bg-[#1a1a1a] text-white px-3.5 py-1 sm:py-1.5 flex items-center gap-1.5 font-heading text-xs sm:text-sm font-bold shadow-[2px_2px_0px_#E0FB66] transition-all shrink-0 disabled:opacity-60 cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+            className="rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 px-4 py-1.5 flex items-center gap-1.5 font-heading text-xs sm:text-sm transition-all shrink-0 disabled:opacity-60 cursor-pointer"
           >
             <Sparkles
-              className={`h-3.5 w-3.5 text-[#E0FB66] ${
+              className={`h-3.5 w-3.5 text-[#E3FC6D] ${
                 isAgentRunning ? "animate-spin" : ""
               }`}
             />
@@ -1110,12 +1165,12 @@ export function DiscoverView({
                 locationMode: "VICINITY",
               });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               selectedLocationMode === "VICINITY" &&
               selectedCategory === "ALL" &&
               selectedWorkMode === "ALL"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <MapPin className="h-3.5 w-3.5" />
@@ -1141,10 +1196,10 @@ export function DiscoverView({
                 locationMode: "ALL",
               });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               isAllQuickActive
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <LayoutGrid className="h-3.5 w-3.5" />
@@ -1159,10 +1214,10 @@ export function DiscoverView({
               setSelectedCategory(next);
               handleApplyFilters({ category: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               selectedCategory === "Internship"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <Briefcase className="h-3.5 w-3.5" />
@@ -1178,10 +1233,10 @@ export function DiscoverView({
               setSelectedCategory(next);
               handleApplyFilters({ category: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               selectedCategory === "Entry-level"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <BriefcaseBusiness className="h-3.5 w-3.5" />
@@ -1196,10 +1251,10 @@ export function DiscoverView({
               setSelectedWorkMode(next);
               handleApplyFilters({ workMode: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               selectedWorkMode === "Remote"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <Globe className="h-3.5 w-3.5" />
@@ -1221,10 +1276,10 @@ export function DiscoverView({
                 setSelectedPlatform(next);
                 handleApplyFilters({ platform: next });
               }}
-              className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
                 selectedPlatform === plat.id
-                  ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                  : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                  ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                  : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
               }`}
             >
               <Database className="h-3 w-3" />
@@ -1240,10 +1295,10 @@ export function DiscoverView({
               setSelectedWorkMode(next);
               handleApplyFilters({ workMode: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               selectedWorkMode === "Hybrid"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <Sparkles className="h-3.5 w-3.5" />
@@ -1258,10 +1313,10 @@ export function DiscoverView({
               setSelectedWorkMode(next);
               handleApplyFilters({ workMode: next });
             }}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               selectedWorkMode === "On-site"
-                ? "bg-[#E0FB66] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <Building2 className="h-3.5 w-3.5" />
@@ -1273,9 +1328,9 @@ export function DiscoverView({
             <button
               type="button"
               onClick={onOpenProjectLab}
-              className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] bg-[#EAE2FE] hover:bg-[#E0FB66] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold text-[#080808] shadow-[2px_2px_0px_#080808] transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#D9CCF8] bg-[#F5F2FF] hover:bg-[#E3FC6D] hover:border-[#C6E832] px-3 py-1.5 font-heading text-xs font-semibold text-[#101214] transition-all cursor-pointer"
             >
-              <Sparkles className="h-3.5 w-3.5" />
+              <Sparkles className="h-3.5 w-3.5 text-[#7C3AED]" />
               <span>Test Project</span>
             </button>
           )}
@@ -1284,14 +1339,14 @@ export function DiscoverView({
           <button
             type="button"
             onClick={() => setShowMoreFilters((prev) => !prev)}
-            className={`inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] px-2.5 sm:px-3 py-1 font-heading text-xs font-bold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs transition-all cursor-pointer ${
               showMoreFilters ||
               showAiPanel ||
               selectedDeadline !== "ALL" ||
               selectedLocation !== "ALL" ||
               viewMode !== "ALL"
-                ? "bg-[#FEF189] text-[#080808] shadow-[2px_2px_0px_#080808] translate-x-[-1px] translate-y-[-1px]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#FEF9E7] text-[#7A5908] border-[#F5DFA0] font-semibold"
+                : "bg-white text-[#4B5563] border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
             }`}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -1307,7 +1362,7 @@ export function DiscoverView({
             <button
               type="button"
               onClick={handleClearAllFilters}
-              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-bold text-[#777777] hover:text-[#080808] cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#101214] cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
               <span>Clear</span>
@@ -1320,18 +1375,18 @@ export function DiscoverView({
           <button
             type="button"
             onClick={() => setSortDropdownOpen((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 rounded-lg border-2 border-[#080808] bg-white px-3 py-1 font-heading text-xs font-semibold text-[#080808] hover:bg-[#FEF189]/40 shadow-[2px_2px_0px_#080808] transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] px-3.5 py-1.5 font-heading text-xs font-medium transition-all cursor-pointer"
           >
-            <span className="text-[#777777] font-medium">Sort:</span>
-            <span className="font-bold">
+            <span className="text-[#6B7280] font-medium">Sort:</span>
+            <span className="font-semibold">
               {sortOptions.find((s) => s.value === selectedSort)?.label ||
                 "Best Match"}
             </span>
-            <ChevronDown className="h-3.5 w-3.5 text-[#080808]" />
+            <ChevronDown className="h-3.5 w-3.5 text-[#4B5563]" />
           </button>
 
           {sortDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-xl border-2 border-[#080808] bg-white p-1.5 shadow-[4px_4px_0px_#080808] z-30">
+            <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-black/[0.08] bg-white p-1.5 shadow-[0_14px_38px_rgba(15,23,42,0.12)] z-30">
               {sortOptions.map((opt) => (
                 <button
                   key={opt.value}
@@ -1341,10 +1396,10 @@ export function DiscoverView({
                     setSortDropdownOpen(false);
                     handleApplyFilters({ sortBy: opt.value });
                   }}
-                  className={`w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors ${
+                  className={`w-full text-left px-3 py-1.5 rounded-xl text-xs transition-colors ${
                     selectedSort === opt.value
-                      ? "bg-[#E0FB66] text-[#080808] font-bold border border-[#080808]"
-                      : "text-[#080808] hover:bg-[#FDF9F3] font-medium"
+                      ? "bg-[#E3FC6D] text-[#0E1012] font-semibold"
+                      : "text-[#4B5563] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                   }`}
                 >
                   {opt.label}
@@ -1361,22 +1416,22 @@ export function DiscoverView({
       {showMoreFilters && (
         <section
           aria-label="More Filters and Agent Controls"
-          className="neo-card bg-white p-4 space-y-4"
+          className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-4 sm:p-5 space-y-4"
         >
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#D8D5CE] pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.07] pb-3.5">
             {/* View Switcher */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-heading font-extrabold uppercase tracking-wider text-[#777777]">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
                 View:
               </span>
-              <div className="flex items-center rounded-full border-2 border-[#080808] bg-[#FDF9F3] p-0.5 text-xs font-heading font-bold">
+              <div className="flex items-center rounded-full border border-black/[0.08] bg-[#FAFBF7] p-1 text-xs font-semibold">
                 <button
                   type="button"
                   onClick={() => setViewMode("ALL")}
-                  className={`rounded-full px-3 py-1 flex items-center gap-1 transition cursor-pointer ${
+                  className={`rounded-full px-3 py-1 flex items-center gap-1.5 transition-all cursor-pointer ${
                     viewMode === "ALL"
-                      ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                      : "text-[#777777] hover:text-[#080808]"
+                      ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_8px_rgba(205,238,54,0.28)] font-semibold"
+                      : "text-[#64748B] hover:text-[#101214] border border-transparent"
                   }`}
                 >
                   <LayoutGrid className="h-3 w-3" />
@@ -1385,10 +1440,10 @@ export function DiscoverView({
                 <button
                   type="button"
                   onClick={() => setViewMode("GROUPED")}
-                  className={`rounded-full px-3 py-1 flex items-center gap-1 transition cursor-pointer ${
+                  className={`rounded-full px-3 py-1 flex items-center gap-1.5 transition-all cursor-pointer ${
                     viewMode === "GROUPED"
-                      ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                      : "text-[#777777] hover:text-[#080808]"
+                      ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_8px_rgba(205,238,54,0.28)] font-semibold"
+                      : "text-[#64748B] hover:text-[#101214] border border-transparent"
                   }`}
                 >
                   <Layers className="h-3 w-3" />
@@ -1397,10 +1452,10 @@ export function DiscoverView({
                 <button
                   type="button"
                   onClick={() => setViewMode("BRIEF")}
-                  className={`rounded-full px-3 py-1 flex items-center gap-1 transition cursor-pointer ${
+                  className={`rounded-full px-3 py-1 flex items-center gap-1.5 transition-all cursor-pointer ${
                     viewMode === "BRIEF"
-                      ? "bg-[#E0FB66] text-[#080808] border border-[#080808]"
-                      : "text-[#777777] hover:text-[#080808]"
+                      ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_8px_rgba(205,238,54,0.28)] font-semibold"
+                      : "text-[#64748B] hover:text-[#101214] border border-transparent"
                   }`}
                 >
                   <FileText className="h-3 w-3" />
@@ -1414,8 +1469,10 @@ export function DiscoverView({
               <button
                 type="button"
                 onClick={() => setShowAiPanel((prev) => !prev)}
-                className={`inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] px-3 py-1 font-heading text-xs font-bold transition cursor-pointer ${
-                  showAiPanel ? "bg-[#E0FB66]" : "bg-white hover:bg-[#FDF9F3]"
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs transition-all cursor-pointer ${
+                  showAiPanel
+                    ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                    : "bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] font-medium"
                 }`}
               >
                 <Brain className="h-3.5 w-3.5" />
@@ -1427,7 +1484,7 @@ export function DiscoverView({
                   type="button"
                   onClick={onTriggerBackgroundSync}
                   disabled={isSyncing}
-                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white hover:bg-[#FDF9F3] px-3 py-1 font-heading text-xs font-bold transition cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer disabled:opacity-50"
                 >
                   <Database className={`h-3.5 w-3.5 ${isSyncing ? "animate-spin" : ""}`} />
                   <span>{isSyncing ? "Syncing..." : "Sync Feeds"}</span>
@@ -1438,7 +1495,7 @@ export function DiscoverView({
                 <button
                   type="button"
                   onClick={onUploadNewResume}
-                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-white hover:bg-[#FDF9F3] px-3 py-1 font-heading text-xs font-bold transition cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer"
                 >
                   <Upload className="h-3.5 w-3.5" />
                   <span>Upload Resume</span>
@@ -1449,7 +1506,7 @@ export function DiscoverView({
                 <button
                   type="button"
                   onClick={onOpenSourcesModal}
-                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#FEF189] hover:bg-[#E0FB66] px-3 py-1 font-heading text-xs font-bold transition cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#F5DFA0] bg-[#FEF9E7] hover:bg-[#F3FCDA] hover:border-[#C7E938] text-[#101214] px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer"
                 >
                   <Radio className="h-3.5 w-3.5" />
                   <span>Sources & URL Import</span>
@@ -1460,7 +1517,7 @@ export function DiscoverView({
                 <button
                   type="button"
                   onClick={onOpenCareerOutlook}
-                  className="inline-flex items-center gap-1 rounded-full border border-[#080808] bg-[#FDF9F3] px-3 py-1 font-heading text-xs font-bold hover:bg-[#E0FB66] cursor-pointer"
+                  className="inline-flex items-center gap-1 rounded-full border border-black/[0.09] bg-[#FAFBF7] px-3.5 py-1.5 text-xs font-semibold text-[#101214] hover:bg-[#E3FC6D] hover:border-[#C6E832] transition-all cursor-pointer"
                 >
                   <span>Career Outlook</span>
                   <ArrowRight className="h-3 w-3" />
@@ -1472,7 +1529,7 @@ export function DiscoverView({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
             {/* Specialized Categories */}
             <div>
-              <div className="font-heading text-[11px] font-extrabold uppercase tracking-wider text-[#777777] mb-1.5">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] mb-2">
                 Track & Program Type
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -1484,10 +1541,10 @@ export function DiscoverView({
                       setSelectedCategory(cat);
                       handleApplyFilters({ category: cat });
                     }}
-                    className={`rounded-full border px-2.5 py-1 font-bold transition cursor-pointer ${
+                    className={`rounded-full px-3 py-1 transition-all cursor-pointer ${
                       selectedCategory === cat
-                        ? "bg-[#E0FB66] border-[#080808] text-[#080808]"
-                        : "bg-[#FDF9F3] border-[#D8D5CE] hover:border-[#080808]"
+                        ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                        : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                     }`}
                   >
                     {cat === "ALL" ? "Any Type" : cat}
@@ -1498,7 +1555,7 @@ export function DiscoverView({
 
             {/* Region / City Filter */}
             <div>
-              <div className="font-heading text-[11px] font-extrabold uppercase tracking-wider text-[#777777] mb-1.5">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] mb-2">
                 Region Hub
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -1511,10 +1568,10 @@ export function DiscoverView({
                         setSelectedLocation(loc);
                         handleApplyFilters({ location: loc });
                       }}
-                      className={`rounded-full border px-2.5 py-1 font-bold transition cursor-pointer ${
+                      className={`rounded-full px-3 py-1 transition-all cursor-pointer ${
                         selectedLocation === loc
-                          ? "bg-[#E0FB66] border-[#080808] text-[#080808]"
-                          : "bg-[#FDF9F3] border-[#D8D5CE] hover:border-[#080808]"
+                          ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                          : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                       }`}
                     >
                       {loc === "ALL" ? "Everywhere" : loc}
@@ -1526,7 +1583,7 @@ export function DiscoverView({
 
             {/* Deadline Window */}
             <div>
-              <div className="font-heading text-[11px] font-extrabold uppercase tracking-wider text-[#777777] mb-1.5">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] mb-2">
                 Deadline Window
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -1543,10 +1600,10 @@ export function DiscoverView({
                       setSelectedDeadline(d.val);
                       handleApplyFilters({ deadline: d.val });
                     }}
-                    className={`rounded-full border px-2.5 py-1 font-bold transition cursor-pointer ${
+                    className={`rounded-full px-3 py-1 transition-all cursor-pointer ${
                       selectedDeadline === d.val
-                        ? "bg-[#E0FB66] border-[#080808] text-[#080808]"
-                        : "bg-[#FDF9F3] border-[#D8D5CE] hover:border-[#080808]"
+                        ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                        : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                     }`}
                   >
                     {d.label}
@@ -1558,14 +1615,14 @@ export function DiscoverView({
 
           {/* Personalized Role Filters */}
           {activeExpandedRoles.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#D8D5CE]">
-              <span className="text-[11px] font-heading font-extrabold uppercase tracking-wider text-[#777777] mr-1">
+            <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-black/[0.07]">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] mr-1">
                 Role Directions:
               </span>
               {activeExpandedRoles.slice(0, 6).map((role) => (
                 <div
                   key={role.id || role.title}
-                  className="inline-flex items-center gap-1 rounded-full bg-white border border-[#080808] px-2.5 py-0.5 text-xs font-bold text-[#080808]"
+                  className="inline-flex items-center gap-1 rounded-full bg-[#FAFBF7] border border-black/[0.08] px-3 py-1 text-xs font-medium text-[#101214] hover:border-black/[0.15] transition"
                 >
                   <button
                     type="button"
@@ -1581,7 +1638,7 @@ export function DiscoverView({
                     <button
                       type="button"
                       onClick={() => onDismissRoleFamily(role.title)}
-                      className="text-[#777777] hover:text-rose-600 ml-0.5 cursor-pointer"
+                      className="text-[#64748B] hover:text-rose-600 ml-0.5 cursor-pointer"
                       title={`Exclude ${role.title}`}
                     >
                       <X className="h-3 w-3" />
@@ -1593,7 +1650,7 @@ export function DiscoverView({
                 <button
                   type="button"
                   onClick={onResetPersonalization}
-                  className="ml-auto text-xs font-bold text-[#777777] hover:text-[#080808] cursor-pointer"
+                  className="ml-auto text-xs font-semibold text-[#64748B] hover:text-[#101214] cursor-pointer"
                 >
                   Reset filters
                 </button>
@@ -1612,27 +1669,27 @@ export function DiscoverView({
         Boolean(geoErrorState)) && (
         <section
           aria-label="Location Intelligence Bar"
-          className="neo-card p-4 space-y-3 bg-white"
+          className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-4 sm:p-5 space-y-3"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2.5">
-              <div className="h-8 w-8 rounded-xl border-2 border-[#080808] bg-[#E0FB66] text-[#080808] flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] shadow-[0_2px_10px_rgba(205,238,54,0.28)] flex items-center justify-center shrink-0">
                 <MapPin className="h-4 w-4" />
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-heading text-sm font-extrabold text-[#080808]">
+                  <span className="text-sm font-bold text-[#101214]">
                     {activeLocationPref.displayLabel ||
                       activeLocationPref.city ||
                       "Location Not Set"}
                   </span>
                   <span
-                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-[#080808] ${
+                    className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${
                       activeLocationPref.source === "BROWSER_GPS"
-                        ? "bg-[#E0FB66] text-[#080808]"
+                        ? "bg-[#E3FC6D] border-[#C6E832] text-[#0E1012]"
                         : activeLocationPref.source === "MANUAL"
-                        ? "bg-[#FEF189] text-[#080808]"
-                        : "bg-[#FDF9F3] text-[#777777]"
+                        ? "bg-[#FEF9E7] border-[#F5DFA0] text-[#101214]"
+                        : "bg-[#FAFBF7] border-black/[0.08] text-[#64748B]"
                     }`}
                   >
                     {activeLocationPref.source === "BROWSER_GPS"
@@ -1644,7 +1701,7 @@ export function DiscoverView({
                       : "Not Detected"}
                   </span>
                 </div>
-                <p className="text-[11px] text-[#777777] mt-0.5">
+                <p className="text-[11px] text-[#64748B] mt-0.5">
                   {activeLocationPref.cityLatitude !== null &&
                   activeLocationPref.cityLatitude !== undefined &&
                   activeLocationPref.cityLongitude !== null &&
@@ -1664,7 +1721,7 @@ export function DiscoverView({
                 type="button"
                 onClick={handleDetectBrowserLocation}
                 disabled={detectingGeo}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#080808] px-3.5 py-1.5 font-heading text-xs font-bold text-white shadow-[2px_2px_0px_#E0FB66] transition cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 px-3.5 py-1.5 text-xs transition-all cursor-pointer disabled:opacity-50"
               >
                 <Navigation
                   className={`h-3.5 w-3.5 ${detectingGeo ? "animate-spin" : ""}`}
@@ -1694,7 +1751,7 @@ export function DiscoverView({
                   );
                 }}
                 disabled={isAgentRunning}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#E0FB66] hover:bg-[#FEF189] px-3.5 py-1.5 font-heading text-xs font-bold text-[#080808] transition cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#C6E832] bg-[#E3FC6D] hover:bg-[#DDFB4B] px-3.5 py-1.5 text-xs font-semibold text-[#0E1012] shadow-[0_2px_10px_rgba(205,238,54,0.28)] transition cursor-pointer disabled:opacity-50"
               >
                 <Compass className="h-3.5 w-3.5" />
                 <span>Search Nearby</span>
@@ -1703,7 +1760,7 @@ export function DiscoverView({
               <button
                 type="button"
                 onClick={() => setEditingLocation((prev) => !prev)}
-                className="inline-flex items-center gap-1 rounded-full border-2 border-[#080808] bg-white hover:bg-[#FDF9F3] px-3 py-1.5 font-heading text-xs font-bold text-[#080808] transition cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] px-3.5 py-1.5 text-xs font-medium transition cursor-pointer"
               >
                 <span>{editingLocation ? "Hide City Input" : "Edit City"}</span>
               </button>
@@ -1714,7 +1771,7 @@ export function DiscoverView({
                   setShowLocationPanel(false);
                   setEditingLocation(false);
                 }}
-                className="rounded-full p-1.5 text-[#777777] hover:text-[#080808] cursor-pointer"
+                className="rounded-full p-1.5 text-[#64748B] hover:text-[#101214] hover:bg-[#F4F5F0] transition cursor-pointer"
                 aria-label="Close location panel"
               >
                 <X className="h-4 w-4" />
@@ -1723,15 +1780,15 @@ export function DiscoverView({
           </div>
 
           {geoStatusMessage && (
-            <div className="rounded-xl border-2 border-[#080808] bg-[#E0FB66]/55 px-3 py-2 text-xs text-[#080808] flex items-center justify-between font-medium">
+            <div className="rounded-xl border border-[#C7E938]/55 bg-[#F3FCDA]/80 px-3.5 py-2.5 text-xs text-[#101214] flex items-center justify-between font-medium">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#65B811]" />
                 {geoStatusMessage}
               </span>
               <button
                 type="button"
                 onClick={() => setGeoStatusMessage(null)}
-                className="font-bold hover:underline text-[11px] cursor-pointer"
+                className="font-semibold hover:underline text-[11px] cursor-pointer"
               >
                 Dismiss
               </button>
@@ -1739,15 +1796,15 @@ export function DiscoverView({
           )}
 
           {geoErrorState && (
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FEF189] px-3 py-2 text-xs text-[#080808] flex items-center justify-between font-medium">
+            <div className="rounded-xl border border-[#F5DFA0] bg-[#FEF9E7] px-3.5 py-2.5 text-xs text-[#101214] flex items-center justify-between font-medium">
               <span className="flex items-center gap-1.5">
-                <AlertTriangle className="h-4 w-4 shrink-0" />
+                <AlertTriangle className="h-4 w-4 shrink-0 text-[#9A7400]" />
                 {geoErrorState}
               </span>
               <button
                 type="button"
                 onClick={() => setEditingLocation(true)}
-                className="font-bold underline ml-2 shrink-0 cursor-pointer"
+                className="font-semibold underline ml-2 shrink-0 cursor-pointer"
               >
                 Select City Manually
               </button>
@@ -1755,26 +1812,26 @@ export function DiscoverView({
           )}
 
           {editingLocation && (
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-3 space-y-2.5 text-xs">
+            <div className="rounded-2xl border border-black/[0.07] bg-[#FAFBF7] p-3.5 space-y-2.5 text-xs">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-bold text-[#080808]">Preferred city:</span>
+                <span className="font-semibold text-[#101214]">Preferred city:</span>
                 <input
                   type="text"
                   value={manualCityInput}
                   onChange={(e) => setManualCityInput(e.target.value)}
                   placeholder="e.g., Bengaluru, San Francisco, Mumbai..."
-                  className="rounded-lg border-2 border-[#080808] bg-white px-3 py-1.5 text-xs text-[#080808] outline-none w-64"
+                  className="rounded-xl border border-black/[0.10] bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-1.5 text-xs text-[#101214] outline-none w-64 transition"
                 />
                 <button
                   type="button"
                   onClick={() => handleSaveManualLocation(manualCityInput)}
-                  className="rounded-lg border-2 border-[#080808] bg-[#E0FB66] text-[#080808] px-3 py-1.5 font-bold hover:bg-[#FEF189] transition cursor-pointer"
+                  className="rounded-full border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] px-3.5 py-1.5 font-semibold hover:bg-[#DDFB4B] shadow-[0_2px_8px_rgba(205,238,54,0.25)] transition cursor-pointer"
                 >
                   Save Location
                 </button>
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] font-semibold text-[#777777] mr-1">
+                <span className="text-[11px] font-medium text-[#64748B] mr-1">
                   Quick hubs:
                 </span>
                 {VERIFIED_CITY_CHOICES.map((city) => (
@@ -1785,10 +1842,10 @@ export function DiscoverView({
                       setManualCityInput(city);
                       handleSaveManualLocation(city);
                     }}
-                    className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold border transition cursor-pointer ${
+                    className={`rounded-full px-3 py-0.5 text-[11px] transition cursor-pointer ${
                       activeLocationPref.city.toLowerCase() === city.toLowerCase()
-                        ? "bg-[#E0FB66] text-[#080808] border-[#080808]"
-                        : "bg-white text-[#080808] border-[#D8D5CE] hover:border-[#080808]"
+                        ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] font-semibold"
+                        : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                     }`}
                   >
                     {city}
@@ -1798,7 +1855,7 @@ export function DiscoverView({
             </div>
           )}
 
-          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#D8D5CE]">
+          <div className="flex flex-wrap items-center gap-1.5 pt-2.5 border-t border-black/[0.07]">
             {[
               {
                 mode: "VICINITY" as LocationDiscoveryMode,
@@ -1828,10 +1885,10 @@ export function DiscoverView({
                 key={item.mode}
                 type="button"
                 onClick={() => handleSelectLocationDiscoveryMode(item.mode)}
-                className={`rounded-full px-3 py-1 text-xs font-heading font-bold border transition cursor-pointer ${
+                className={`rounded-full px-3 py-1 text-xs transition-all cursor-pointer ${
                   selectedLocationMode === item.mode
-                    ? "bg-[#E0FB66] text-[#080808] border-2 border-[#080808]"
-                    : "bg-[#FDF9F3] text-[#080808] border-[#D8D5CE] hover:border-[#080808]"
+                    ? "bg-[#E3FC6D] text-[#0E1012] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] font-semibold"
+                    : "bg-white text-[#4B5563] border border-black/[0.08] hover:bg-[#F4F5F0] hover:text-[#101214] font-medium"
                 }`}
               >
                 {item.label}
@@ -1855,7 +1912,7 @@ export function DiscoverView({
                       selectedCity: e.target.value,
                     });
                   }}
-                  className="rounded-full border-2 border-[#080808] bg-white px-3 py-1 font-heading text-xs font-bold text-[#080808] outline-none"
+                  className="rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-1 text-xs font-semibold text-[#101214] outline-none"
                 >
                   {VERIFIED_CITY_CHOICES.filter((c) => c !== "Remote").map((city) => (
                     <option key={city} value={city}>
@@ -1882,7 +1939,7 @@ export function DiscoverView({
                       });
                     }
                   }}
-                  className="rounded-full border-2 border-[#080808] bg-white px-3 py-1 font-heading text-xs font-bold text-[#080808] outline-none w-48"
+                  className="rounded-xl border border-black/[0.10] bg-[#FAFBF7] focus:bg-white focus:border-[#94D814] focus:ring-2 focus:ring-[#DDFB4B]/40 px-3 py-1 text-xs font-medium text-[#101214] outline-none w-48 transition"
                 />
                 <button
                   type="button"
@@ -1893,7 +1950,7 @@ export function DiscoverView({
                       selectedCity: selectedCityForDiscovery.trim(),
                     });
                   }}
-                  className="rounded-full border-2 border-[#080808] bg-[#E0FB66] px-2.5 py-1 font-heading text-xs font-bold text-[#080808] cursor-pointer hover:bg-[#FEF189]"
+                  className="rounded-full border border-[#C6E832] bg-[#E3FC6D] px-3 py-1 text-xs font-semibold text-[#0E1012] cursor-pointer hover:bg-[#DDFB4B] transition"
                 >
                   Apply
                 </button>
@@ -1961,28 +2018,28 @@ export function DiscoverView({
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="neo-card animate-pulse p-4 flex items-center gap-3.5"
+                className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] animate-pulse p-4 flex items-center gap-3.5"
               >
-                <div className="h-11 w-11 rounded-xl bg-[#D8D5CE]/50 shrink-0" />
+                <div className="h-11 w-11 rounded-2xl bg-[#EEF0E9] shrink-0" />
                 <div className="space-y-2 flex-1">
-                  <div className="h-4 w-3/4 rounded bg-[#D8D5CE]/50" />
-                  <div className="h-3 w-1/2 rounded bg-[#D8D5CE]/30" />
-                  <div className="h-5 w-2/3 rounded-full bg-[#D8D5CE]/30" />
+                  <div className="h-4 w-3/4 rounded-lg bg-[#EEF0E9]" />
+                  <div className="h-3 w-1/2 rounded-lg bg-[#F4F5F0]" />
+                  <div className="h-5 w-2/3 rounded-full bg-[#F4F5F0]" />
                 </div>
               </div>
             ))}
           </div>
-          <div className="lg:col-span-7 neo-card animate-pulse p-6 h-80" />
+          <div className="lg:col-span-7 bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] animate-pulse p-6 h-80" />
         </div>
       ) : opportunities.length === 0 ? (
-        <div className="neo-card bg-white flex flex-col items-center justify-center p-12 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#080808] bg-[#E0FB66] text-[#080808]">
+        <div className="bg-white border border-black/[0.07] rounded-[24px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] flex flex-col items-center justify-center p-12 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#C6E832] bg-[#E3FC6D] text-[#0E1012] shadow-[0_4px_14px_rgba(205,238,54,0.28)]">
             <Compass className="h-6 w-6" />
           </div>
-          <h3 className="mt-4 font-heading text-lg font-extrabold text-[#080808]">
+          <h3 className="mt-4 text-lg font-bold text-[#101214]">
             No verified opportunities found matching those filters.
           </h3>
-          <p className="mt-1.5 max-w-sm text-xs sm:text-sm text-[#777777]">
+          <p className="mt-1.5 max-w-sm text-xs sm:text-sm text-[#64748B]">
             Try running an expanded live discovery search or clearing your active
             location/type filters.
           </p>
@@ -1990,7 +2047,7 @@ export function DiscoverView({
             <button
               type="button"
               onClick={handleClearAllFilters}
-              className="neo-btn-primary px-5 py-2 text-xs sm:text-sm cursor-pointer"
+              className="rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 transition-all px-5 py-2.5 text-xs sm:text-sm cursor-pointer"
             >
               Reset All Filters
             </button>
@@ -2002,7 +2059,7 @@ export function DiscoverView({
                   expandRoles: true,
                 })
               }
-              className="neo-btn-outline px-5 py-2 text-xs sm:text-sm cursor-pointer"
+              className="rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] transition-all px-5 py-2.5 text-xs sm:text-sm font-medium cursor-pointer"
             >
               Expand Live Discovery
             </button>
@@ -2028,23 +2085,23 @@ export function DiscoverView({
             careerOutlook?.directions || []
           ).map((group, gIdx) => (
             <div key={gIdx} className="space-y-3.5">
-              <div className="flex items-center justify-between border-b-2 border-[#080808] pb-2">
+              <div className="flex items-center justify-between border-b border-black/[0.07] pb-2.5">
                 <div className="flex items-center gap-2.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#E0FB66] border border-[#080808]" />
-                  <h3 className="font-heading text-lg font-extrabold text-[#080808]">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#94D814] ring-4 ring-[#E3FC6D]/50" />
+                  <h3 className="text-lg font-bold text-[#101214]">
                     {group.directionTitle}
                   </h3>
                   <span
-                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-[#080808] ${
+                    className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${
                       group.evidenceStrength === "Strong evidence"
-                        ? "bg-[#E0FB66] text-[#080808]"
-                        : "bg-[#FEF189] text-[#080808]"
+                        ? "bg-[#E3FC6D] border-[#C6E832] text-[#0E1012]"
+                        : "bg-[#FEF9E7] border-[#F5DFA0] text-[#101214]"
                     }`}
                   >
                     {group.evidenceStrength}
                   </span>
                 </div>
-                <span className="text-xs font-bold text-[#777777]">
+                <span className="text-xs font-medium text-[#64748B]">
                   {group.opportunities.length}{" "}
                   {group.opportunities.length === 1
                     ? "opportunity"
@@ -2052,7 +2109,7 @@ export function DiscoverView({
                 </span>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 {group.opportunities.map(
                   ({ opportunity, evaluation, hasPrepPlan }) => (
                     <OpportunityCard
@@ -2072,7 +2129,7 @@ export function DiscoverView({
           ))}
         </div>
       ) : (
-        /* Split Master-Detail Layout matching ChatGPT Neo-Brutalist Discover mockup */
+        /* Split Master-Detail Workspace */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           {/* Left Column: Compact Scannable Opportunity Cards */}
           <div className="lg:col-span-5 space-y-3">
@@ -2109,10 +2166,10 @@ export function DiscoverView({
                       setSelectedOppId(opportunity.id);
                     }
                   }}
-                  className={`group rounded-2xl border-2 border-[#080808] p-3.5 sm:p-4 transition-all cursor-pointer ${
+                  className={`group rounded-[22px] p-4 transition-all cursor-pointer border ${
                     isSelected
-                      ? "bg-[#F4FED0] shadow-[4px_4px_0px_#080808] ring-2 ring-[#E0FB66]"
-                      : "bg-white hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_#080808]"
+                      ? "bg-[#F3FCDA]/85 border-[#94D814] shadow-[0_12px_34px_rgba(148,216,20,0.16)] ring-2 ring-[#E3FC6D]/60"
+                      : "bg-white border-black/[0.07] shadow-[0_8px_30px_rgba(15,23,42,0.045)] hover:shadow-[0_12px_34px_rgba(15,23,42,0.075)] hover:border-black/[0.12] hover:-translate-y-0.5"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2.5">
@@ -2120,22 +2177,22 @@ export function DiscoverView({
                       <CompanyLogo
                         name={opportunity.organization}
                         size={42}
-                        className="h-10 w-10 sm:h-11 sm:w-11 shrink-0 rounded-xl border border-[#D8D5CE]"
+                        className="h-10 w-10 sm:h-11 sm:w-11 shrink-0 rounded-2xl border border-black/[0.08] bg-[#FAFBF7]"
                       />
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <h3 className="font-heading text-sm sm:text-[15px] font-extrabold text-[#080808] leading-snug truncate">
+                          <h3 className="text-sm sm:text-[15px] font-bold text-[#101214] leading-snug truncate">
                             {opportunity.title}
                           </h3>
                           {isNew && (
-                            <span className="shrink-0 rounded-full bg-[#E0FB66] border border-[#080808] px-1.5 py-0.2 font-heading text-[9px] font-extrabold uppercase text-[#080808]">
+                            <span className="shrink-0 rounded-full bg-[#E3FC6D] border border-[#C6E832] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#0E1012]">
                               NEW
                             </span>
                           )}
                         </div>
 
-                        <p className="mt-0.5 text-xs font-medium text-[#777777] truncate">
+                        <p className="mt-0.5 text-xs font-medium text-[#64748B] truncate">
                           {opportunity.organization} •{" "}
                           {formatShortLocation(opportunity.location)}
                           {opportunity.distanceKm != null
@@ -2147,15 +2204,15 @@ export function DiscoverView({
                             opportunity.category}
                         </p>
 
-                        {/* Compact Match & Skills Pill Strip */}
+                        {/* Compact Match Ring & Skills Pill Strip */}
                         <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-[#E0FB66] border border-[#080808] px-2.5 py-0.5 font-heading text-[11px] font-extrabold text-[#080808]">
-                            <Target className="h-3 w-3 shrink-0" />
-                            <span>{matchPct}% Match</span>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#F3FCDA]/90 border border-[#C7E938]/60 px-2.5 py-0.5 text-[11px] font-semibold text-[#101214]">
+                            <Target className="h-3 w-3 shrink-0 text-[#65B811]" />
+                            <span>{matchPct}% Fit</span>
                           </span>
 
                           {opportunity.sourceName && (
-                            <span className="rounded-full bg-[#EAE2FE] border border-[#080808]/40 px-2 py-0.5 text-[10px] font-bold text-[#080808] max-w-[115px] truncate">
+                            <span className="rounded-full bg-[#F5F2FF] border border-[#D9CCF8] px-2.5 py-0.5 text-[10px] font-semibold text-[#4C1D95] max-w-[115px] truncate">
                               {opportunity.sourceName.replace(/\s*\((?:Web Index|Public Feed|Live Feed)\)/i, "")}
                             </span>
                           )}
@@ -2163,7 +2220,7 @@ export function DiscoverView({
                           {topSkills.map((sk) => (
                             <span
                               key={sk}
-                              className="rounded-full bg-[#FDF9F3] border border-[#D8D5CE] px-2 py-0.5 text-[10.5px] font-semibold text-[#080808] max-w-[96px] truncate"
+                              className="rounded-full bg-[#FAFBF7] border border-black/[0.07] px-2.5 py-0.5 text-[10.5px] font-medium text-[#4B5563] max-w-[96px] truncate"
                               title={sk}
                             >
                               {sk}
@@ -2171,7 +2228,7 @@ export function DiscoverView({
                           ))}
 
                           {extraSkillsCount > 0 && (
-                            <span className="rounded-full bg-white border border-[#D8D5CE] px-2 py-0.5 text-[11px] font-bold text-[#777777]">
+                            <span className="rounded-full bg-white border border-black/[0.08] px-2 py-0.5 text-[11px] font-semibold text-[#64748B]">
                               +{extraSkillsCount}
                             </span>
                           )}
@@ -2179,22 +2236,29 @@ export function DiscoverView({
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSaveToTracker(opportunity);
-                      }}
-                      title={isSaved ? "Saved to Tracker" : "Save to Tracker"}
-                      aria-label={isSaved ? "Saved to Tracker" : "Save to Tracker"}
-                      className="rounded-lg p-1.5 text-[#080808] hover:bg-white/70 transition-colors shrink-0 cursor-pointer"
-                    >
-                      <Bookmark
-                        className={`h-4 w-4 ${
-                          isSaved ? "fill-[#080808]" : "text-[#080808]"
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <CompactMatchRing percent={matchPct} />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSaveToTracker(opportunity);
+                        }}
+                        title={isSaved ? "Saved to Tracker" : "Save to Tracker"}
+                        aria-label={isSaved ? "Saved to Tracker" : "Save to Tracker"}
+                        className={`rounded-full p-1.5 transition-colors cursor-pointer ${
+                          isSaved
+                            ? "bg-[#101214] text-[#E3FC6D]"
+                            : "text-[#64748B] hover:text-[#101214] hover:bg-black/[0.05]"
                         }`}
-                      />
-                    </button>
+                      >
+                        <Bookmark
+                          className={`h-3.5 w-3.5 ${
+                            isSaved ? "fill-[#E3FC6D]" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
                   </div>
                 </article>
               );
@@ -2205,7 +2269,7 @@ export function DiscoverView({
                 <button
                   type="button"
                   onClick={() => setVisibleLimit((prev) => prev + 20)}
-                  className="flex-1 neo-btn-outline py-2.5 text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="flex-1 rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
                 >
                   <span>
                     Show More ({(opportunities.length - visibleLimit).toLocaleString()} remaining)
@@ -2217,7 +2281,7 @@ export function DiscoverView({
                     if (onTriggerBackgroundSync) onTriggerBackgroundSync();
                   }}
                   title="Refresh feeds"
-                  className="neo-btn-outline p-2.5 cursor-pointer"
+                  className="rounded-full bg-white text-[#101214] border border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3] p-2.5 transition cursor-pointer"
                 >
                   <RotateCw className={`h-3.5 w-3.5 ${isSyncing ? "animate-spin" : ""}`} />
                 </button>

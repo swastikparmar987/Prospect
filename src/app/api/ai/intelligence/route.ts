@@ -43,9 +43,7 @@ export async function GET(req: Request) {
     }
     const modeParam = "LIVE" as const;
 
-    const loadedProfile =
-      (await loadActiveUserProfile(user.userId)) ||
-      (await loadActiveUserProfile());
+    const loadedProfile = await loadActiveUserProfile(user.userId);
 
     const profileConfigured = Boolean(
       loadedProfile &&

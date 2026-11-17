@@ -142,39 +142,39 @@ export function LiveDiscoveryActivityPanel({
   return (
     <section
       aria-label="Live Agent Discovery Activity Panel"
-      className="neo-card overflow-hidden"
+      className="bg-white border border-black/[0.07] rounded-[22px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] overflow-hidden"
     >
       {/* Top Header Bar */}
       <div
-        className={`flex flex-wrap items-center justify-between gap-3 bg-[#FDF9F3] px-4 py-3 ${
-          expanded || showBudgetControls ? "border-b-2 border-[#080808]" : ""
+        className={`flex flex-wrap items-center justify-between gap-3 bg-[#FAFBF7] px-4 sm:px-5 py-3.5 ${
+          expanded || showBudgetControls ? "border-b border-black/[0.06]" : ""
         }`}
       >
         <div className="flex items-center gap-2.5">
           {isRunning ? (
-            <Loader2 className="h-4 w-4 text-[#080808] animate-spin shrink-0" />
+            <Loader2 className="h-4 w-4 text-[#101214] animate-spin shrink-0" />
           ) : error ? (
             <XCircle className="h-4 w-4 text-rose-600 shrink-0" />
           ) : wasCancelled ? (
             <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
           ) : (
-            <Activity className="h-4 w-4 text-[#080808] shrink-0" />
+            <Activity className="h-4 w-4 text-[#101214] shrink-0" />
           )}
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-heading text-xs sm:text-sm font-extrabold text-[#080808]">
+              <span className="font-heading text-xs sm:text-sm font-bold text-[#101214]">
                 Live Discovery Agent Pipeline
               </span>
               <span
-                className={`text-[10px] font-heading font-extrabold px-2.5 py-0.5 rounded-full border border-[#080808] ${
+                className={`text-[10px] font-heading font-semibold px-2.5 py-0.5 rounded-full border ${
                   isRunning
-                    ? "bg-[#E0FB66] text-[#080808] animate-pulse"
+                    ? "bg-[#E3FC6D] text-[#0E1012] border-[#C6E832] animate-pulse"
                     : error
-                    ? "bg-rose-100 text-rose-800 border-rose-500"
+                    ? "bg-rose-50 text-rose-700 border-rose-200"
                     : wasCancelled
-                    ? "bg-[#FEF189] text-[#080808]"
-                    : "bg-white text-[#080808]"
+                    ? "bg-[#FEF9E7] text-[#7A5908] border-[#F5DFA0]"
+                    : "bg-white text-[#101214] border-black/[0.08]"
                 }`}
               >
                 {isRunning
@@ -187,11 +187,11 @@ export function LiveDiscoveryActivityPanel({
                   ? "COMPLETED"
                   : "READY"}
               </span>
-              <span className="hidden md:inline text-[11px] text-[#777777]">
-                • Mode: <strong className="text-[#080808]">{searchMode}</strong>
+              <span className="hidden md:inline text-[11px] text-[#6B7280]">
+                • Mode: <strong className="text-[#101214]">{searchMode}</strong>
               </span>
             </div>
-            <p className="text-xs text-[#777777] mt-0.5 line-clamp-1">
+            <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-1">
               {currentOperation}
             </p>
           </div>
@@ -203,7 +203,7 @@ export function LiveDiscoveryActivityPanel({
             <button
               type="button"
               onClick={onCancelDiscovery}
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-rose-600 hover:bg-rose-700 px-3.5 py-1.5 font-heading text-xs font-bold text-white shadow-[2px_2px_0px_#080808] transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 hover:bg-rose-700 px-3.5 py-1.5 font-heading text-xs font-semibold text-white shadow-sm transition cursor-pointer"
             >
               <Square className="h-3 w-3 fill-current" />
               <span>Cancel Search</span>
@@ -213,18 +213,18 @@ export function LiveDiscoveryActivityPanel({
               <button
                 type="button"
                 onClick={() => onStartLiveDiscovery(false)}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#080808] hover:-translate-y-0.5 px-3.5 py-1.5 font-heading text-xs font-bold text-white shadow-[2px_2px_0px_#E0FB66] transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#101214] text-white font-semibold shadow-[0_6px_18px_rgba(16,18,20,0.16)] hover:bg-[#1E2226] hover:-translate-y-0.5 px-3.5 py-1.5 font-heading text-xs transition-all cursor-pointer"
               >
-                <Play className="h-3 w-3 fill-current" />
+                <Play className="h-3 w-3 fill-current text-[#E3FC6D]" />
                 <span>Refresh Discovery</span>
               </button>
               <button
                 type="button"
                 onClick={() => onStartLiveDiscovery(true)}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#080808] bg-[#E0FB66] hover:bg-[#d5f54e] px-3.5 py-1.5 font-heading text-xs font-bold text-[#080808] shadow-[2px_2px_0px_#080808] transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#E3FC6D] hover:bg-[#D7F54D] border border-[#C6E832] shadow-[0_2px_10px_rgba(205,238,54,0.28)] px-3.5 py-1.5 font-heading text-xs font-semibold text-[#0E1012] transition cursor-pointer"
                 title="Expand search across adjacent role families and additional company boards"
               >
-                <Sparkles className="h-3.5 w-3.5 text-[#080808]" />
+                <Sparkles className="h-3.5 w-3.5 text-[#0E1012]" />
                 <span>Expand Search</span>
               </button>
             </>
@@ -233,10 +233,10 @@ export function LiveDiscoveryActivityPanel({
           <button
             type="button"
             onClick={() => setShowBudgetControls((prev) => !prev)}
-            className={`inline-flex items-center gap-1 rounded-full border-2 border-[#080808] px-3 py-1.5 font-heading text-xs font-bold transition cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs font-semibold transition cursor-pointer ${
               showBudgetControls
-                ? "bg-[#FEF189] text-[#080808] shadow-[2px_2px_0px_#080808]"
-                : "bg-white text-[#080808] hover:bg-[#FDF9F3]"
+                ? "bg-[#FEF9E7] text-[#7A5908] border-[#F5DFA0]"
+                : "bg-white text-[#101214] border-black/[0.09] shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:bg-[#F7F7F3]"
             }`}
             title="Configure Search Budgets"
           >
@@ -247,7 +247,7 @@ export function LiveDiscoveryActivityPanel({
           <button
             type="button"
             onClick={() => setExpanded((prev) => !prev)}
-            className="p-1.5 rounded-full text-[#080808] hover:bg-white transition cursor-pointer"
+            className="p-1.5 rounded-full text-[#4B5563] hover:text-[#101214] hover:bg-white transition cursor-pointer"
             aria-label="Toggle live activity details"
           >
             {expanded ? (
@@ -261,18 +261,18 @@ export function LiveDiscoveryActivityPanel({
 
       {/* Configurable Search Budgets Drawer (Priority 2) */}
       {showBudgetControls && (
-        <div className="bg-[#FDF9F3] border-b-2 border-[#080808] px-4 py-3">
+        <div className="bg-[#FAFBF7] border-b border-black/[0.06] px-4 sm:px-5 py-3.5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-[#080808]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#101214]">
               Configurable Adaptive Search Budgets
             </span>
-            <span className="text-[11px] font-medium text-[#777777]">
+            <span className="text-[11px] font-medium text-[#6B7280]">
               Bounded concurrency, rate-limiting & marginal yield stopping
             </span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             <label className="flex flex-col gap-1">
-              <span className="font-bold text-[#080808]">
+              <span className="font-semibold text-[#101214]">
                 Max Search Rounds ({budget.maxRounds})
               </span>
               <input
@@ -286,12 +286,12 @@ export function LiveDiscoveryActivityPanel({
                     maxRounds: Number(e.target.value),
                   })
                 }
-                className="accent-[#080808]"
+                className="accent-[#101214]"
               />
             </label>
 
             <label className="flex flex-col gap-1">
-              <span className="font-bold text-[#080808]">
+              <span className="font-semibold text-[#101214]">
                 Queries / Round ({budget.queriesPerRound})
               </span>
               <input
@@ -305,12 +305,12 @@ export function LiveDiscoveryActivityPanel({
                     queriesPerRound: Number(e.target.value),
                   })
                 }
-                className="accent-[#080808]"
+                className="accent-[#101214]"
               />
             </label>
 
             <label className="flex flex-col gap-1">
-              <span className="font-bold text-[#080808]">
+              <span className="font-semibold text-[#101214]">
                 Results / Provider ({budget.resultsPerProvider})
               </span>
               <input
@@ -325,12 +325,12 @@ export function LiveDiscoveryActivityPanel({
                     resultsPerProvider: Number(e.target.value),
                   })
                 }
-                className="accent-[#080808]"
+                className="accent-[#101214]"
               />
             </label>
 
             <label className="flex flex-col gap-1">
-              <span className="font-bold text-[#080808]">
+              <span className="font-semibold text-[#101214]">
                 Total Query Budget ({budget.searchBudgetPerRun})
               </span>
               <input
@@ -345,7 +345,7 @@ export function LiveDiscoveryActivityPanel({
                     searchBudgetPerRun: Number(e.target.value),
                   })
                 }
-                className="accent-[#080808]"
+                className="accent-[#101214]"
               />
             </label>
           </div>
@@ -354,84 +354,84 @@ export function LiveDiscoveryActivityPanel({
 
       {/* Expanded Body: Telemetry Metrics + 12 Pipeline Stages + Round Trace */}
       {expanded && (
-        <div className="p-4 space-y-4">
+        <div className="p-4 sm:p-5 space-y-4">
           {/* Telemetry Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 text-xs">
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-2.5">
-              <span className="text-[10px] font-bold uppercase text-[#777777] block">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#6B7280] block">
                 Providers Contacted
               </span>
               <span
-                className="font-extrabold text-[#080808] truncate block mt-0.5"
+                className="font-bold text-[#101214] truncate block mt-0.5"
                 title={providerName}
               >
                 {providerName}
               </span>
             </div>
 
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-2.5">
-              <span className="text-[10px] font-bold uppercase text-[#777777] block">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#6B7280] block">
                 Active Query
               </span>
               <span
-                className="font-extrabold text-[#080808] truncate block mt-0.5"
+                className="font-bold text-[#101214] truncate block mt-0.5"
                 title={queryExecuted}
               >
                 {queryExecuted}
               </span>
             </div>
 
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-2.5">
-              <span className="text-[10px] font-bold uppercase text-[#777777] flex items-center gap-1">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#6B7280] flex items-center gap-1">
                 <Database className="h-3 w-3" /> Raw Retrieved
               </span>
-              <span className="font-extrabold text-sm text-[#080808] block mt-0.5">
+              <span className="font-bold text-sm text-[#101214] block mt-0.5">
                 {resultsRetrieved}
               </span>
             </div>
 
-            <div className="rounded-xl border-2 border-[#080808] bg-[#E0FB66] p-2.5">
-              <span className="text-[10px] font-extrabold uppercase text-[#080808] flex items-center gap-1">
-                <CheckCircle2 className="h-3 w-3" /> Unique Verified
+            <div className="rounded-2xl border border-[#C7E938]/55 bg-[#F3FCDA]/80 p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#0E1012] flex items-center gap-1">
+                <CheckCircle2 className="h-3 w-3 text-[#4D7C0F]" /> Unique Verified
               </span>
-              <span className="font-extrabold text-sm text-[#080808] block mt-0.5">
+              <span className="font-extrabold text-sm text-[#0E1012] block mt-0.5">
                 {uniqueResults}
               </span>
             </div>
 
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-2.5">
-              <span className="text-[10px] font-bold uppercase text-[#777777] flex items-center gap-1">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#6B7280] flex items-center gap-1">
                 <Filter className="h-3 w-3" /> Duplicates Removed
               </span>
-              <span className="font-extrabold text-sm text-[#080808] block mt-0.5">
+              <span className="font-bold text-sm text-[#101214] block mt-0.5">
                 {duplicatesRemoved}
               </span>
             </div>
 
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-2.5">
-              <span className="text-[10px] font-bold uppercase text-[#777777] flex items-center gap-1">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#6B7280] flex items-center gap-1">
                 <Layers className="h-3 w-3" /> Search Round
               </span>
-              <span className="font-extrabold text-sm text-[#080808] block mt-0.5">
+              <span className="font-bold text-sm text-[#101214] block mt-0.5">
                 Round {roundNumber} / {totalRounds}
               </span>
             </div>
 
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-2.5">
-              <span className="text-[10px] font-bold uppercase text-[#777777] flex items-center gap-1">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#6B7280] flex items-center gap-1">
                 <Clock className="h-3 w-3" /> Elapsed Time
               </span>
-              <span className="font-extrabold text-sm text-[#080808] block mt-0.5">
+              <span className="font-bold text-sm text-[#101214] block mt-0.5">
                 {elapsedMs > 0 ? `${(elapsedMs / 1000).toFixed(2)}s` : "—"}
               </span>
             </div>
 
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-2.5">
-              <span className="text-[10px] font-bold uppercase text-[#777777] block">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3">
+              <span className="text-[10px] font-semibold uppercase text-[#6B7280] block">
                 Stop Reason
               </span>
               <span
-                className="font-mono font-bold text-[11px] text-[#080808] truncate block mt-0.5"
+                className="font-mono font-semibold text-[11px] text-[#101214] truncate block mt-0.5"
                 title={stopReason}
               >
                 {stopReason}
@@ -441,8 +441,8 @@ export function LiveDiscoveryActivityPanel({
 
           {/* Failed Providers Alert (if any) */}
           {failedProviders.length > 0 && (
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FEF189] px-3 py-2 text-xs text-[#080808] flex items-center gap-2 font-medium">
-              <AlertTriangle className="h-4 w-4 text-[#080808] shrink-0" />
+            <div className="rounded-2xl border border-[#F5DFA0] bg-[#FEF9E7] px-3.5 py-2.5 text-xs text-[#7A5908] flex items-center gap-2 font-medium">
+              <AlertTriangle className="h-4 w-4 text-[#7A5908] shrink-0" />
               <span>
                 <strong>Provider warnings ({failedProviders.length}):</strong>{" "}
                 {failedProviders.join(", ")} (isolated via circuit breaker; remaining providers succeeded)
@@ -453,10 +453,10 @@ export function LiveDiscoveryActivityPanel({
           {/* 12-Stage Pipeline Checklist */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#080808]">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#101214]">
                 Backend Execution Pipeline Stages
               </span>
-              <span className="text-[11px] font-medium text-[#777777]">
+              <span className="text-[11px] font-medium text-[#6B7280]">
                 {completedStages.size} of {PIPELINE_STAGE_META.length} stages observed in latest run
               </span>
             </div>
@@ -469,24 +469,24 @@ export function LiveDiscoveryActivityPanel({
                 return (
                   <div
                     key={item.stage}
-                    className={`rounded-xl border-2 px-2.5 py-2 text-xs flex items-start gap-2 transition-colors ${
+                    className={`rounded-xl border px-2.5 py-2 text-xs flex items-start gap-2 transition-colors ${
                       isDone
-                        ? "border-[#080808] bg-[#E0FB66]/45 text-[#080808]"
-                        : "border-[#D8D5CE] bg-white text-[#777777]"
+                        ? "border-[#C7E938]/60 bg-[#F3FCDA]/80 text-[#0E1012]"
+                        : "border-black/[0.06] bg-white text-[#6B7280]"
                     }`}
                     title={matchingEvt?.detail || item.label}
                   >
                     <CheckCircle2
                       className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${
-                        isDone ? "text-[#080808]" : "text-[#D8D5CE]"
+                        isDone ? "text-[#4D7C0F]" : "text-black/[0.15]"
                       }`}
                     />
                     <div className="min-w-0">
-                      <p className="font-bold text-[11px] leading-tight truncate">
+                      <p className="font-semibold text-[11px] leading-tight truncate">
                         {item.label}
                       </p>
                       {matchingEvt && (
-                        <p className="text-[10px] font-semibold text-[#080808] truncate mt-0.5">
+                        <p className="text-[10px] font-medium text-[#4B5563] truncate mt-0.5">
                           {matchingEvt.elapsedMs}ms
                         </p>
                       )}
@@ -499,22 +499,22 @@ export function LiveDiscoveryActivityPanel({
 
           {/* Live Event Log / Round Trace */}
           {liveEvents.length > 0 && (
-            <div className="rounded-xl border-2 border-[#080808] bg-[#FDF9F3] p-3 max-h-44 overflow-y-auto space-y-1.5 text-xs">
-              <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#080808] mb-1">
+            <div className="rounded-2xl border border-black/[0.06] bg-[#FAFBF7] p-3.5 max-h-44 overflow-y-auto space-y-1.5 text-xs">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#4B5563] mb-1">
                 Real-Time Pipeline Event Stream ({liveEvents.length} events)
               </div>
               {liveEvents.map((ev) => (
                 <div
                   key={ev.id}
-                  className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D8D5CE] pb-1 last:border-b-0"
+                  className="flex flex-wrap items-center justify-between gap-2 border-b border-black/[0.06] pb-1 last:border-b-0"
                 >
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="rounded-md bg-[#E0FB66] border border-[#080808] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#080808] shrink-0">
+                    <span className="rounded-full bg-[#E3FC6D]/75 border border-[#C6E832] px-2 py-0.5 font-mono text-[10px] font-semibold text-[#0E1012] shrink-0">
                       {ev.stage}
                     </span>
-                    <span className="text-[#080808] truncate">{ev.detail || ev.label}</span>
+                    <span className="text-[#101214] truncate">{ev.detail || ev.label}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] font-mono text-[#777777] shrink-0">
+                  <div className="flex items-center gap-2 text-[10px] font-mono text-[#6B7280] shrink-0">
                     {ev.provider && <span>[{ev.provider}]</span>}
                     <span>+{ev.elapsedMs}ms</span>
                   </div>
