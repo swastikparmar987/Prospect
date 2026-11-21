@@ -301,6 +301,40 @@ export async function extractDocumentWithDetails(
   // 2. PDF EXTRACTION
   if (ext === "pdf") {
     try {
+      // Polyfill browser globals required by pdfjs-dist in headless serverless runtimes
+      const g = globalThis as unknown as Record<string, unknown>;
+      if (typeof g.DOMMatrix === "undefined") {
+        g.DOMMatrix = class DOMMatrix {
+          a = 1; b = 0; c = 0; d = 1; e = 0; f = 0;
+          m11 = 1; m12 = 0; m13 = 0; m14 = 0;
+          m21 = 0; m22 = 1; m23 = 0; m24 = 0;
+          m31 = 0; m32 = 0; m33 = 1; m34 = 0;
+          m41 = 0; m42 = 0; m43 = 0; m44 = 1;
+          is2D = true;
+          isIdentity = true;
+          multiply() { return this; }
+          translate() { return this; }
+          scale() { return this; }
+          rotate() { return this; }
+          transformPoint(p: unknown) { return p; }
+        };
+      }
+      if (typeof g.Path2D === "undefined") {
+        g.Path2D = class Path2D {};
+      }
+      if (typeof g.ImageData === "undefined") {
+        g.ImageData = class ImageData {
+          width: number;
+          height: number;
+          data: Uint8ClampedArray;
+          constructor(w: number, h: number) {
+            this.width = w;
+            this.height = h;
+            this.data = new Uint8ClampedArray(w * h * 4);
+          }
+        };
+      }
+
       // Next.js with serverExternalPackages allows native require/import of pdf-parse
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const pdfParseModule = require("pdf-parse");
