@@ -276,11 +276,22 @@ You MUST output valid, raw JSON conforming strictly to the required schema. Do n
   ): Promise<string> {
     const timeoutMs = options.timeoutMs || 15000;
     const temperature = options.temperature ?? (task === "FAST_EXTRACTION" ? 0.1 : 0.2);
-    const maxTokens = options.maxTokens || (task === "STUDIO_MATERIALS" ? 1400 : 2048);
+    const maxTokens =
+      options.maxTokens ||
+      (task === "FAST_EXTRACTION"
+        ? 1200
+        : task === "STUDIO_MATERIALS"
+        ? 1400
+        : 2048);
 
     const candidateModels = Array.from(
-      new Set([this.groqModel, "qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"])
-    );
+      new Set([
+        this.groqModel || "qwen/qwen3.8-27b",
+        "qwen/qwen3.8-27b",
+        "openai/gpt-oss-120b",
+        "openai/gpt-oss-20b",
+      ])
+    ).filter(Boolean);
 
     let lastError: Error | null = null;
     for (const modelName of candidateModels) {

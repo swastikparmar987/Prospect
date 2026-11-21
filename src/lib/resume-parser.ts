@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import zlib from "zlib";
 import mammoth from "mammoth";
 import {
@@ -305,6 +307,23 @@ export async function extractDocumentWithDetails(
       const PDFParseClass = pdfParseModule.PDFParse || pdfParseModule;
 
       if (PDFParseClass) {
+        try {
+          // Resolve worker path for serverless execution environments
+          const candidatePaths = [
+            path.resolve(process.cwd(), "node_modules/pdf-parse/dist/pdf-parse/cjs/pdf.worker.mjs"),
+            path.resolve(process.cwd(), ".next/server/chunks/pdf.worker.mjs"),
+            "/var/task/node_modules/pdf-parse/dist/pdf-parse/cjs/pdf.worker.mjs",
+          ];
+          for (const p of candidatePaths) {
+            if (fs.existsSync(p) && typeof PDFParseClass.setWorker === "function") {
+              PDFParseClass.setWorker(p);
+              break;
+            }
+          }
+        } catch {
+          // Worker path fallback
+        }
+
         const parser = new PDFParseClass({ data: buffer });
         const textResult = await parser.getText();
         if (textResult && textResult.text) {
@@ -328,13 +347,20 @@ export async function extractDocumentWithDetails(
           };
         }
       }
-    } catch {
-      // PDFParse failed on invalid or malformed PDF structure; fall through to printable characters fallback
+    } catch (pdfErr) {
+      console.warn("[ResumeParser] PDF parsing engine failed:", pdfErr);
     }
   }
 
-  // 3. Fallback printable characters
+  // 3. Fallback printable characters (strictly disallow raw binary PDF tokens)
   const rawString = buffer.toString("utf-8");
+  if (rawString.startsWith("%PDF-") || buffer.slice(0, 5).toString("latin1").startsWith("%PDF")) {
+    return {
+      text: "",
+      pageCount: 1,
+      isScannedOrLowText: true,
+    };
+  }
   const cleaned = normalizeExtractedText(rawString);
   return {
     text: cleaned,

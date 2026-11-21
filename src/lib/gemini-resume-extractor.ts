@@ -13,9 +13,15 @@ export const AiExtractedResumeSchema = z.object({
   university: z.string().nullable().optional(),
   degree: z.string().nullable().optional(),
   major: z.string().nullable().optional(),
-  graduationYear: z.number().int().min(1990).max(2035).nullable().optional(),
+  graduationYear: z
+    .union([z.number().int().min(1990).max(2035), z.string().regex(/^\d{4}$/).transform(Number)])
+    .nullable()
+    .optional(),
   graduationMonth: z.string().nullable().optional(),
-  gpa: z.number().min(0).max(10).nullable().optional(),
+  gpa: z
+    .union([z.number().min(0).max(10), z.string().transform(Number)])
+    .nullable()
+    .optional(),
   skills: z.array(z.string()).default([]),
   targetRoles: z.array(z.string()).default([]),
   coursework: z.array(z.string()).default([]),
@@ -24,29 +30,29 @@ export const AiExtractedResumeSchema = z.object({
   projects: z
     .array(
       z.object({
-        name: z.string(),
-        description: z.string(),
-        techStack: z.array(z.string()).default([]),
-        link: z.string().optional(),
+        name: z.string().nullish().transform((v) => v || "Project"),
+        description: z.string().nullish().transform((v) => v || ""),
+        techStack: z.array(z.string()).nullish().transform((v) => v || []),
+        link: z.string().nullish().transform((v) => v || undefined),
       })
     )
     .default([]),
   experiences: z
     .array(
       z.object({
-        title: z.string(),
-        company: z.string(),
-        duration: z.string(),
-        bullets: z.array(z.string()).default([]),
-        location: z.string().optional(),
+        title: z.string().nullish().transform((v) => v || "Role"),
+        company: z.string().nullish().transform((v) => v || "Company"),
+        duration: z.string().nullish().transform((v) => v || ""),
+        bullets: z.array(z.string()).nullish().transform((v) => v || []),
+        location: z.string().nullish().transform((v) => v || undefined),
       })
     )
     .default([]),
   portfolioLinks: z
     .array(
       z.object({
-        label: z.string(),
-        url: z.string(),
+        label: z.string().nullish().transform((v) => v || "Link"),
+        url: z.string().nullish().transform((v) => v || ""),
       })
     )
     .default([]),
@@ -66,6 +72,8 @@ export async function extractWithGemini(
     return null;
   }
 
+  const trimmedText = rawText.slice(0, 5500);
+
   const prompt = `You are an elite, high-precision resume parsing engine.
 Extract structured career facts from the following resume text.
 
@@ -81,7 +89,7 @@ CRITICAL EXTRACTION RULES:
 9. Experience: Extract past jobs or formal internships. If the candidate has 0 past jobs/internships, return an empty array [].
 
 RESUME TEXT:
-${rawText}
+${trimmedText}
 
 Return valid JSON adhering to this exact schema:
 {

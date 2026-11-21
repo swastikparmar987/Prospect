@@ -49,10 +49,23 @@ export async function GET(req: Request) {
         });
       }, 15000);
 
+      // Gracefully close stream before Vercel serverless execution limits (55s)
+      // Native EventSource in the browser automatically reconnects within 3 seconds
+      const maxStreamTimer = setTimeout(() => {
+        sendChunk("system", {
+          id: `evt-reconnect-${Date.now()}`,
+          type: "CONNECTED",
+          message: "Periodic stream cycle completed. Reconnecting...",
+          timestamp: new Date().toISOString(),
+        });
+        cleanup();
+      }, 55000);
+
       const cleanup = () => {
         if (closed) return;
         closed = true;
         clearInterval(heartbeatTimer);
+        clearTimeout(maxStreamTimer);
         unsubscribe();
         try {
           controller.close();
