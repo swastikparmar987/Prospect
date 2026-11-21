@@ -45,6 +45,7 @@ next-env.d.ts
 *.db-journal
 dev.db
 dev.db-journal
+!prisma/starter.db
 .data/
 
 /src/generated/prisma

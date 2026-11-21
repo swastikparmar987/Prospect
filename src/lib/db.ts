@@ -1,8 +1,10 @@
 import { PrismaClient as SqlitePrismaClient } from "@prisma/client";
+import fs from "fs";
+import path from "path";
 
 /**
- * Resolves the active database URL, supporting separate production and test database configurations
- * (`TEST_DATABASE_URL` in test environments vs `DATABASE_URL` in production/runtime).
+ * Resolves the active database URL, supporting separate production, Vercel serverless,
+ * and test database configurations.
  */
 export function resolveDatabaseUrl(): string {
   const isTestEnv =
@@ -12,7 +14,46 @@ export function resolveDatabaseUrl(): string {
   if (isTestEnv) {
     return process.env.TEST_DATABASE_URL || "file:./test.db";
   }
-  return process.env.DATABASE_URL || "file:./dev.db";
+
+  const explicitUrl = process.env.DATABASE_URL;
+  if (
+    explicitUrl &&
+    (explicitUrl.startsWith("postgres://") || explicitUrl.startsWith("postgresql://"))
+  ) {
+    return explicitUrl;
+  }
+
+  // When running on Vercel or AWS Lambda, the working directory is read-only.
+  // SQLite must operate in /tmp to allow write access.
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || explicitUrl?.includes("/tmp/")) {
+    const tmpDbPath = path.join("/tmp", "dev.db");
+    if (!fs.existsSync(tmpDbPath)) {
+      try {
+        const candidates = [
+          path.join(process.cwd(), "prisma", "starter.db"),
+          path.join(process.cwd(), "dev.db"),
+          path.join(__dirname, "..", "..", "prisma", "starter.db"),
+        ];
+        let copied = false;
+        for (const candidate of candidates) {
+          if (fs.existsSync(candidate)) {
+            fs.copyFileSync(candidate, tmpDbPath);
+            console.log(`[db] Initialized /tmp/dev.db from ${candidate}`);
+            copied = true;
+            break;
+          }
+        }
+        if (!copied) {
+          console.warn("[db] Warning: No starter database found to copy to /tmp/dev.db");
+        }
+      } catch (err) {
+        console.warn("[db] Failed to copy starter database to /tmp:", err);
+      }
+    }
+    return `file:${tmpDbPath}`;
+  }
+
+  return explicitUrl || "file:./dev.db";
 }
 
 const dbUrl = resolveDatabaseUrl();
@@ -45,19 +86,21 @@ declare global {
 }
 
 function initPrismaClient(): SqlitePrismaClient {
-  if (global.prisma && global.__prismaProvider === activeProvider) {
+  const currentDbUrl = resolveDatabaseUrl();
+  const currentIsPostgres = currentDbUrl.startsWith("postgres://") || currentDbUrl.startsWith("postgresql://");
+  const currentProvider = currentIsPostgres ? "postgresql" : "sqlite";
+
+  if (global.prisma && global.__prismaProvider === currentProvider) {
     return global.prisma;
   }
 
   const client = new ClientConstructor({
-    datasources: dbUrl ? { db: { url: dbUrl } } : undefined,
+    datasources: currentDbUrl ? { db: { url: currentDbUrl } } : undefined,
     log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
   });
 
-  if (process.env.NODE_ENV !== "production") {
-    global.prisma = client;
-    global.__prismaProvider = activeProvider;
-  }
+  global.prisma = client;
+  global.__prismaProvider = currentProvider;
 
   return client;
 }
