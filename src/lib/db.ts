@@ -53,7 +53,33 @@ export function resolveDatabaseUrl(): string {
     return `file:${tmpDbPath}`;
   }
 
-  return explicitUrl || "file:./dev.db";
+  // On Render, standard servers, or local dev: auto-bootstrap target SQLite db if not present
+  const targetDbUrl = explicitUrl || "file:./dev.db";
+  if (targetDbUrl.startsWith("file:")) {
+    const rawPath = targetDbUrl.replace(/^file:/, "");
+    const resolvedPath = path.isAbsolute(rawPath) ? rawPath : path.resolve(process.cwd(), rawPath);
+    if (!fs.existsSync(resolvedPath)) {
+      try {
+        const candidates = [
+          path.join(process.cwd(), "prisma", "starter.db"),
+          path.join(__dirname, "..", "..", "prisma", "starter.db"),
+        ];
+        const dir = path.dirname(resolvedPath);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        for (const candidate of candidates) {
+          if (fs.existsSync(candidate)) {
+            fs.copyFileSync(candidate, resolvedPath);
+            console.log(`[db] Initialized ${resolvedPath} from ${candidate}`);
+            break;
+          }
+        }
+      } catch (err) {
+        console.warn("[db] Failed to bootstrap database file:", err);
+      }
+    }
+  }
+
+  return targetDbUrl;
 }
 
 const dbUrl = resolveDatabaseUrl();
