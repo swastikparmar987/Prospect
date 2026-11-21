@@ -10,6 +10,10 @@ def render_database_api(doc, html_builder):
     add_h2(doc, "21.1 Conceptual Data Model")
     add_p(doc, "Prospect's persistence architecture is engineered using Prisma ORM v6, providing compile-time type safety and relational integrity. The database schema encompasses twelve core models designed to manage candidate profiles, opportunities, evaluations, preparation roadmaps, application lifecycles, and system audit logs.")
 
+    # Embed Figure 5 ERD immediately after 21.1
+    diag_path = os.path.join(ASSETS_DIR, "diagram-erd.png")
+    add_figure(doc, diag_path, "Figure 5: Prisma Relational Entity-Relationship Diagram (ERD) detailing entities, primary keys, and foreign key relationships.")
+
     add_h2(doc, "21.2 Prisma Relational Entities")
     add_bullet(doc, "UserProfile: Stores candidate metadata, parsed text, contact information, target roles, and raw JSON profile representations.", "1. ")
     add_bullet(doc, "Opportunity: Represents normalized job postings with title, company, location, salary bounds, remote status, requirements array, and source provenance.", "2. ")
@@ -22,10 +26,6 @@ def render_database_api(doc, html_builder):
     add_bullet(doc, "UserFeedback: Captures explicit user feedback regarding match quality and recommendation accuracy.", "9. ")
     add_bullet(doc, "AgentRun & AgentStep: Tracks autonomous background task execution, agent actions, and operational status.", "10. ")
     add_bullet(doc, "DurableTask & ScheduledTask: Manages asynchronous background processing jobs and recurring sync schedules.", "11. ")
-
-    # Embed Figure 5 ERD
-    diag_path = os.path.join(ASSETS_DIR, "diagram-erd.png")
-    add_figure(doc, diag_path, "Figure 5: Prisma Relational Entity-Relationship Diagram (ERD) detailing entities, primary keys, and foreign key relationships.")
 
     add_h2(doc, "21.3 RESTful API Endpoint Catalog")
     add_p(doc, "Prospect's backend exposes a modular set of RESTful API routes under /api:")
@@ -52,12 +52,12 @@ def render_database_api(doc, html_builder):
     html_builder.add_h2("21.1 Conceptual Data Model")
     html_builder.add_p("Prospect's persistence architecture is engineered using Prisma ORM v6, managing twelve core relational models supporting SQLite in local development and PostgreSQL in production.")
 
+    html_builder.add_figure(diag_path, "Figure 5: Prisma Relational Entity-Relationship Diagram (ERD) detailing entities, primary keys, and foreign key relationships.")
+
     html_builder.add_h2("21.2 Prisma Relational Entities")
     html_builder.start_bullet_list()
     html_builder.add_bullet("UserProfile, Opportunity, Evaluation, PreparationPlan, Application, ApplicationEvent, SearchCache, SyncLog, UserFeedback, AgentRun, AgentStep, DurableTask, ScheduledTask.")
     html_builder.end_bullet_list()
-
-    html_builder.add_figure(diag_path, "Figure 5: Prisma Relational Entity-Relationship Diagram (ERD) detailing entities, primary keys, and foreign key relationships.")
 
     html_builder.add_h2("21.3 RESTful API Endpoint Catalog")
     html_builder.add_p("Prospect's backend exposes a modular set of RESTful API routes under /api:")
@@ -102,20 +102,25 @@ def render_ui_modules(doc, html_builder):
     html_builder.add_p("Prospect's visual aesthetic departs from generic administrative dashboard templates, implementing an editorial, high-contrast visual design system utilizing Warm Ivory (#F8F6F1), Electric Lime (#DFFF43), Ink Black (#111111), and Soft Lavender (#EAE3FF).")
 
     html_builder.add_h2("22.2 System Modules and Screens")
-    html_builder.add_p("Landing Hub: Features hero typography, an overview of the deterministic-semantic scoring engine, and navigation.", bold_prefix="Module 1: ")
-    html_builder.add_figure(p_land, "Figure 6: Prospect Landing Hub featuring value proposition, brand aesthetics, and navigation.")
 
-    html_builder.add_p("Profile & Resume Intelligence: Displays uploaded resume text, extracted contact information, experience timeline, and verified technical skill badges.", bold_prefix="Module 2: ")
-    html_builder.add_figure(p_prof, "Figure 7: Profile Workspace displaying extracted candidate credentials and verified skill tags.")
+    ui_modules_data = [
+        ("Module 1: Landing Hub", "Features hero typography, an overview of the deterministic-semantic scoring engine, and navigation.", p_land, "Figure 6: Prospect Landing Hub featuring value proposition, brand aesthetics, and navigation."),
+        ("Module 2: Profile & Resume Intelligence", "Displays uploaded resume text, extracted contact information, experience timeline, and verified technical skill badges.", p_prof, "Figure 7: Profile Workspace displaying extracted candidate credentials and verified skill tags."),
+        ("Module 3: Opportunity Discovery", "Presents real-time sourced job listings with 14-day freshness indicators and 5-pillar score cards.", p_disc, "Figure 8: Opportunity Discovery Feed showing verified listings with 5-pillar score breakdowns."),
+        ("Module 4: Preparation Studio", "Displays 3-stage gap analysis, project-anchored code deliverables, and the Voice AI Mock Interview Studio.", p_prep, "Figure 9: Preparation Studio featuring project-anchored roadmap and Voice AI Mock Interview Studio."),
+        ("Module 5: Application Lifecycle Tracker", "Interactive Kanban board managing candidate applications across lifecycle stages.", p_trck, "Figure 10: Application Lifecycle Tracker featuring Kanban columns and application timeline logging.")
+    ]
 
-    html_builder.add_p("Opportunity Discovery: Presents real-time sourced job listings with 14-day freshness indicators and 5-pillar score cards.", bold_prefix="Module 3: ")
-    html_builder.add_figure(p_disc, "Figure 8: Opportunity Discovery Feed showing verified listings with 5-pillar score breakdowns.")
-
-    html_builder.add_p("Preparation Studio: Displays 3-stage gap analysis, project-anchored code deliverables, and the Voice AI Mock Interview Studio.", bold_prefix="Module 4: ")
-    html_builder.add_figure(p_prep, "Figure 9: Preparation Studio featuring project-anchored roadmap and Voice AI Mock Interview Studio.")
-
-    html_builder.add_p("Application Lifecycle Tracker: Interactive Kanban board managing candidate applications across lifecycle stages.", bold_prefix="Module 5: ")
-    html_builder.add_figure(p_trck, "Figure 10: Application Lifecycle Tracker featuring Kanban columns and application timeline logging.")
+    for title, desc, img, cap in ui_modules_data:
+        html_builder.body_parts.append(f'''
+        <div style="page-break-inside: avoid !important; break-inside: avoid !important; margin: 12px 0 16px 0;">
+            <p class="report-p"><strong>{title}:</strong> {desc}</p>
+            <div class="figure-container">
+                <img src="file://{img}" alt="{cap}" class="figure-img" />
+                <div class="figure-caption">{cap}</div>
+            </div>
+        </div>
+        ''')
 
 def render_security_no_mock(doc, html_builder):
     # Word

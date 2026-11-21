@@ -161,6 +161,10 @@ def render_system_architecture(doc, html_builder):
     add_h2(doc, "13.1 High-Level Architecture Overview")
     add_p(doc, "Prospect is engineered as a modern, decoupled web architecture comprising five primary operational layers: the Presentation Layer (Next.js 15 Client & Server Components), the API Gateway & Route Handler Layer, the Core Intelligence & Information Retrieval Engine, the Multi-Source Discovery Service, and the Relational Persistence Layer (Prisma ORM with SQLite/PostgreSQL).")
 
+    # Embed Figure 1 immediately below 13.1
+    diag_path = os.path.join(ASSETS_DIR, "diagram-system-architecture.png")
+    add_figure(doc, diag_path, "Figure 1: High-Level System Architecture of Prospect across Presentation, API, Intelligence, Discovery, and Database Layers.")
+
     add_h2(doc, "13.2 The Five Architectural Layers")
     add_bullet(doc, "Presentation Layer (React 19 / Next.js 15): Implements reactive workspaces for Resume Ingestion, Live Opportunity Discovery, Preparation Studio, and Application Tracking. Built with Tailwind CSS and Lucide icons.", "1. ")
     add_bullet(doc, "API Gateway & Server Route Handlers: Type-safe RESTful API endpoints handling multipart resume uploads, live provider orchestration, scoring requests, preparation plans, and voice interview telemetry.", "2. ")
@@ -168,14 +172,12 @@ def render_system_architecture(doc, html_builder):
     add_bullet(doc, "Multi-Source Discovery Service: Dispatches parallel HTTP requests to Tavily Search API, Hacker News Algolia, Dev.to, and remote feeds, followed by normalization, canonical URL deduplication, and 14-day freshness gating.", "4. ")
     add_bullet(doc, "Relational Persistence Layer: Prisma ORM v6 managing 12 relational models supporting SQLite in local development and PostgreSQL in production.", "5. ")
 
-    # Embed Figure 1
-    diag_path = os.path.join(ASSETS_DIR, "diagram-system-architecture.png")
-    add_figure(doc, diag_path, "Figure 1: High-Level System Architecture of Prospect across Presentation, API, Intelligence, Discovery, and Database Layers.")
-
     # HTML
     html_builder.add_h1("13. System Architecture", page_break=True)
     html_builder.add_h2("13.1 High-Level Architecture Overview")
     html_builder.add_p("Prospect is engineered as a modern, decoupled web architecture comprising five primary operational layers: the Presentation Layer (Next.js 15 Client & Server Components), the API Gateway & Route Handler Layer, the Core Intelligence & Information Retrieval Engine, the Multi-Source Discovery Service, and the Relational Persistence Layer (Prisma ORM with SQLite/PostgreSQL).")
+
+    html_builder.add_figure(diag_path, "Figure 1: High-Level System Architecture of Prospect across Presentation, API, Intelligence, Discovery, and Database Layers.")
 
     html_builder.add_h2("13.2 The Five Architectural Layers")
     html_builder.start_bullet_list()
@@ -186,11 +188,9 @@ def render_system_architecture(doc, html_builder):
     html_builder.add_bullet("Relational Persistence Layer: Prisma ORM v6 managing 12 relational models supporting SQLite in local development and PostgreSQL in production.", "5. ")
     html_builder.end_bullet_list()
 
-    html_builder.add_figure(diag_path, "Figure 1: High-Level System Architecture of Prospect across Presentation, API, Intelligence, Discovery, and Database Layers.")
-
 def render_tech_stack(doc, html_builder):
     # Word
-    add_h1(doc, "14. Technology Stack", page_break=False)
+    add_h1(doc, "14. Technology Stack", page_break=True)
     add_p(doc, "Prospect's technology stack is deliberately curated for high developer velocity, type safety, low latency, and robust offline-first fallback capabilities:")
 
     headers = ["Component Layer", "Technology / Framework", "Version", "Role & Architectural Justification"]
@@ -214,7 +214,7 @@ def render_tech_stack(doc, html_builder):
     add_table_data(doc, headers, rows, widths)
 
     # HTML
-    html_builder.add_h1("14. Technology Stack", page_break=False)
+    html_builder.add_h1("14. Technology Stack", page_break=True)
     html_builder.add_p("Prospect's technology stack is deliberately curated for high developer velocity, type safety, low latency, and robust offline-first fallback capabilities:")
     html_builder.add_table(headers, rows)
 

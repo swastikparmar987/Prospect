@@ -178,24 +178,34 @@ def build_all():
         f.write(full_html)
     print("✓ Intermediate HTML rendered.")
 
-    # 6. Compile PDF using Google Chrome Headless
-    print(f"Compiling PDF via Google Chrome Headless to {PDF_PATH}...")
-    chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-    chrome_cmd = [
-        chrome_bin,
+    # 6. Compile PDF using Headless Browser
+    print(f"Compiling PDF via Headless Browser to {PDF_PATH}...")
+    browser_bin = "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+    if not os.path.exists(browser_bin):
+        browser_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+    browser_cmd = [
+        browser_bin,
         "--headless",
         "--disable-gpu",
         "--run-all-compositor-stages-before-draw",
         f"--print-to-pdf={PDF_PATH}",
         f"file://{HTML_PATH}"
     ]
-    res = subprocess.run(chrome_cmd, capture_output=True, text=True)
+    res = subprocess.run(browser_cmd, capture_output=True, text=True)
     if res.returncode != 0:
-        print(f"Warning: Chrome returned exit code {res.returncode}: {res.stderr}")
+        print(f"Warning: Browser returned exit code {res.returncode}: {res.stderr}")
     else:
-        print("✓ Chrome PDF conversion finished successfully.")
+        print("✓ Headless PDF conversion finished successfully.")
 
     shutil.copyfile(PDF_PATH, os.path.join(PUBLIC_DIR, "PROSPECT_Final_Project_Report.pdf"))
+    
+    # Also update brain directory copies
+    brain_dir = "/Users/pro/.gemini/antigravity/brain/1a6e1cf1-9d2c-4815-a5f2-d475d1d35e49"
+    if os.path.exists(brain_dir):
+        shutil.copyfile(PDF_PATH, os.path.join(brain_dir, "PROSPECT_Final_Project_Report.pdf"))
+        shutil.copyfile(DOCX_PATH, os.path.join(brain_dir, "PROSPECT_Final_Project_Report.docx"))
+
     pdf_size_kb = os.path.getsize(PDF_PATH) / 1024
     page_count = count_pdf_pages(PDF_PATH)
     print(f"✓ PDF created successfully ({pdf_size_kb:.1f} KB, {page_count} Pages)")

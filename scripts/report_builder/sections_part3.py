@@ -22,6 +22,13 @@ def render_resume_parsing(doc, html_builder):
     add_bullet(doc, "Certifications: Isolates professional credentials and licenses.", "6. ")
     add_bullet(doc, "Contact Information: Extracts emails, phone numbers, GitHub, and LinkedIn URLs.", "7. ")
 
+    # Embed Figure 2 immediately after 15.1
+    diag_path = os.path.join(ASSETS_DIR, "diagram-resume-pipeline.png")
+    add_figure(doc, diag_path, "Figure 2: Hybrid Resume Intelligence & Parsing Pipeline showing dual binary stream extraction, regex segmentation, and provenance verification.")
+
+    add_h2(doc, "15.2 Seven-Section Regular Expression Segmentation")
+    add_p(doc, "Once raw text is extracted, Prospect segments the document into seven distinct semantic regions using compiled regex patterns: Summary, Work Experience, Education, Technical Skills, Projects, Certifications, and Contact Information.")
+
     add_h2(doc, "15.3 Single-Letter Language Disambiguation")
     add_p(doc, "A critical challenge in automated technical resume parsing is distinguishing single-letter programming languages (such as \"C\" or \"R\") or common words (\"Go\") from standard English prose. Naive keyword search generates severe false positives (e.g., matching the \"C\" in \"Grade C\" or \"C++\", or the word \"go\" in \"go to market\").")
     add_p(doc, "Prospect resolves this via a Contextual Word-Window Disambiguation heuristic:")
@@ -29,10 +36,6 @@ def render_resume_parsing(doc, html_builder):
 
     add_h2(doc, "15.4 AI-Assisted Schema Extraction with Provenance Anchoring")
     add_p(doc, "To generate structured JSON from the segmented sections, Prospect orchestrates high-throughput LLM calls using Groq (Llama-3.3-70B-Versatile) with an automatic failover to Google Gemini 2.5 Flash. To eliminate AI hallucination, every extracted entity (skill, job title, company, project) is anchored to an exact snippet offset in the source document. If an LLM attempts to generate a skill not present in the candidate's raw text, the provenance verification pass flags or drops the entity.")
-
-    # Embed Figure 2
-    diag_path = os.path.join(ASSETS_DIR, "diagram-resume-pipeline.png")
-    add_figure(doc, diag_path, "Figure 2: Hybrid Resume Intelligence & Parsing Pipeline showing dual binary stream extraction, regex segmentation, and provenance verification.")
 
     code_snip = """// Extract text from DOCX buffer with pure ZIP XML fallback
 export async function extractTextFromDocx(buffer: Buffer): Promise<string> {
@@ -72,6 +75,8 @@ export async function extractTextFromDocx(buffer: Buffer): Promise<string> {
     html_builder.add_bullet("DOCX files are ingested using mammoth to parse semantic XML structures, with an automated fallback that inflates word/document.xml with regex heuristics to strip XML tags and preserve raw candidate text.", "DOCX Resilient Fallback: ")
     html_builder.end_bullet_list()
 
+    html_builder.add_figure(diag_path, "Figure 2: Hybrid Resume Intelligence & Parsing Pipeline showing dual binary stream extraction, regex segmentation, and provenance verification.")
+
     html_builder.add_h2("15.2 Seven-Section Regular Expression Segmentation")
     html_builder.add_p("Once raw text is extracted, Prospect segments the document into seven distinct semantic regions using compiled regex patterns: Summary, Work Experience, Education, Technical Skills, Projects, Certifications, and Contact Information.")
 
@@ -81,7 +86,6 @@ export async function extractTextFromDocx(buffer: Buffer): Promise<string> {
     html_builder.add_h2("15.4 AI-Assisted Schema Extraction with Provenance Anchoring")
     html_builder.add_p("To generate structured JSON from the segmented sections, Prospect orchestrates high-throughput LLM calls using Groq (Llama-3.3-70B-Versatile) with automatic failover to Google Gemini 2.5 Flash, anchoring every extracted entity to verifiable source document snippets.")
 
-    html_builder.add_figure(diag_path, "Figure 2: Hybrid Resume Intelligence & Parsing Pipeline showing dual binary stream extraction, regex segmentation, and provenance verification.")
     html_builder.add_code(code_snip, "Dual-Stream DOCX Extraction with XML Inflate Fallback (src/lib/resume-parser.ts)")
 
 def render_adaptive_search(doc, html_builder):
@@ -121,26 +125,26 @@ def render_multi_source_discovery(doc, html_builder):
     add_bullet(doc, "Retrieves technical career listings and hiring announcements directly from the developer publishing network.", "3. Dev.to Community API: ")
     add_bullet(doc, "Specialized remote engineering feeds (Jobicy, RemoteOK) providing standardized JSON endpoints for remote software roles.", "4. Remote Developer Feeds: ")
 
-    add_h2(doc, "17.2 Resilient Multi-Provider Orchestration")
-    add_p(doc, "To guard against provider outages or network throttling, Prospect's discovery orchestrator dispatches asynchronous requests using Promise.allSettled(). Each provider connector is wrapped in an individual timeout boundary (default 8,000ms). If a particular provider times out or returns an HTTP 429 rate-limit error, Prospect logs the provider failure in the database SyncLog entity, degrades gracefully, and aggregates results from all healthy providers without crashing the user session.")
-
-    # Embed Figure 3
+    # Embed Figure 3 immediately after 17.1
     diag_path = os.path.join(ASSETS_DIR, "diagram-discovery-pipeline.png")
     add_figure(doc, diag_path, "Figure 3: Multi-Source Opportunity Discovery & Ingestion Pipeline illustrating parallel provider aggregation, security sanitization, and deduplication.")
+
+    add_h2(doc, "17.2 Resilient Multi-Provider Orchestration")
+    add_p(doc, "To guard against provider outages or network throttling, Prospect's discovery orchestrator dispatches asynchronous requests using Promise.allSettled(). Each provider connector is wrapped in an individual timeout boundary (default 8,000ms). If a particular provider times out or returns an HTTP 429 rate-limit error, Prospect logs the provider failure in the database SyncLog entity, degrades gracefully, and aggregates results from all healthy providers without crashing the user session.")
 
     # HTML
     html_builder.add_h1("17. Multi-source Opportunity Discovery", page_break=True)
     html_builder.add_h2("17.1 Supported Live Opportunity Providers")
     html_builder.add_p("Prospect connects to multiple live external data providers to discover engineering positions across the software industry: Tavily Search API, Hacker News Hiring Feeds, Dev.to Community API, and Remote Developer Feeds (Jobicy, RemoteOK).")
 
+    html_builder.add_figure(diag_path, "Figure 3: Multi-Source Opportunity Discovery & Ingestion Pipeline illustrating parallel provider aggregation, security sanitization, and deduplication.")
+
     html_builder.add_h2("17.2 Resilient Multi-Provider Orchestration")
     html_builder.add_p("To guard against provider outages or network throttling, Prospect's discovery orchestrator dispatches asynchronous requests using Promise.allSettled() with 8,000ms timeout boundaries, recording failures in the SyncLog table and preserving user session continuity.")
 
-    html_builder.add_figure(diag_path, "Figure 3: Multi-Source Opportunity Discovery & Ingestion Pipeline illustrating parallel provider aggregation, security sanitization, and deduplication.")
-
 def render_normalization_deduplication(doc, html_builder):
     # Word
-    add_h1(doc, "18. Opportunity Normalization and Deduplication", page_break=False)
+    add_h1(doc, "18. Opportunity Normalization and Deduplication", page_break=True)
     add_h2(doc, "18.1 Schema Normalization Pipeline")
     add_p(doc, "Because raw opportunity data originates from disparate providers with contrasting data structures, Prospect processes every ingested listing through a strict schema normalization pipeline:")
     add_bullet(doc, "Standardizes salary representations into annual USD min/max integers, parsing hourly rates, monthly amounts, and currency symbols.", "Salary Normalization: ")
@@ -169,7 +173,7 @@ def render_normalization_deduplication(doc, html_builder):
     add_table_data(doc, headers, rows, widths)
 
     # HTML
-    html_builder.add_h1("18. Opportunity Normalization and Deduplication", page_break=False)
+    html_builder.add_h1("18. Opportunity Normalization and Deduplication", page_break=True)
     html_builder.add_h2("18.1 Schema Normalization Pipeline")
     html_builder.add_p("Because raw opportunity data originates from disparate providers with contrasting data structures, Prospect processes every ingested listing through a strict schema normalization pipeline, standardizing salaries, locations, and requirements.")
 
@@ -192,6 +196,10 @@ def render_matching_ranking(doc, html_builder):
     add_h2(doc, "19.2 Lexical Information Retrieval: Okapi BM25")
     add_p(doc, "To guard against vector drift—where two documents share high semantic similarity but lack critical mandatory qualifications—Prospect computes lexical relevance using Okapi BM25 with term-frequency saturation (k_1 = 1.2) and document length normalization (b = 0.75).")
 
+    # Embed Figure 4 immediately after 19.2
+    diag_path = os.path.join(ASSETS_DIR, "diagram-scoring-workflow.png")
+    add_figure(doc, diag_path, "Figure 4: Matching, Eligibility & 5-Pillar Scoring Engine Workflow illustrating feature extraction, 128D embedding, BM25 ranking, and linear weighting.")
+
     add_h2(doc, "19.3 The Explainable 5-Pillar Scoring Formulation")
     add_p(doc, "Prospect's scoring engine calculates overall match relevance as a deterministic linear combination of five distinct evaluation pillars:")
     add_p(doc, "Score_total = 0.25 * E + 0.30 * S + 0.20 * A + 0.15 * R + 0.10 * T", bold_prefix="Mathematical Formula: ")
@@ -200,10 +208,6 @@ def render_matching_ranking(doc, html_builder):
     add_bullet(doc, "Semantic Alignment (A, 20%): Measures dense vector cosine similarity between candidate resume text and job description using prospect-semantic-embed-v1-128d.", "Pillar 3: ")
     add_bullet(doc, "Role Relevance (R, 15%): Evaluates lexical token overlap between target job title and candidate's historical roles via Okapi BM25.", "Pillar 4: ")
     add_bullet(doc, "Career Trajectory (T, 10%): Evaluates the growth gradient of the candidate's previous projects and technical progression.", "Pillar 5: ")
-
-    # Embed Figure 4
-    diag_path = os.path.join(ASSETS_DIR, "diagram-scoring-workflow.png")
-    add_figure(doc, diag_path, "Figure 4: Matching, Eligibility & 5-Pillar Scoring Engine Workflow illustrating feature extraction, 128D embedding, BM25 ranking, and linear weighting.")
 
     code_snip = """// 5-Pillar Linear Combination in Prospect Scoring Engine
 export function calculateOverallScore(pillars: {
@@ -241,16 +245,17 @@ export function calculateOverallScore(pillars: {
     html_builder.add_h2("19.2 Lexical Information Retrieval: Okapi BM25")
     html_builder.add_p("Prospect pairs vector cosine distance with Okapi BM25 lexical token matching (k1 = 1.2, b = 0.75) to prevent semantic drift and verify concrete technical term presence.")
 
+    html_builder.add_figure(diag_path, "Figure 4: Matching, Eligibility & 5-Pillar Scoring Engine Workflow illustrating feature extraction, 128D embedding, BM25 ranking, and linear weighting.")
+
     html_builder.add_h2("19.3 The Explainable 5-Pillar Scoring Formulation")
     html_builder.add_p("Score_total = 0.25 * E + 0.30 * S + 0.20 * A + 0.15 * R + 0.10 * T", bold_prefix="Mathematical Formula: ")
     html_builder.add_p("Where E = Experience Match (25%), S = Skill Overlap (30%), A = Semantic Alignment (20%), R = Role Relevance (15%), and T = Career Trajectory (10%).")
 
-    html_builder.add_figure(diag_path, "Figure 4: Matching, Eligibility & 5-Pillar Scoring Engine Workflow illustrating feature extraction, 128D embedding, BM25 ranking, and linear weighting.")
     html_builder.add_code(code_snip, "5-Pillar Scoring Engine Implementation (src/lib/scoring-engine.ts)")
 
 def render_skill_gap_guidance(doc, html_builder):
     # Word
-    add_h1(doc, "20. Skill Gap Analysis and Career Guidance", page_break=False)
+    add_h1(doc, "20. Skill Gap Analysis and Career Guidance", page_break=True)
     add_h2(doc, "20.1 Three-Stage Set Difference Gap Analysis")
     add_p(doc, "When a candidate targets an opportunity, Prospect's gap engine calculates the precise mathematical set difference between job requirements and candidate profile:")
     add_p(doc, "Delta_req = S_req \\ S_user", bold_prefix="Set Difference: ")
@@ -269,7 +274,7 @@ def render_skill_gap_guidance(doc, html_builder):
     add_p(doc, "The Preparation Studio includes an integrated Voice AI Mock Interview Studio. Built on the Web Speech API (SpeechSynthesis and webkitSpeechRecognition), the studio conducts an audio interview. To ensure probing questions reflect authentic industry practices, the backend queries live developer discussions from Hacker News, technical posts from Dev.to, and StackOverflow in real time. The AI interviewer speaks questions aloud, listens to candidate spoken explanations, and provides structured evaluation rubrics.")
 
     # HTML
-    html_builder.add_h1("20. Skill Gap Analysis and Career Guidance", page_break=False)
+    html_builder.add_h1("20. Skill Gap Analysis and Career Guidance", page_break=True)
     html_builder.add_h2("20.1 Three-Stage Set Difference Gap Analysis")
     html_builder.add_p("When a candidate targets an opportunity, Prospect calculates Delta_req = S_req \\ S_user, categorizing deficiencies into Mandatory, Secondary, and Peripheral tiers.")
 

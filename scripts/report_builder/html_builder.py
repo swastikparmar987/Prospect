@@ -361,18 +361,26 @@ class ReportHTMLBuilder:
 
   /* Figures */
   .figure-container {{
-    margin: 14px 0 18px 0;
+    margin: 12px auto 16px auto;
     text-align: center;
-    page-break-inside: avoid;
-    break-inside: avoid;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    display: block;
   }}
 
   .figure-img {{
-    max-width: 95%;
+    max-width: 90%;
+    max-height: 102mm;
+    width: auto;
     height: auto;
-    border: 1px solid #E2E8F0;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    object-fit: contain;
+    border: 1px solid #CBD5E1;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: block;
+    margin: 0 auto;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }}
 
   .figure-caption {{
@@ -380,6 +388,8 @@ class ReportHTMLBuilder:
     font-style: italic;
     color: #64748B;
     margin-top: 6px;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
   }}
 </style>
 </head>
