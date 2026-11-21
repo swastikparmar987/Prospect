@@ -396,7 +396,7 @@ export function ProfileView({
     /linkedin/i.test(l.label) || /linkedin\.com/i.test(l.url)
   );
 
-  const candidateInitial = (formData.fullName?.trim()?.charAt(0) || "A").toUpperCase();
+  const candidateInitial = (formData.fullName?.trim()?.charAt(0) || "S").toUpperCase();
 
   const openEditTab = (tab: EditTab) => {
     setActiveEditTab(tab);
@@ -490,7 +490,7 @@ export function ProfileView({
 
                 <div className="space-y-1">
                   <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#101214] leading-tight">
-                    {formData.fullName || "Unconfigured Candidate Profile"}
+                    {formData.fullName || "Candidate Profile"}
                   </h2>
                   <p className="text-xs sm:text-sm text-[#6B7280] font-medium">
                     {formData.degree || formData.major

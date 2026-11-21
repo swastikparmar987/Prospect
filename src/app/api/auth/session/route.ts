@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { prisma } from "@/lib/db";
 import {
   resolveAuthenticatedUser,
   createSessionToken,
@@ -65,6 +66,64 @@ export async function POST(req: Request) {
     });
 
     const cookieHeader = createSessionCookieHeader(token);
+
+    // Auto-seed candidate profile for newly initialized session if not yet present
+    try {
+      const existing = await prisma.userProfile.findFirst({
+        where: { userId: resolvedUserId },
+      });
+      if (!existing) {
+        const baseline =
+          (await prisma.userProfile.findFirst({
+            where: { userId: { in: ["default", "anonymous"] } },
+            orderBy: { updatedAt: "desc" },
+          })) ||
+          (await prisma.userProfile.findFirst({
+            orderBy: { updatedAt: "desc" },
+          }));
+
+        if (baseline) {
+          await prisma.userProfile.create({
+            data: {
+              userId: resolvedUserId,
+              fullName: baseline.fullName,
+              email: email && String(email).includes("@") ? String(email).trim() : baseline.email,
+              headline: baseline.headline,
+              university: baseline.university,
+              degree: baseline.degree,
+              major: baseline.major,
+              graduationYear: baseline.graduationYear,
+              graduationMonth: baseline.graduationMonth,
+              gpa: baseline.gpa,
+              location: baseline.location,
+              targetRoles: baseline.targetRoles,
+              preferredWorkModes: baseline.preferredWorkModes,
+              preferredLocations: baseline.preferredLocations,
+              skills: baseline.skills,
+              experiences: baseline.experiences,
+              projects: baseline.projects,
+              portfolioLinks: baseline.portfolioLinks,
+              availability: baseline.availability,
+              stipendPreference: baseline.stipendPreference,
+              constraints: baseline.constraints,
+              workAuthStatus: baseline.workAuthStatus,
+              experienceLevel: baseline.experienceLevel,
+              careerDirections: baseline.careerDirections,
+              adjacentRoles: baseline.adjacentRoles,
+              excludedRoleFamilies: baseline.excludedRoleFamilies,
+              hiddenEmployers: baseline.hiddenEmployers,
+              factProvenance: baseline.factProvenance,
+              embeddingJson: baseline.embeddingJson,
+              embeddingModel: baseline.embeddingModel,
+              locationPreferenceJson: baseline.locationPreferenceJson,
+              aiInsightsJson: baseline.aiInsightsJson,
+            },
+          });
+        }
+      }
+    } catch (seedErr) {
+      console.warn("[auth/session] Baseline candidate profile seed notice:", seedErr);
+    }
 
     const response = NextResponse.json({
       success: true,
