@@ -58,7 +58,7 @@ export function Navbar({
     },
     {
       id: "outlook" as NavTab,
-      label: "Intelligence",
+      label: "What-If Simulator",
       icon: BrainCircuit,
       active: isIntelligenceActive,
     },

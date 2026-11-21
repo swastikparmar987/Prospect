@@ -60,7 +60,7 @@ interface PreparationPlansViewProps {
   onNavigateDiscover?: () => void;
   onGeneratePlan?: (opportunityId: string) => Promise<void>;
   onUploadResume?: () => void;
-  initialStudioTab?: "resume" | "coverLetter" | "answers" | "interview";
+  initialStudioTab?: "resume" | "coverLetter" | "answers" | "interview" | "plan";
 }
 
 export function PreparationPlansView({
@@ -93,16 +93,38 @@ export function PreparationPlansView({
   const [showAllSteps, setShowAllSteps] = useState(false);
   const [activeStudioTab, setActiveStudioTab] = useState<
     "resume" | "coverLetter" | "answers" | "interview"
-  >(initialStudioTab || "resume");
+  >(initialStudioTab === "interview" ? "interview" : "resume");
 
   useEffect(() => {
     if (initialStudioTab) {
-      setActiveStudioTab(initialStudioTab);
       if (initialStudioTab === "interview") {
         setStudioMode("interview");
+      } else if (initialStudioTab === "plan") {
+        setStudioMode("plan");
+      } else {
+        setActiveStudioTab(initialStudioTab);
       }
     }
   }, [initialStudioTab]);
+
+  // Auto-generate plan for the top opportunity if none exists and user has profile + opportunities
+  useEffect(() => {
+    if (
+      plans.length === 0 &&
+      opportunities.length > 0 &&
+      profile &&
+      onGeneratePlan &&
+      !isGeneratingPlan
+    ) {
+      const topOpp = opportunities[0];
+      if (topOpp && !topOpp.id.startsWith("demo-")) {
+        setIsGeneratingPlan(true);
+        onGeneratePlan(topOpp.id).finally(() => {
+          setIsGeneratingPlan(false);
+        });
+      }
+    }
+  }, [plans.length, opportunities, profile, onGeneratePlan, isGeneratingPlan]);
 
   useEffect(() => {
     if (!selectedGenOppId && opportunities[0]?.id) {
@@ -243,6 +265,23 @@ export function PreparationPlansView({
   // EMPTY STATE (IN PLAN MODE): Offer On-Demand Real Plan Generator
   // -------------------------------------------------------------
   if (!activePlan || plans.length === 0) {
+    if (isGeneratingPlan) {
+      return (
+        <div className="space-y-6 max-w-6xl mx-auto pb-16">
+          {renderStudioModeBanner()}
+          <div className="bg-white border border-black/[0.07] rounded-[24px] shadow-[0_8px_30px_rgba(15,23,42,0.045)] p-12 text-center space-y-4">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[#C7E938]/55 bg-gradient-to-br from-[#F3FCDA] to-[#E6F9A4]/70 text-[#101214]">
+              <Loader2 className="h-7 w-7 animate-spin" />
+            </div>
+            <h2 className="text-xl font-bold text-[#101214]">Synthesizing Resume-Grounded Preparation Plan...</h2>
+            <p className="text-xs text-[#6B7280] max-w-md mx-auto">
+              Extracting missing required &amp; preferred skill milestones from your verified profile and target opportunity.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-6 max-w-6xl mx-auto pb-16">
         {renderStudioModeBanner()}

@@ -33,7 +33,7 @@ export async function GET(req: Request) {
       }
     }
 
-    const rawPlans = await prisma.preparationPlan.findMany({
+    let rawPlans = await prisma.preparationPlan.findMany({
       where: {
         userId: user.userId,
         opportunity: { isDemo: false },
@@ -43,6 +43,96 @@ export async function GET(req: Request) {
       },
       orderBy: { updatedAt: "desc" },
     });
+
+    // Auto-generate plans for top real opportunities if none exist yet and student has a profile
+    if (rawPlans.length === 0 && user.isAuthenticated && user.userId !== "anonymous") {
+      const dbProfile = await prisma.userProfile.findFirst({
+        where: { userId: user.userId },
+        orderBy: { updatedAt: "desc" },
+      });
+      if (dbProfile) {
+        let parsedProfile: UserProfile | null = null;
+        try {
+          parsedProfile = {
+            ...dbProfile,
+            targetRoles: JSON.parse(dbProfile.targetRoles || "[]"),
+            preferredWorkModes: JSON.parse(dbProfile.preferredWorkModes || "[]"),
+            preferredLocations: JSON.parse(dbProfile.preferredLocations || "[]"),
+            skills: JSON.parse(dbProfile.skills || "[]"),
+            experiences: JSON.parse(dbProfile.experiences || "[]"),
+            projects: JSON.parse(dbProfile.projects || "[]"),
+            portfolioLinks: JSON.parse(dbProfile.portfolioLinks || "[]"),
+            factProvenance: JSON.parse(dbProfile.factProvenance || "{}"),
+            createdAt: dbProfile.createdAt.toISOString(),
+            updatedAt: dbProfile.updatedAt.toISOString(),
+          };
+        } catch {
+          parsedProfile = null;
+        }
+
+        if (parsedProfile) {
+          const availableOpps = await prisma.opportunity.findMany({
+            where: { isDemo: false },
+            orderBy: { discoveredAt: "desc" },
+            take: 3,
+          });
+
+          for (const opp of availableOpps) {
+            try {
+              const formattedOpp: Opportunity = {
+                id: opp.id,
+                title: opp.title,
+                organization: opp.organization,
+                category: opp.category as any,
+                description: opp.description,
+                location: opp.location,
+                workMode: opp.workMode as any,
+                compensation: opp.compensation,
+                eligibilityRequirements: JSON.parse(opp.eligibilityRequirements || "[]"),
+                requiredSkills: JSON.parse(opp.requiredSkills || "[]"),
+                preferredSkills: JSON.parse(opp.preferredSkills || "[]"),
+                publishedAt: opp.publishedAt ? opp.publishedAt.toISOString() : null,
+                deadline: opp.deadline ? opp.deadline.toISOString() : null,
+                deadlineRaw: opp.deadlineRaw,
+                applyUrl: opp.applyUrl,
+                sourceName: opp.sourceName,
+                sourceUrl: opp.sourceUrl,
+                sourceConfidence: opp.sourceConfidence,
+                verificationStatus: opp.verificationStatus as any,
+                sourceEvidence: JSON.parse(opp.sourceEvidence || "[]"),
+                discoveredAt: opp.discoveredAt.toISOString(),
+                lastCheckedAt: opp.lastCheckedAt.toISOString(),
+                isDemo: opp.isDemo,
+              };
+
+              const generated = generatePreparationPlan(formattedOpp, parsedProfile);
+              await prisma.preparationPlan.create({
+                data: {
+                  userId: user.userId,
+                  opportunityId: opp.id,
+                  title: generated.title,
+                  summary: generated.summary,
+                  items: JSON.stringify(generated.items),
+                },
+              });
+            } catch {
+              // skip non-fatal error
+            }
+          }
+
+          rawPlans = await prisma.preparationPlan.findMany({
+            where: {
+              userId: user.userId,
+              opportunity: { isDemo: false },
+            },
+            include: {
+              opportunity: true,
+            },
+            orderBy: { updatedAt: "desc" },
+          });
+        }
+      }
+    }
 
     const plans = rawPlans
       .filter((p) => !isDemoOrFixtureRecord(p.opportunity))

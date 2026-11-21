@@ -9,6 +9,7 @@ import {
   Home,
   Link2,
   LogOut,
+  Mic,
   Search,
   Sparkles,
   Target,
@@ -38,6 +39,7 @@ export type SidebarNavKey =
   | "projects"
   | "scheduler"
   | "applications"
+  | "prep_plan"
   | "interview_prep"
   | "upskill"
   | "tracker"
@@ -81,6 +83,7 @@ export function Sidebar({
     activeSidebarKey &&
     ((activeSidebarKey === "applications" && activeTab === "tracker") ||
       (activeSidebarKey === "tracker" && activeTab === "tracker") ||
+      (activeSidebarKey === "prep_plan" && activeTab === "prep") ||
       (activeSidebarKey === "interview_prep" && activeTab === "prep") ||
       (activeSidebarKey === "upskill" && activeTab === "upskill") ||
       activeSidebarKey === activeTab)
@@ -90,7 +93,9 @@ export function Sidebar({
         ? "tracker"
         : "applications"
       : activeTab === "prep"
-      ? "interview_prep"
+      ? activeSidebarKey === "interview_prep"
+        ? "interview_prep"
+        : "prep_plan"
       : activeTab === "upskill"
       ? "upskill"
       : activeTab === "landing"
@@ -100,7 +105,7 @@ export function Sidebar({
   const primaryItems: SidebarMenuItem[] = [
     { key: "home", tab: "home", label: "Home", icon: Home },
     { key: "discover", tab: "discover", label: "Discover", icon: Search },
-    { key: "outlook", tab: "outlook", label: "Intelligence", icon: Sparkles },
+    { key: "outlook", tab: "outlook", label: "What-If Simulator", icon: Sparkles },
     { key: "profile", tab: "profile", label: "Profile", icon: UserRound },
     { key: "projects", tab: "projects", label: "Project Lab", icon: FolderGit2 },
     { key: "scheduler", tab: "scheduler", label: "Scheduler", icon: CalendarClock },
@@ -115,11 +120,17 @@ export function Sidebar({
       count: trackerCount,
     },
     {
-      key: "interview_prep",
+      key: "prep_plan",
       tab: "prep",
-      label: "Interview Prep",
+      label: "Prep Plan",
       icon: Target,
       count: prepCount,
+    },
+    {
+      key: "interview_prep",
+      tab: "prep",
+      label: "Voice Interview",
+      icon: Mic,
     },
     {
       key: "upskill",

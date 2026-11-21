@@ -58,7 +58,7 @@ import { AuthModal, AuthSessionUser } from "@/components/auth/AuthModal";
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<NavTab>("landing");
   const [activeSidebarKey, setActiveSidebarKey] = useState<SidebarNavKey>("home");
-  const [prepFocusTab, setPrepFocusTab] = useState<"resume" | "interview" | undefined>(undefined);
+  const [prepFocusTab, setPrepFocusTab] = useState<"resume" | "interview" | "plan" | undefined>("plan");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sourcesModalOpen, setSourcesModalOpen] = useState(false);
   const [searchMode, setSearchMode] = useState<"DEMO" | "LIVE">("LIVE");
@@ -356,9 +356,13 @@ export default function HomePage() {
         discover: "discover",
         outlook: "outlook",
         intelligence: "outlook",
+        simulator: "outlook",
+        whatif: "outlook",
         tracker: "tracker",
         applications: "tracker",
         prep: "prep",
+        prep_plan: "prep",
+        interview_prep: "prep",
         upskill: "upskill",
         agent: "agent",
         profile: "profile",
@@ -372,7 +376,7 @@ export default function HomePage() {
         discover: "discover",
         outlook: "outlook",
         tracker: "applications",
-        prep: "interview_prep",
+        prep: "prep_plan",
         upskill: "upskill",
         profile: "profile",
         projects: "projects",
@@ -385,20 +389,23 @@ export default function HomePage() {
         if (rawParam && aliasMap[rawParam]) {
           const mappedTab = aliasMap[rawParam];
           setActiveTab(mappedTab);
-          if (mappedTab === "prep") {
+          if (rawParam === "interview" || rawParam === "interview_prep") {
             setPrepFocusTab("interview");
+            setActiveSidebarKey("interview_prep");
+          } else if (rawParam === "prep" || rawParam === "prep_plan") {
+            setPrepFocusTab("plan");
+            setActiveSidebarKey("prep_plan");
+          } else {
+            setActiveSidebarKey(
+              rawParam === "tracker"
+                ? "tracker"
+                : rawParam === "applications"
+                ? "applications"
+                : rawParam === "upskill"
+                ? "upskill"
+                : keyMap[mappedTab] || "home"
+            );
           }
-          setActiveSidebarKey(
-            rawParam === "tracker"
-              ? "tracker"
-              : rawParam === "applications"
-              ? "applications"
-              : rawParam === "upskill"
-              ? "upskill"
-              : rawParam === "prep" || rawParam === "interview_prep"
-              ? "interview_prep"
-              : keyMap[mappedTab] || "home"
-          );
         } else {
           // Default to the landing page first when opening root URL
           setActiveTab("landing");
@@ -1399,6 +1406,8 @@ export default function HomePage() {
           }
           if (sidebarKey === "interview_prep") {
             setPrepFocusTab("interview");
+          } else if (sidebarKey === "prep_plan") {
+            setPrepFocusTab("plan");
           } else {
             setPrepFocusTab(undefined);
           }
