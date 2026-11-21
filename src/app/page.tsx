@@ -529,6 +529,11 @@ export default function HomePage() {
         );
         if (hasValidProfile) {
           setProfile(profData.profile);
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem("prospect_active_profile", JSON.stringify(profData.profile));
+            } catch {}
+          }
           if (profData.profile.locationPreference) {
             setLocationPreference(profData.profile.locationPreference);
           }
@@ -540,12 +545,34 @@ export default function HomePage() {
           }
           setOnboardingStep((prev) => (prev === "CHECKING" ? "DONE" : prev));
         } else {
-          setProfile(null);
-          setCareerOutlook(null);
-          setPreparationPlans([]);
-          setApplications([]);
-          freshSinceRef.current = null;
-          setOnboardingStep("UPLOAD");
+          // If we already have a confirmed profile in state or localStorage in this session, retain it
+          const cachedProfile = (() => {
+            if (typeof window !== "undefined") {
+              try {
+                const raw = localStorage.getItem("prospect_active_profile");
+                return raw ? JSON.parse(raw) : null;
+              } catch {
+                return null;
+              }
+            }
+            return null;
+          })();
+
+          if (cachedProfile && (cachedProfile.skills?.length > 0 || cachedProfile.fullName)) {
+            setProfile(cachedProfile);
+            try {
+              const outlook = generateCareerOutlook(cachedProfile);
+              setCareerOutlook(outlook);
+            } catch {}
+            setOnboardingStep((prev) => (prev === "CHECKING" ? "DONE" : prev));
+          } else {
+            setProfile(null);
+            setCareerOutlook(null);
+            setPreparationPlans([]);
+            setApplications([]);
+            freshSinceRef.current = null;
+            setOnboardingStep((prev) => (prev === "CHECKING" ? "UPLOAD" : prev));
+          }
         }
         const intelData = await intelRes.json();
         if (intelData.capabilityMap) {
@@ -1094,6 +1121,11 @@ export default function HomePage() {
 
       const saveData = await saveRes.json();
       setProfile(saveData.profile);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("prospect_active_profile", JSON.stringify(saveData.profile));
+        } catch {}
+      }
       if (saveData.profile?.locationPreference) {
         setLocationPreference(saveData.profile.locationPreference);
       }

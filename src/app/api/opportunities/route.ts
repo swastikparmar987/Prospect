@@ -128,13 +128,9 @@ export async function GET(req: Request) {
       rawHidden.map((e) => e.trim().toLowerCase())
     );
 
-    const effectiveFreshCutoff =
-      freshSinceDate ||
-      (requireProfile && hasConfiguredProfile && profile?.createdAt
-        ? new Date(new Date(profile.createdAt).getTime() - 10000)
-        : null);
+    const effectiveFreshCutoff = freshSinceDate;
 
-    const opportunitiesRaw = await prisma.opportunity.findMany({
+    let opportunitiesRaw = await prisma.opportunity.findMany({
       where: {
         isDemo: false,
         ...(category && category !== "ALL" ? { category } : {}),
@@ -152,6 +148,27 @@ export async function GET(req: Request) {
       },
       orderBy: { discoveredAt: "desc" },
     });
+
+    // Resilience fallback: If fresh cutoff yielded zero opportunities, load all active verified opportunities
+    if (opportunitiesRaw.length === 0 && effectiveFreshCutoff) {
+      opportunitiesRaw = await prisma.opportunity.findMany({
+        where: {
+          isDemo: false,
+          ...(category && category !== "ALL" ? { category } : {}),
+          ...(workMode && workMode !== "ALL" ? { workMode } : {}),
+        },
+        include: {
+          evaluations: {
+            orderBy: { evaluatedAt: "desc" },
+            take: 1,
+          },
+          preparationPlans: {
+            take: 1,
+          },
+        },
+        orderBy: { discoveredAt: "desc" },
+      });
+    }
 
     // Hydrate lightweight Opportunity shapes BEFORE running heavy ML/RAG evaluation
     let candidates = opportunitiesRaw
@@ -570,7 +587,15 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const query = body.query || "";
     const category = body.category;
-    const workMode = body.workMode;
+    const rawWorkMode = body.workMode;
+    const workMode = (() => {
+      if (!rawWorkMode || rawWorkMode === "ALL") return undefined;
+      const lower = String(rawWorkMode).toLowerCase();
+      if (lower.includes("remote")) return "Remote";
+      if (lower.includes("hybrid")) return "Hybrid";
+      if (lower.includes("on-site") || lower.includes("onsite")) return "On-site";
+      return "Flexible";
+    })();
     const location = body.location;
     if (typeof body.mode === "string" && body.mode.toUpperCase() === "DEMO") {
       return NextResponse.json(

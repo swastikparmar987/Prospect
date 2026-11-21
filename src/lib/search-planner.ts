@@ -15,6 +15,14 @@ import {
 } from "../types";
 import { parseSearchIntent } from "./query-intent-parser";
 
+const WorkModeSchema = z.string().transform((val) => {
+  const lower = String(val || "").toLowerCase();
+  if (lower.includes("remote")) return "Remote" as const;
+  if (lower.includes("hybrid")) return "Hybrid" as const;
+  if (lower.includes("on-site") || lower.includes("onsite")) return "On-site" as const;
+  return "Flexible" as const;
+});
+
 export const SearchQueryItemSchema = z.object({
   id: z.string().min(1),
   query: z.string().min(2),
@@ -31,7 +39,7 @@ export const SearchQueryItemSchema = z.object({
   skillCombinations: z.array(z.string()),
   projectKeywords: z.array(z.string()),
   locationFilters: z.array(z.string()),
-  workModeFilters: z.array(z.enum(["Remote", "Hybrid", "On-site", "Flexible"])),
+  workModeFilters: z.array(WorkModeSchema).default([]),
   experienceLevelTerms: z.array(z.string()),
   companyTargets: z.array(z.string()),
   targetProviders: z.array(z.string()).min(1),
@@ -56,7 +64,7 @@ export const SearchPlanSchema = z.object({
   skillCombinations: z.array(z.string()),
   projectResponsibilityKeywords: z.array(z.string()),
   locationFilters: z.array(z.string()),
-  workModeFilters: z.array(z.enum(["Remote", "Hybrid", "On-site", "Flexible"])),
+  workModeFilters: z.array(WorkModeSchema).default([]),
   experienceLevelTerms: z.array(z.string()),
   companyCareerTargets: z.array(z.string()),
   relevantSourceProviders: z.array(z.string()),
@@ -242,11 +250,19 @@ export function buildDeterministicSearchPlan(input: SearchPlannerInput): SearchP
       ? ["Remote", ...softPreferences.preferredLocations]
       : softPreferences.preferredLocations;
 
-  const effectiveWorkModes: WorkMode[] = hardConstraints.remoteOnly
+  const rawWorkModes = hardConstraints.remoteOnly
     ? ["Remote"]
     : broadenGeography
       ? ["Remote", "Hybrid", "Flexible"]
-      : softPreferences.preferredWorkModes;
+      : (softPreferences.preferredWorkModes?.length > 0 ? softPreferences.preferredWorkModes : ["Remote", "Hybrid", "Flexible"]);
+
+  const effectiveWorkModes: WorkMode[] = rawWorkModes.map((m) => {
+    const lower = String(m || "").toLowerCase();
+    if (lower.includes("remote")) return "Remote" as const;
+    if (lower.includes("hybrid")) return "Hybrid" as const;
+    if (lower.includes("on-site") || lower.includes("onsite")) return "On-site" as const;
+    return "Flexible" as const;
+  });
 
   const exclusionTerms = [
     "Senior",
