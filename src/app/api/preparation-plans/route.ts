@@ -13,20 +13,13 @@ export async function GET(req: Request) {
     const requireProfile = searchParams.get("requireProfile") === "1";
 
     if (requireProfile) {
-      let profile = await prisma.userProfile.findFirst({
+      if (!user.isAuthenticated || user.userId === "anonymous") {
+        return NextResponse.json({ plans: [] });
+      }
+      const profile = await prisma.userProfile.findFirst({
         where: { userId: user.userId },
         select: { id: true, skills: true, fullName: true },
       });
-      if (!profile) {
-        profile =
-          (await prisma.userProfile.findFirst({
-            where: { userId: { in: ["default", "anonymous"] } },
-            select: { id: true, skills: true, fullName: true },
-          })) ||
-          (await prisma.userProfile.findFirst({
-            select: { id: true, skills: true, fullName: true },
-          }));
-      }
       const parsedSkills = (() => {
         try {
           const arr = JSON.parse(profile?.skills || "[]");
@@ -40,7 +33,7 @@ export async function GET(req: Request) {
       }
     }
 
-    let rawPlans = await prisma.preparationPlan.findMany({
+    const rawPlans = await prisma.preparationPlan.findMany({
       where: {
         userId: user.userId,
         opportunity: { isDemo: false },
@@ -50,20 +43,6 @@ export async function GET(req: Request) {
       },
       orderBy: { updatedAt: "desc" },
     });
-
-    if (rawPlans.length === 0 && user.userId !== "default" && user.userId !== "anonymous") {
-      rawPlans = await prisma.preparationPlan.findMany({
-        where: {
-          userId: { in: ["default", "anonymous"] },
-          opportunity: { isDemo: false },
-        },
-        include: {
-          opportunity: true,
-        },
-        orderBy: { updatedAt: "desc" },
-        take: 30,
-      });
-    }
 
     const plans = rawPlans
       .filter((p) => !isDemoOrFixtureRecord(p.opportunity))

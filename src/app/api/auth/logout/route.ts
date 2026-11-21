@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
 import {
   createLogoutCookieHeader,
   verifySessionToken,
@@ -28,11 +29,31 @@ export async function POST(req: Request) {
     if (payload?.tokenId) {
       revokeSessionToken(payload.tokenId, payload.expiresAt);
     }
+
+    // Wipe out the user's uploaded profile, applications, and session data
+    if (payload?.userId) {
+      try {
+        await prisma.userProfile.deleteMany({
+          where: { userId: payload.userId },
+        });
+        await prisma.application.deleteMany({
+          where: { userId: payload.userId },
+        });
+        await prisma.preparationPlan.deleteMany({
+          where: { userId: payload.userId },
+        });
+        await prisma.agentRun.deleteMany({
+          where: { userId: payload.userId },
+        });
+      } catch (err) {
+        console.warn("[logout] Non-fatal user data cleanup notice:", err);
+      }
+    }
   }
 
   const response = NextResponse.json({
     success: true,
-    message: "Logged out successfully. Session permanently revoked across server restarts.",
+    message: "Logged out successfully. Session permanently revoked and user data wiped.",
   });
 
   response.headers.append("Set-Cookie", createLogoutCookieHeader());

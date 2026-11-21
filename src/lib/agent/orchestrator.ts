@@ -84,20 +84,10 @@ export interface OrchestratorResult {
 export async function loadActiveUserProfile(userId?: string): Promise<UserProfile | null> {
   try {
     const where = userId ? { userId } : undefined;
-    let dbProfile = await prisma.userProfile.findFirst({
+    const dbProfile = await prisma.userProfile.findFirst({
       where,
       orderBy: { updatedAt: "desc" },
     });
-    if (!dbProfile && userId) {
-      dbProfile =
-        (await prisma.userProfile.findFirst({
-          where: { userId: { in: ["default", "anonymous"] } },
-          orderBy: { updatedAt: "desc" },
-        })) ||
-        (await prisma.userProfile.findFirst({
-          orderBy: { updatedAt: "desc" },
-        }));
-    }
     if (!dbProfile) return null;
     const base: UserProfile = {
       ...dbProfile,

@@ -47,20 +47,17 @@ function hydrateProfile(raw: any): UserProfile {
 export async function GET(req: Request) {
   try {
     const user = resolveAuthenticatedUser(req);
-    let raw = await prisma.userProfile.findFirst({
+    if (!user.isAuthenticated || user.userId === "anonymous") {
+      return NextResponse.json(
+        { success: false, error: "Authentication required." },
+        { status: 401 }
+      );
+    }
+
+    const raw = await prisma.userProfile.findFirst({
       where: { userId: user.userId },
       orderBy: { updatedAt: "desc" },
     });
-    if (!raw) {
-      raw =
-        (await prisma.userProfile.findFirst({
-          where: { userId: { in: ["default", "anonymous"] } },
-          orderBy: { updatedAt: "desc" },
-        })) ||
-        (await prisma.userProfile.findFirst({
-          orderBy: { updatedAt: "desc" },
-        }));
-    }
     if (!raw) {
       return NextResponse.json({
         success: false,
@@ -140,20 +137,17 @@ export async function POST(req: Request) {
     const { selectedDirections, customDirections, excludedDirections } = body;
 
     const user = resolveAuthenticatedUser(req);
-    let raw = await prisma.userProfile.findFirst({
+    if (!user.isAuthenticated || user.userId === "anonymous") {
+      return NextResponse.json(
+        { success: false, error: "Authentication required." },
+        { status: 401 }
+      );
+    }
+
+    const raw = await prisma.userProfile.findFirst({
       where: { userId: user.userId },
       orderBy: { updatedAt: "desc" },
     });
-    if (!raw) {
-      raw =
-        (await prisma.userProfile.findFirst({
-          where: { userId: { in: ["default", "anonymous"] } },
-          orderBy: { updatedAt: "desc" },
-        })) ||
-        (await prisma.userProfile.findFirst({
-          orderBy: { updatedAt: "desc" },
-        }));
-    }
     if (!raw) {
       return NextResponse.json({
         success: false,

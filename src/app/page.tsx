@@ -51,6 +51,7 @@ import {
   Sparkles,
   Upload,
   UserRound,
+  Trash2,
 } from "lucide-react";
 import { AuthModal, AuthSessionUser } from "@/components/auth/AuthModal";
 
@@ -328,10 +329,8 @@ export default function HomePage() {
       console.error("Logout request error:", e);
     } finally {
       if (typeof window !== "undefined") {
-        localStorage.removeItem("prospect_session_token");
-        localStorage.removeItem("prospect_user_email");
-        localStorage.removeItem("prospect_user_id");
-        localStorage.removeItem("prospect_user_name");
+        localStorage.clear();
+        sessionStorage.clear();
         window.history.pushState(null, "", "/");
       }
       setSessionUser(null);
@@ -345,7 +344,7 @@ export default function HomePage() {
       setOnboardingStep("CHECKING");
       setActiveTab("landing");
       setActiveSidebarKey("home");
-      showToast("Signed out successfully. Session invalidated.");
+      showToast("Signed out successfully. Session, resume, and candidate data wiped.");
     }
   };
 
@@ -546,7 +545,7 @@ export default function HomePage() {
           setPreparationPlans([]);
           setApplications([]);
           freshSinceRef.current = null;
-          setOnboardingStep((prev) => (prev === "CHECKING" ? "DONE" : prev));
+          setOnboardingStep("UPLOAD");
         }
         const intelData = await intelRes.json();
         if (intelData.capabilityMap) {
@@ -1038,6 +1037,7 @@ export default function HomePage() {
       setExpandedRoles([]);
       setOpportunities([]);
       setPreparationPlans([]);
+      setApplications([]);
       freshSinceRef.current = null;
       setOnboardingStep("UPLOAD");
       showToast("All profile data and extracted facts have been deleted.");
@@ -1673,6 +1673,19 @@ export default function HomePage() {
                   </button>
 
                   <div className="my-1.5 border-t border-[#E9E6DF]" />
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                      handleDeleteProfile();
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-heading font-semibold text-amber-700 hover:bg-amber-50 transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    <span>Wipe Resume & Reset</span>
+                  </button>
 
                   <button
                     type="button"

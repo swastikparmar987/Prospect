@@ -63,7 +63,7 @@ export async function GET(req: Request) {
       });
     }
 
-    let rawApps = await prisma.application.findMany({
+    const rawApps = await prisma.application.findMany({
       where,
       include: {
         opportunity: true,
@@ -73,22 +73,6 @@ export async function GET(req: Request) {
       },
       orderBy: { updatedAt: "desc" },
     });
-
-    if (rawApps.length === 0 && user.userId !== "default" && user.userId !== "anonymous") {
-      rawApps = await prisma.application.findMany({
-        where: {
-          userId: { in: ["default", "anonymous"] },
-          opportunity: { isDemo: false },
-        },
-        include: {
-          opportunity: true,
-          events: {
-            orderBy: { createdAt: "desc" },
-          },
-        },
-        orderBy: { updatedAt: "desc" },
-      });
-    }
 
     const applications: ApplicationRecord[] = rawApps
       .filter((a) => !isDemoOrFixtureRecord(a.opportunity))
