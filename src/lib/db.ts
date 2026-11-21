@@ -53,25 +53,37 @@ export function resolveDatabaseUrl(): string {
     return `file:${tmpDbPath}`;
   }
 
-  // On Render, standard servers, or local dev: auto-bootstrap target SQLite db if not present
+  // On Render, standard servers, or local dev: auto-bootstrap target SQLite db if not present or empty
   const targetDbUrl = explicitUrl || "file:./dev.db";
   if (targetDbUrl.startsWith("file:")) {
     const rawPath = targetDbUrl.replace(/^file:/, "");
     const resolvedPath = path.isAbsolute(rawPath) ? rawPath : path.resolve(process.cwd(), rawPath);
-    if (!fs.existsSync(resolvedPath)) {
+    let fileSize = 0;
+    try {
+      if (fs.existsSync(resolvedPath)) {
+        fileSize = fs.statSync(resolvedPath).size;
+      }
+    } catch {}
+
+    if (fileSize < 10000) {
       try {
         const candidates = [
           path.join(process.cwd(), "prisma", "starter.db"),
           path.join(__dirname, "..", "..", "prisma", "starter.db"),
+          path.join(__dirname, "..", "prisma", "starter.db"),
+          path.join(__dirname, "starter.db"),
+          path.join(process.cwd(), "prospect", "prisma", "starter.db"),
         ];
         const dir = path.dirname(resolvedPath);
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         for (const candidate of candidates) {
-          if (fs.existsSync(candidate)) {
-            fs.copyFileSync(candidate, resolvedPath);
-            console.log(`[db] Initialized ${resolvedPath} from ${candidate}`);
-            break;
-          }
+          try {
+            if (fs.existsSync(candidate) && fs.statSync(candidate).size > 10000) {
+              fs.copyFileSync(candidate, resolvedPath);
+              console.log(`[db] Initialized ${resolvedPath} from ${candidate} (${fs.statSync(resolvedPath).size} bytes)`);
+              break;
+            }
+          } catch {}
         }
       } catch (err) {
         console.warn("[db] Failed to bootstrap database file:", err);

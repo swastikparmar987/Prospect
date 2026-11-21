@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/bootstrap-db.js && npx prisma db push --skip-generate && next build",
+    "prestart": "node scripts/bootstrap-db.js && npx prisma db push --skip-generate",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "next lint",
     "postinstall": "prisma generate",
