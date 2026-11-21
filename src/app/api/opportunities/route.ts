@@ -26,6 +26,8 @@ import {
   isDemoOrFixtureRecord,
 } from "@/lib/search-config";
 
+export const maxDuration = 60;
+
 function matchesPlatformFilter(
   sourceName: string,
   applyUrl: string,

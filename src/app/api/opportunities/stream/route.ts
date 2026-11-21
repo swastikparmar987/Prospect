@@ -5,6 +5,7 @@ import {
 import { LiveSystemEvent } from "@/types";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 /**
  * Server-Sent Events (SSE) endpoint pushing real-time job ingestion,
@@ -47,10 +48,10 @@ export async function GET(req: Request) {
           type: "HEARTBEAT",
           timestamp: new Date().toISOString(),
         });
-      }, 15000);
+      }, 5000);
 
-      // Gracefully close stream before Vercel serverless execution limits (55s)
-      // Native EventSource in the browser automatically reconnects within 3 seconds
+      // Gracefully close stream before Vercel serverless execution limits (25s)
+      // Native EventSource in the browser automatically reconnects cleanly
       const maxStreamTimer = setTimeout(() => {
         sendChunk("system", {
           id: `evt-reconnect-${Date.now()}`,
@@ -59,7 +60,7 @@ export async function GET(req: Request) {
           timestamp: new Date().toISOString(),
         });
         cleanup();
-      }, 55000);
+      }, 25000);
 
       const cleanup = () => {
         if (closed) return;

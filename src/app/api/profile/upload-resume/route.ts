@@ -15,6 +15,8 @@ import { publishRealtimeEvent } from "@/lib/realtime/opportunity-events";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
+export const maxDuration = 60;
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();

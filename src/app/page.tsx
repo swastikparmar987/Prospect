@@ -452,7 +452,6 @@ export default function HomePage() {
       try {
         const searchParams = new URLSearchParams();
         searchParams.set("mode", params.mode || searchMode);
-        searchParams.set("requireProfile", "1");
         if (freshSinceRef.current) {
           searchParams.set("freshSince", freshSinceRef.current);
         }
@@ -487,9 +486,7 @@ export default function HomePage() {
         });
         const data = await res.json();
         if (reqId !== latestOppRequestIdRef.current) return;
-        if (data.profileConfigured === false) {
-          setOpportunities([]);
-        } else if (data.opportunities) {
+        if (Array.isArray(data.opportunities)) {
           setOpportunities(data.opportunities);
         }
         if (data.personalizationSummary) {
@@ -546,11 +543,10 @@ export default function HomePage() {
         } else {
           setProfile(null);
           setCareerOutlook(null);
-          setOpportunities([]);
           setPreparationPlans([]);
           setApplications([]);
           freshSinceRef.current = null;
-          setOnboardingStep((prev) => (prev === "CHECKING" ? "UPLOAD" : prev));
+          setOnboardingStep((prev) => (prev === "CHECKING" ? "DONE" : prev));
         }
         const intelData = await intelRes.json();
         if (intelData.capabilityMap) {
@@ -618,16 +614,12 @@ export default function HomePage() {
       await loadStatus();
       const hasValidProfile = await loadProfileAndIntelligence();
       if (!active) return;
-      if (hasValidProfile) {
-        await Promise.all([
-          loadOpportunities({ locationMode: "VICINITY" }),
-          loadApplications(),
-          loadPlans(),
-          loadAgentRuns(),
-        ]);
-      } else {
-        setLoadingOpportunities(false);
-      }
+      await Promise.all([
+        loadOpportunities({ locationMode: hasValidProfile ? "VICINITY" : "ALL" }),
+        loadApplications(),
+        loadPlans(),
+        loadAgentRuns(),
+      ]);
     })();
     return () => {
       active = false;
@@ -782,10 +774,10 @@ export default function HomePage() {
         body: JSON.stringify({
           query,
           mode: activeMode,
-          maxRounds: options?.budget?.maxRounds ?? 2,
-          queriesPerRound: options?.budget?.queriesPerRound ?? 4,
-          resultsPerProvider: options?.budget?.resultsPerProvider ?? 12,
-          searchBudgetPerRun: options?.budget?.searchBudgetPerRun ?? 12,
+          maxRounds: options?.budget?.maxRounds ?? 1,
+          queriesPerRound: options?.budget?.queriesPerRound ?? 2,
+          resultsPerProvider: options?.budget?.resultsPerProvider ?? 6,
+          searchBudgetPerRun: options?.budget?.searchBudgetPerRun ?? 6,
           locationMode:
             options?.locationMode ||
             activeSearchParamsRef.current.locationMode ||
